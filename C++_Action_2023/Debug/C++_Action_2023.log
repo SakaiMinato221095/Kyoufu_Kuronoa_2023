@@ -1,0 +1,51 @@
+﻿  object.cpp
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(30): error C2039: 'm_bDataStopAllUpdate': 'CObject' のメンバーではありません。
+  c:\users\student\desktop\c-_action_2023\c++_action_2023\object.h(64): note: 'CObject' の宣言を確認してください
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(30): error C4430: 型指定子がありません - int と仮定しました。メモ: C++ は int を既定値としてサポートしていません
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(30): error C2146: 構文エラー: ';' が、識別子 'm_bDataStopAllUpdate' の前に必要です。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(30): error C2143: 構文エラー: ';' が '{' の前にありません。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(30): error C2447: '{': 対応する関数ヘッダーがありません (旧形式の仮引数リスト?)
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(59): error C2065: 'm_type': 定義されていない識別子です。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(59): error C2065: 'TYPE_NONE': 定義されていない識別子です。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(105): error C2065: 'm_bDataStopAllUpdate': 定義されていない識別子です。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(105): error C2228: '.Get' の左側はクラス、構造体、共用体でなければなりません
+  c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(105): note: 型は 'unknown-type' です。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(130): error C2065: 'm_bDataStopAllUpdate': 定義されていない識別子です。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(130): error C2228: '.Set' の左側はクラス、構造体、共用体でなければなりません
+  c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(130): note: 型は 'unknown-type' です。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(149): error C2039: 'm_bDataAfterDraw': 'CObject' のメンバーではありません。
+  c:\users\student\desktop\c-_action_2023\c++_action_2023\object.h(64): note: 'CObject' の宣言を確認してください
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(149): error C2228: '.Get' の左側はクラス、構造体、共用体でなければなりません
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(165): error C2039: 'm_bDataAfterDraw': 'CObject' のメンバーではありません。
+  c:\users\student\desktop\c-_action_2023\c++_action_2023\object.h(64): note: 'CObject' の宣言を確認してください
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(165): error C2228: '.Get' の左側はクラス、構造体、共用体でなければなりません
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(171): error C2039: 'm_bDataAfterDraw': 'CObject' のメンバーではありません。
+  c:\users\student\desktop\c-_action_2023\c++_action_2023\object.h(64): note: 'CObject' の宣言を確認してください
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(171): error C2228: '.Set' の左側はクラス、構造体、共用体でなければなりません
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(181): error C2039: 'SetType': 'CObject' のメンバーではありません。
+  c:\users\student\desktop\c-_action_2023\c++_action_2023\object.h(64): note: 'CObject' の宣言を確認してください
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(181): error C2065: 'TYPE': 定義されていない識別子です。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(181): error C2146: 構文エラー: ')' が、識別子 'type' の前に必要です。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(182): error C2143: 構文エラー: ';' が '{' の前にありません。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(182): error C2447: '{': 対応する関数ヘッダーがありません (旧形式の仮引数リスト?)
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(190): error C2039: 'TYPE': 'CObject' のメンバーではありません。
+  c:\users\student\desktop\c-_action_2023\c++_action_2023\object.h(64): note: 'CObject' の宣言を確認してください
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(190): error C2039: 'GetType': 'CObject' のメンバーではありません。
+  c:\users\student\desktop\c-_action_2023\c++_action_2023\object.h(64): note: 'CObject' の宣言を確認してください
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(190): error C4430: 型指定子がありません - int と仮定しました。メモ: C++ は int を既定値としてサポートしていません
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(190): error C2146: 構文エラー: ';' が、識別子 'GetType' の前に必要です。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(191): error C2143: 構文エラー: ';' が '{' の前にありません。
+c:\users\student\desktop\c-_action_2023\c++_action_2023\object.cpp(191): error C2447: '{': 対応する関数ヘッダーがありません (旧形式の仮引数リスト?)
+  manager.cpp
+c:\users\student\desktop\c-_action_2023\c++_action_2023\fade.h(25): fatal error C1083: include ファイルを開けません。'data.h':No such file or directory
+  light.cpp
+c:\users\student\desktop\c-_action_2023\c++_action_2023\light.cpp(15): fatal error C1083: include ファイルを開けません。'renderer.h':No such file or directory
+  game.cpp
+c:\users\student\desktop\c-_action_2023\c++_action_2023\game.h(22): fatal error C1083: include ファイルを開けません。'sys_game_phase.h':No such file or directory
+  fade.cpp
+c:\users\student\desktop\c-_action_2023\c++_action_2023\fade.h(25): fatal error C1083: include ファイルを開けません。'data.h':No such file or directory
+  debugproc.cpp
+c:\users\student\desktop\c-_action_2023\c++_action_2023\debugproc.cpp(13): fatal error C1083: include ファイルを開けません。'renderer.h':No such file or directory
+  camera.cpp
+c:\users\student\desktop\c-_action_2023\c++_action_2023\camera.h(21): fatal error C1083: include ファイルを開けません。'data.h':No such file or directory
+  コードを生成中...

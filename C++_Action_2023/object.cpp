@@ -27,7 +27,6 @@
 
 CObject *CObject::m_apObject[OBJECT_PRIORITY_MAX][OBJECT_NUM_MAX] = {};
 int CObject::m_nNumAll = 0;
-CDataBool CObject::m_bDataStopAllUpdate = {};
 
 //-------------------------------------
 //-	コンストラクタ
@@ -54,9 +53,6 @@ CObject::CObject(int nPriority)
 			break;
 		}
 	}
-
-	// 値をクリア
-	m_type = TYPE_NONE;
 }
 
 //-------------------------------------
@@ -101,33 +97,18 @@ void CObject::UpdateAll(void)
 		return;
 	}
 
-	// 情報取得
-	bool m_bStopAllUpdate = m_bDataStopAllUpdate.Get();	// 全更新停止の有無
-
-	// 仮の遷移ボタン（えんたー）
-	if (pInputKeyboard->GetTrigger(DIK_P) != NULL)
-	{
-		m_bStopAllUpdate = m_bStopAllUpdate ? false : true;
-	}
-
-	if (m_bStopAllUpdate == false)
-	{
 		// 全オブジェクトポインタの情報を更新
-		for (int nCountPrio = 0; nCountPrio < OBJECT_PRIORITY_MAX; nCountPrio++)
+	for (int nCountPrio = 0; nCountPrio < OBJECT_PRIORITY_MAX; nCountPrio++)
+	{
+		for (int nCountObj = 0; nCountObj < OBJECT_NUM_MAX; nCountObj++)
 		{
-			for (int nCountObj = 0; nCountObj < OBJECT_NUM_MAX; nCountObj++)
+			if (m_apObject[nCountPrio][nCountObj] != NULL)
 			{
-				if (m_apObject[nCountPrio][nCountObj] != NULL)
-				{
-					// 更新処理
-					m_apObject[nCountPrio][nCountObj]->Update();
-				}
+				// 更新処理
+				m_apObject[nCountPrio][nCountObj]->Update();
 			}
 		}
 	}
-
-	// 情報更新
-	m_bDataStopAllUpdate.Set(m_bStopAllUpdate);
 
 	// デバック表示
 	Debug();
@@ -145,52 +126,11 @@ void CObject::DrawAll(void)
 		{
 			if (m_apObject[nCountPrio][nCountObj] != NULL)
 			{
-				// 後回し描画の有無
-				if (m_apObject[nCountPrio][nCountObj]->m_bDataAfterDraw.Get() == false)
-				{
-					// 描画処理
-					m_apObject[nCountPrio][nCountObj]->Draw();
-				}
+				// 描画処理
+				m_apObject[nCountPrio][nCountObj]->Draw();
 			}
 		}
 	}
-
-	for (int nCountPrio = 0; nCountPrio < OBJECT_PRIORITY_MAX; nCountPrio++)
-	{
-		for (int nCountObj = 0; nCountObj < OBJECT_NUM_MAX; nCountObj++)
-		{
-			if (m_apObject[nCountPrio][nCountObj] != NULL)
-			{
-				// 後回し描画の有無
-				if (m_apObject[nCountPrio][nCountObj]->m_bDataAfterDraw.Get() == true)
-				{
-					// 描画処理
-					m_apObject[nCountPrio][nCountObj]->Draw();
-
-					// 後回し描画のなくす
-					m_apObject[nCountPrio][nCountObj]->m_bDataAfterDraw.Set(false);
-				}
-			}
-		}
-	}
-}
-
-//-------------------------------------
-//-	種類の設定処理
-//-------------------------------------
-void CObject::SetType(TYPE type)
-{
-	// 種類を設定
-	m_type = type;
-}
-
-//-------------------------------------
-//-	種類の取得処理
-//-------------------------------------
-CObject::TYPE CObject::GetType(void)
-{
-	// 種類を返す
-	return m_type;
 }
 
 //-------------------------------------

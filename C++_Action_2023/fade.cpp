@@ -25,6 +25,8 @@
 CFade::CFade()
 {
 	// 値をクリア
+	ZeroMemory(&m_vtxData, sizeof(m_vtxData));
+
 	m_pVtxBuff = NULL;
 	m_state = STATE_NONE;
 	m_mode = CScene::MODE(0);
@@ -99,7 +101,7 @@ void CFade::Uninit(void)
 void CFade::Update(void)
 {
 	// 変数宣言（情報取得）
-	D3DXCOLOR color = m_dataColor.Get();		// 色
+	D3DXCOLOR color = m_vtxData.color;		// 色
 
 	if (m_state == STATE_OUT)
 	{// フェードアウト状態
@@ -138,7 +140,7 @@ void CFade::Update(void)
 	}
 
 	// 情報更新
-	m_dataColor.Set(color);		// 色
+	m_vtxData.color = color;		// 色
 
 	// フェードの頂点情報設定
 	SetVtx();
@@ -224,9 +226,9 @@ CFade *CFade::Create(void)
 void CFade::SetVtx(void)
 {
 	// 変数宣言（情報取得）
-	D3DXVECTOR3 pos = m_dataPos.Get();		// 位置
-	D3DXVECTOR3 size = m_dataSize.Get();	// 大きさ
-	D3DXCOLOR color = m_dataColor.Get();	// 色
+	D3DXVECTOR3 pos = m_vtxData.pos;	// 位置
+	D3DXVECTOR3 size = m_vtxData.size;	// 大きさ
+	D3DXCOLOR color = m_vtxData.color;	// 色
 
 	// 2D頂点情報のポインタを宣言
 	VERTEX_2D *pVtx = NULL;
@@ -264,11 +266,6 @@ void CFade::SetVtx(void)
 
 	// 頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();
-
-	// 情報更新
-	m_dataPos.Set(pos);			// 位置
-	m_dataSize.Set(size);		// 大きさ
-	m_dataColor.Set(color);		// 色
 }
 
 //-------------------------------------
@@ -296,7 +293,7 @@ CFade::STATE CFade::GetFade(void)
 //-------------------------------------
 void CFade::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
 {
-	m_dataPos.Set(pos);
-	m_dataSize.Set(size);
-	m_dataColor.Set(color);
+	m_vtxData.pos = pos;
+	m_vtxData.size = size;
+	m_vtxData.color = color;
 }

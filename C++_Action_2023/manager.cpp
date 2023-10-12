@@ -25,37 +25,11 @@
 
 #include "manager_texture.h"
 #include "manager_model.h"
-#include "time_stop.h"
 
 #include "camera.h"
 #include "light.h"
 
 #include "renderer.h"
-
-#include "object2d.h"
-#include "bg.h"
-#include "bullet.h"
-#include "enemy.h"
-#include "explosion.h"
-#include "effect.h"
-#include "block.h"
-#include "item.h"
-
-#include "object3d.h"
-
-#include "object_x.h"
-
-#include "object_billboard.h"
-
-#include "object_model.h"
-
-#include "score.h"
-
-#include "effect_game.h"
-
-#include "state_mode.h"
-
-#include "file_garbage.h"
 
 //=======================================
 //=	マクロ定義
@@ -77,14 +51,9 @@ CDebugProc *CManager::m_pDbugProc = NULL;
 
 CManagerTexture *CManager::m_pManagerTexture = NULL;
 CManagerModel *CManager::m_pManagerModel = NULL;
-CTimeStop *CManager::m_pManagerTime = NULL;
 
 CCamera *CManager::m_pCamera = NULL;
 CLight *CManager::m_pLight = NULL;
-
-CEffectGame *CManager::m_pEffectGame = NULL;
-
-CStateMode *CManager::m_pStateMode = NULL;
 
 //-------------------------------------------------------------------------
 //- シーン
@@ -449,26 +418,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		}
 	}
 
-	// 時間管理
-	{
-		// 時間管理の有無を判定
-		if (m_pManagerTime == NULL)
-		{
-			// 時間管理の生成
-			m_pManagerTime = CTimeStop::Create();
-
-			// 時間管理の生成成功の有無を判定
-			if (m_pManagerTime == NULL)
-			{
-				// 失敗メッセージ
-				MessageBox(hWnd, "時間管理の生成", "初期処理失敗！", MB_ICONWARNING);
-
-				// 生成処理を抜ける
-				return E_FAIL;
-			}
-		}
-	}
-
 	// カメラ
 	{
 		// カメラの有無を判定
@@ -529,65 +478,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		}
 	}
 
-	// ゲームエフェクト
-	{
-		// ゲームエフェクトの有無を判定
-		if (m_pEffectGame == NULL)
-		{
-			// ゲームエフェクトの生成
-			m_pEffectGame = DBG_NEW CEffectGame;
-
-			// ゲームエフェクトの初期化処理
-			if (FAILED(m_pEffectGame->Init()))
-			{// 失敗時
-
-				// 失敗メッセージ
-				MessageBox(hWnd, "ゲームエフェクトの生成", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
-				return E_FAIL;
-			}
-		}
-		else
-		{// ゴミが入っているとき
-
-			// 失敗メッセージ
-			MessageBox(hWnd, "ゲームエフェクトの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
-		}
-	}
-
-	// モードステータス
-	{
-		// モードステータスの有無を判定
-		if (m_pStateMode == NULL)
-		{
-			// モードステータスの生成
-			m_pStateMode = CStateMode::Create();
-
-			// モードステータスの初期化処理
-			if (m_pStateMode == NULL)
-			{
-				// 失敗メッセージ
-				MessageBox(hWnd, "モードステータスの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
-				return E_FAIL;
-			}
-		}
-		else
-		{// ゴミが入っているとき
-
-			// 失敗メッセージ
-			MessageBox(hWnd, "モードステータスの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
-		}
-	}
-
 	// シーン
 	{
 		// シーンの有無を判定
@@ -623,9 +513,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		// BGMを流す
 		//m_pSound->Play(CSound::LABEL_BGM_GAME_000);
 	}
-
-	// ゴミの読み込み設定処理
-	CFileGarbage::Load(CFileGarbage::TXT_NORMAL_000);
 
 	// 成功を返す
 	return S_OK;
@@ -702,17 +589,6 @@ void CManager::Uninit(void)
 		m_pManagerModel = NULL;
 	}
 
-	// 時間管理の破棄
-	if (m_pManagerTime != NULL)
-	{
-		// 時間管理の終了処理
-		m_pManagerTime->Uninit();
-
-		// 時間管理の開放
-		delete m_pManagerTime;
-		m_pManagerTime = NULL;
-	}
-
 	// カメラの有無を判定
 	if (m_pCamera != NULL)
 	{
@@ -733,28 +609,6 @@ void CManager::Uninit(void)
 		// ライトの開放処理
 		delete m_pLight;
 		m_pLight = NULL;
-	}
-
-	// ゲームエフェクトの破棄
-	if (m_pEffectGame != NULL)
-	{
-		// ゲームエフェクトの終了処理
-		m_pEffectGame->Uninit();
-
-		// ゲームエフェクトの開放処理
-		delete m_pEffectGame;
-		m_pEffectGame = NULL;
-	}
-
-	// モードステータスの破棄
-	if (m_pStateMode != NULL)
-	{
-		// モードステータスの終了処理
-		m_pStateMode->Uninit();
-
-		// モードステータスの開放処理
-		delete m_pStateMode;
-		m_pStateMode = NULL;
 	}
 
 	// シーンの破棄
@@ -813,13 +667,6 @@ void CManager::Update(void)
 		m_pXInput->Update();
 	}
 
-	// 時間管理の有無を判定
-	if (m_pManagerTime != NULL)
-	{
-		// カメラの更新処理
-		m_pManagerTime->Update();
-	}
-
 	// カメラの有無を判定
 	if (m_pCamera != NULL)
 	{
@@ -827,18 +674,18 @@ void CManager::Update(void)
 		m_pCamera->Update();
 	}
 
-	// デバックプロックの有無を判定
-	if (m_pDbugProc != NULL)
-	{
-		// デバックプロックの更新処理
-		m_pDbugProc->Update();
-	}
-
 	// ライトの有無を判定
 	if (m_pLight != NULL)
 	{
 		// ライトの更新処理
 		m_pLight->Update();
+	}
+
+	// デバックプロックの有無を判定
+	if (m_pDbugProc != NULL)
+	{
+		// デバックプロックの更新処理
+		m_pDbugProc->Update();
 	}
 
 	// レンダラーの有無を判定
@@ -854,13 +701,6 @@ void CManager::Update(void)
 	{
 		// フェードの更新処理
 		m_pFade->Update();
-	}
-
-	// ゲームエフェクトの有無を判定
-	if (m_pEffectGame != NULL)
-	{
-		// ゲームエフェクトの更新処理
-		m_pEffectGame->Update();
 	}
 
 	// フェードの有無を判定
@@ -883,6 +723,9 @@ void CManager::Draw(void)
 {
 	// カメラの情報を取得
 	CCamera *pCamera = CManager::GetCamera();
+
+	// デバック表示
+	Debug();
 
 	// カメラの有無を判定
 	if (pCamera != NULL)
@@ -1001,14 +844,6 @@ CManagerModel *CManager::GetManagerModel(void)
 }
 
 //-------------------------------------
-//-	テクスチャ管理の情報を取得
-//-------------------------------------
-CTimeStop * CManager::GetManagerTime(void)
-{
-	return m_pManagerTime;
-}
-
-//-------------------------------------
 //-	カメラの情報を取得
 //-------------------------------------
 CCamera *CManager::GetCamera(void)
@@ -1026,18 +861,33 @@ CLight * CManager::GetLight(void)
 }
 
 //-------------------------------------
-//-	ゲームエフェクトの情報を取得
+//- マネージャーのデバック表示
 //-------------------------------------
-CEffectGame * CManager::GetEffectGame(void)
+void CManager::Debug(void)
 {
-	return m_pEffectGame;
-}
+	// デバックプロックの取得
+	CDebugProc *pDebugProc = CManager::GetDbugProc();
 
-//-------------------------------------
-//-	モードステータスの情報を取得
-//-------------------------------------
-CStateMode * CManager::GetStateMode(void)
-{
-	return m_pStateMode;
-}
+	// デバックプロック取得の有無を判定
+	if (pDebugProc == NULL)
+	{
+		return;
+	}
 
+	pDebugProc->Print("\n");
+
+	if (GetMode() == CScene::MODE_TITEL)
+	{
+		pDebugProc->Print("ゲーム状態 : タイトル");
+	}
+	else if (GetMode() == CScene::MODE_GAME)
+	{
+		pDebugProc->Print("ゲーム状態 : ゲーム");
+	}
+	else if (GetMode() == CScene::MODE_RESULT)
+	{
+		pDebugProc->Print("ゲーム状態 : リザルト");
+	}
+
+	pDebugProc->Print("\n");
+}

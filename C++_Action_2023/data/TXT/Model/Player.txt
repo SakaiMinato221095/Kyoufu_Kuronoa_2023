@@ -1,0 +1,156 @@
+#====================================================================
+#
+# モーションスクリプトファイル[motion.txt]
+# Author：Momoya Takayama
+#
+#====================================================================
+SCRIPT
+
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 16
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data/MODEL/PlayerBattle/body.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/head.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/upper_arm_L.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/forearm_L.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/hand_L.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/upper_arm_R.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/forearm_R.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/hand_R.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/waist.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/thigh_L.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/shin_L.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/foot_L.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/thigh_R.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/shin_R.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/foot_R.x
+MODEL_FILENAME = data/MODEL/PlayerBattle/Gun.x
+
+#------------------------------------------------------------------------------
+# キャラクター情報
+#------------------------------------------------------------------------------
+CHARACTERSET
+	MOVE = 3.2						# 移動量
+	JUMP = 11.25					# ジャンプ量
+	RADIUS = 20.0					# 半径
+	HEIGHT = 40.0					# 高さ
+    NUM_PARTS = 16
+
+    PARTSSET
+        INDEX = 0
+        PARENT = -1
+        POS = 1.0 125.7 -4.2
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 1
+        PARENT = 0
+        POS = 0.4 24.9 0.2
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 2
+        PARENT = 0
+        POS = 28.9 14.4 0.5
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 3
+        PARENT = 2
+        POS = 25.7 -0.6 0.7
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 4
+        PARENT = 3
+        POS = 28.8 0.1 0.4
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 5
+        PARENT = 0
+        POS = -27.5 14.4 0.5
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 6
+        PARENT = 5
+        POS = -29.0 -0.4 -0.8
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 7
+        PARENT = 6
+        POS = -28.4 0.2 -0.7
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 8
+        PARENT = 0
+        POS = -0.8 -22.6 -0.6
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 9
+        PARENT = 8
+        POS = -11.5 -25.0 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 10
+        PARENT = 9
+        POS = -0.1 -32.4 -0.4
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 11
+        PARENT = 10
+        POS = 0.0 -21.0 0.1
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 12
+        PARENT = 8
+        POS = 12.8 -25.0 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 13
+        PARENT = 12
+        POS = 0.2 -32.4 0.4
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 14
+        PARENT = 13
+        POS = 0.0 -21.0 -0.1
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    
+    PARTSSET
+        INDEX = 15
+        PARENT = 7
+        POS = -5.5 -2.0 0.0
+        ROT = 0.0 1.52 -1.85
+    END_PARTSSET
+    
+END_CHARACTERSET

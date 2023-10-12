@@ -18,8 +18,6 @@
 //=	インクルード
 //=======================================
 
-#include "data.h"
-
 //=======================================
 //=	クラス定義
 //=======================================
@@ -30,12 +28,28 @@ class CCamera
 
 public:
 
+	// カメラの値情報
+	typedef struct
+	{
+		D3DXVECTOR3 posV;			// 視点
+		D3DXVECTOR3 posVDest;		// 目的の視点
+
+		D3DXVECTOR3 posR;			// 注視点
+		D3DXVECTOR3 posRDest;		// 目的の注視点
+
+		D3DXVECTOR3 vecU;			// 上方向ベクトル
+
+		D3DXVECTOR3 rot;			// 向き
+		D3DXVECTOR3 rotDest;		// 目的の向き
+
+		float fLength;				// 長さ
+	}Data;
+
 	// カメラモード
 	typedef enum
 	{
 		MODE_NORMAL = 0,	// 通常
 		MODE_FOLLOWING,		// 追尾
-		MODE_SHOP,			// 店
 		MODE_TITLE,			// タイトル
 		MODE_MAX
 	}MODE;
@@ -56,27 +70,15 @@ public:
 
 	void SetMode(CCamera::MODE mode);
 
-	CDataD3DXVECTOR3 m_dataPosV;			// 視点
-	CDataD3DXVECTOR3 m_dataPosVDest;		// 目的の視点
-
-	CDataD3DXVECTOR3 m_dataPosR;			// 注視点
-	CDataD3DXVECTOR3 m_dataPosRDest;		// 目的の注視点
-
-	CDataD3DXVECTOR3 m_dataVecU;			// 上方向ベクトル
-
-	CDataD3DXVECTOR3 m_dataRot;				// 向き
-	CDataD3DXVECTOR3 m_dataRotDest;			// 目的の向き
-
-	CDataFloat m_fDataLength;				// 長さ
-
+	Data GetData(void);
 private:
 	
-	void Collision(void);
-
 	D3DXMATRIX m_mtxProjectien;		// プロジェクションマトリックス
 	D3DXMATRIX m_mtxView;			// ビューマトリックス
 
 	MODE m_mode;					// カメラのモード
+
+	Data m_data;					// カメラの値情報を格納
 
 };
 

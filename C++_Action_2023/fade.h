@@ -22,8 +22,6 @@
 #include "main.h"
 #include "object.h"
 
-#include "data.h"
-
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -37,6 +35,15 @@ class CFade
 
 public:
 
+	// 頂点値情報
+	typedef struct
+	{
+		D3DXVECTOR3 pos;
+		D3DXVECTOR3 size;
+		D3DXCOLOR color;
+	}VtxData;
+
+	// フェード状態
 	typedef enum
 	{
 		STATE_NONE = 0,	// 何もしていない状態
@@ -55,14 +62,10 @@ public:
 
 	static CFade *CFade::Create(void);
 
-	virtual void SetVtx(void);
+	void SetVtx(void);
 
 	void SetFade(CScene::MODE mode);
 	STATE GetFade(void);
-
-	CDataD3DXVECTOR3 m_dataPos;		// 位置
-	CDataD3DXVECTOR3 m_dataSize;	// 大きさ
-	CDataD3DXCOLOR m_dataColor;		// 色
 
 private:
 
@@ -70,6 +73,8 @@ private:
 		D3DXVECTOR3 pos = D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f),
 		D3DXVECTOR3 size = D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f),
 		D3DXCOLOR color = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f));
+
+	VtxData m_vtxData;							// 頂点値情報を格納
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;			// 頂点バッファを格納
 	STATE m_state;								// フェード状態

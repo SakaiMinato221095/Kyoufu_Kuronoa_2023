@@ -30,8 +30,6 @@ public:	// 誰でもアクセス可能
 	void Draw(void);
 	void Print(const char *fmt, ...);
 
-	void DrawPrint(void);
-
 private:	// 自分だけがアクセス可能
 	static LPD3DXFONT m_pFont;		//フォントへのポインタ
 	char m_aStr[MAX_DEBUGSTRING];	//デバッグ表示用の文字列

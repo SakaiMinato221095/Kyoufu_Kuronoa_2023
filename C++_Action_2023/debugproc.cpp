@@ -13,8 +13,6 @@
 #include "renderer.h"
 
 #include "game.h"
-#include "sys_game_phase.h"
-
 
 // 静的メンバ変数宣言
 LPD3DXFONT CDebugProc::m_pFont = NULL;	// デバッグフォントへのポインタ
@@ -84,17 +82,10 @@ void CDebugProc::Update(void)
 {
 	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();	// キーボードのポインタ
 
-#if _DEBUG
-
 	if(pInputKeyboard->GetTrigger(DIK_F1) == true)
 	{//F1キーが押されたとき
 		m_bDisp = m_bDisp ? false : true;
 	}
-
-#endif
-
-	// 文章設定処理
-	DrawPrint();
 }
 
 //==========================================================
@@ -208,57 +199,4 @@ void CDebugProc::Print(const char *fmt, ...)
 
 	//文字列を連結する
 	strcat(&m_aStr[0], &aString[0]);
-}
-
-//==========================================================
-//デバッグ表示の文章設定処理
-//==========================================================
-void CDebugProc::DrawPrint(void)
-{
-	// 操作の説明
-	Print("\n\n\n\n\n\n\n\n\n");
-	Print(" -----操作説明-----");
-	Print("\n");
-	Print(" 移動 : WASDキー");
-	Print("\n");
-	Print(" フェーズ変更（仮） : Cキー");
-	Print("\n");
-	Print(" 画面遷移（仮） : ENTERキー");
-	Print("\n");
-
-	// ゲームフェーズを判定
-	switch (CGame::GetSysGamePhase()->GetType())
-	{
-		// 探索フェーズ
-	case CSysGamePhase::TYPE_SEARCH:
-
-		Print("\n");
-		Print(" -----探索フェーズ-----");
-		Print("\n");
-		Print(" アクション : SPACEキー");
-		Print("\n");
-
-		break;
-	case CSysGamePhase::TYPE_SHOP:
-
-		Print("\n");
-		Print(" -----購入フェーズ-----");
-		Print("\n");
-		Print(" 購入 : SPACEキー");
-		Print("\n");
-
-		break;
-
-	case CSysGamePhase::TYPE_BATTLE:
-
-		Print("\n");
-		Print(" ----戦闘フェーズ-----");
-		Print("\n");
-		Print(" 攻撃 : SPACEキー");
-		Print("\n");
-
-		break;
-	}
-
-
 }

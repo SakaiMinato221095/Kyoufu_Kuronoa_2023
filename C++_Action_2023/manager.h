@@ -31,14 +31,9 @@ class CFade;
 
 class CManagerTexture;
 class CManagerModel;
-class CTimeStop;
 
 class CCamera;
 class CLight;
-
-class CEffectGame;
-
-class CStateMode;
 
 //-======================================
 //-	クラス定義
@@ -103,16 +98,13 @@ public:
 
 	static CManagerTexture *GetManagerTexture(void);
 	static CManagerModel *GetManagerModel(void);
-	static CTimeStop *GetManagerTime(void);
 
 	static CCamera *GetCamera(void);
 	static CLight *GetLight(void);
 
-	static CEffectGame *GetEffectGame(void);
-
-	static CStateMode *GetStateMode(void);
-
 private:
+
+	void Debug(void);
 
 	static CScene *m_pScene;					// シーンのポインタ
 	static CFade *m_pFade;						// フェードのポインタ
@@ -125,15 +117,9 @@ private:
 
 	static CManagerTexture *m_pManagerTexture;	// テクスチャ管理のポインタ
 	static CManagerModel *m_pManagerModel;		// モデル管理のポインタ
-	static CTimeStop *m_pManagerTime;			// 時間管理のポインタ
 
 	static CCamera *m_pCamera;					// カメラのポインタ
 	static CLight *m_pLight;					// ライトのポインタ
-
-	static CEffectGame *m_pEffectGame;			// ゲームエフェクト
-
-	static CStateMode *m_pStateMode;			// モードステータス
-
 };
 
 #endif	// 二重インクルード防止の終了

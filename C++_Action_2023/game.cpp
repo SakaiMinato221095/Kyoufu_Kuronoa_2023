@@ -24,6 +24,8 @@
 #include "obj_3d_field.h"
 #include "objectx_none.h"
 
+#include "enemy.h"
+
 //=======================================
 //=	É}ÉNÉçíËã`
 //=======================================
@@ -80,7 +82,7 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		D3DXVECTOR3(5000.0f, 0.0f, 5000.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
-	CObjectXNone *pObjNone = CObjectXNone::Create(CObjectXNone::MODEL_SAKURA_000);
+	CEnemy *pEnemy = CEnemy::Create(CEnemy::MODEL_ALIEN_000);
 
 	// ê¨å˜Çï‘Ç∑
 	return S_OK;

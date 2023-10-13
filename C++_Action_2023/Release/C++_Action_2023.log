@@ -1,8 +1,39 @@
-﻿  main.cpp
+﻿  precompile.cpp
+  bg.cpp
+  camera.cpp
+  collision.cpp
+  debugproc.cpp
+  enemy.cpp
+  fade.cpp
+  game.cpp
+  Input.cpp
+  kazedama.cpp
+  light.cpp
+  main.cpp
+  manager.cpp
+  manager_model.cpp
+  manager_texture.cpp
+  motion.cpp
+  object.cpp
+  model.cpp
+  object2d.cpp
+  object3d.cpp
+  objectx_none.cpp
+  コンパイル中...
+  object_billboard.cpp
+  object_x.cpp
+  obj_3d_field.cpp
+  player.cpp
+  player_battle.cpp
+  renderer.cpp
+  result.cpp
+  sound.cpp
+  title.cpp
+  xinput.cpp
   コード生成しています。
-  1 of 363 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  19 of 371 functions ( 5.1%) were compiled, the rest were copied from previous compilation.
+    12 functions were new in current compilation
+    31 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   C++_Action_2023.vcxproj -> C:\Users\student\Desktop\強風のクロノア\Kyoufu_Kuronoa_2023\C++_Action_2023\C++_Action_2023.exe
   C++_Action_2023.vcxproj -> C:\Users\student\Desktop\強風のクロノア\Kyoufu_Kuronoa_2023\C++_Action_2023\C++_Action_2023.pdb (Full PDB)

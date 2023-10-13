@@ -17,8 +17,6 @@
 
 #include "manager_model.h"
 
-#include "file_data_emy_nor.h"
-
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -31,16 +29,15 @@
 const char *pModelEnemy[] =
 {
 	"data\\MODEL\\alien000.x",			// エイリアン000
-	"data\\MODEL\\alien001.x",			// エイリアン001
 };
 
 //-======================================
 //-	静的変数宣言
 //-======================================
 
-CDataInt CEnemy::m_nDataModelNldx[MODEL_TYPE_MAX] = {};			// モデルの番号
+int CEnemy::m_nModelNldx[MODEL_MAX] = {};			// モデルの番号
 
-CEnemy::ModelData CEnemy::m_modelData[MODEL_TYPE_MAX] = {};		// モデル情報
+CEnemy::ModelData CEnemy::m_modelData[MODEL_MAX] = {};	// モデル情報
 
 //-------------------------------------
 //-	敵のコンストラクタ
@@ -84,11 +81,11 @@ HRESULT CEnemy::Load(void)
 		return E_FAIL;
 	}
 
-	// テクスチャ設定
-	for (int nCount = 0; nCount < MODEL_TYPE_MAX; nCount++)
+	// モデル設定
+	for (int nCount = 0; nCount < MODEL_MAX; nCount++)
 	{
 		// モデル番号を取得
-		int nModelNldx = m_nDataModelNldx[nCount].Get();
+		int nModelNldx = m_nModelNldx[nCount];
 
 		// モデル番号の取得（モデルの割当）
 		nModelNldx = pManagerModel->Regist(pModelEnemy[nCount]);
@@ -101,11 +98,8 @@ HRESULT CEnemy::Load(void)
 		}
 
 		// モデル番号を設定
-		m_nDataModelNldx[nCount].Set(nModelNldx);
+		m_nModelNldx[nCount] = nModelNldx;
 	}
-
-	// 通常敵の情報の読み込み
-	CFileDataEmyNor::Load();
 
 	// 成功を返す
 	return S_OK;
@@ -122,7 +116,7 @@ void CEnemy::Unload(void)
 //-------------------------------------
 //- 敵の初期化処理
 //-------------------------------------
-HRESULT CEnemy::Init(MODEL_TYPE modelType)
+HRESULT CEnemy::Init(MODEL modelType)
 {
 	// モデル管理の生成
 	CManagerModel *pManagerModel = CManager::GetManagerModel();
@@ -135,13 +129,10 @@ HRESULT CEnemy::Init(MODEL_TYPE modelType)
 	}
 
 	// モデル番号を取得
-	int nModelNldx = m_nDataModelNldx[modelType].Get();
+	int nModelNldx = m_nModelNldx[modelType];
 
 	// 効果なしオブジェクトのモデル割当
 	BindModel(nModelNldx, modelType);
-
-	// データ設定
-	m_dataSize.Set(m_modelData[modelType].size);
 
 	// Xファイルオブジェクトの初期化 if(初期化成功の有無を判定)
 	if (FAILED(CObjectX::Init()))
@@ -182,6 +173,36 @@ void CEnemy::Draw(void)
 }
 
 //-------------------------------------
+//- 通常敵の生成処理
+//-------------------------------------
+CEnemy *CEnemy::Create(MODEL modelType)
+{
+	// 通常敵の生成
+	CEnemy *pEnemy = DBG_NEW CEnemy;
+
+	// 生成の成功の有無を判定
+	if (pEnemy != NULL)
+	{
+		// 初期化処理
+		if (FAILED(pEnemy->Init(modelType)))
+		{// 失敗時
+
+		 // 「なし」を返す
+			return NULL;
+		}
+	}
+	else if (pEnemy == NULL)
+	{// 失敗時
+
+	 // 「なし」を返す
+		return NULL;
+	}
+
+	// 通常敵のポインタを返す
+	return pEnemy;
+}
+
+//-------------------------------------
 //-	敵のモデルの設定処理
 //-------------------------------------
 int CEnemy::GetModel(void)
@@ -196,7 +217,7 @@ int CEnemy::GetModel(void)
 void CEnemy::SetModel(int nModelNldx)
 {
 	// モデル設定
-	m_model = (MODEL_TYPE)nModelNldx;
+	m_model = (MODEL)nModelNldx;
 }
 
 //-------------------------------------

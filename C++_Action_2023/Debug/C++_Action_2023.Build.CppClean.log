@@ -2,7 +2,6 @@ c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_20
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\vc140.pdb
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\vc140.idb
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\precompile.obj
-c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\light.obj
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\main.obj
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\manager.obj
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\manager_model.obj
@@ -13,6 +12,7 @@ c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_20
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\object2d.obj
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\object3d.obj
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\objectx_none.obj
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\object_billboard.obj
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\object_x.obj
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\obj_3d_field.obj
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\player.obj
@@ -29,7 +29,7 @@ c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_20
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\game.obj
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\input.obj
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\kazedama.obj
-c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\object_billboard.obj
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\light.obj
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\c++_action_2023.ilk
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\c++_action_2023.exe
 c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\debug\c++_action_2023.pdb

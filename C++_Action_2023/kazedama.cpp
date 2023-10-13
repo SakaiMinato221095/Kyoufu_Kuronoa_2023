@@ -19,6 +19,10 @@
 
 #include "player.h"
 
+#include "collision.h"
+
+#include "enemy_have.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -46,12 +50,14 @@ CKazedama *CKazedama::m_pInstance = NULL;		// 自身のポインタ
 CKazedama::CKazedama(int nPriority) : CObjectBillboard(nPriority)
 {
 	ZeroMemory(&m_data, sizeof(m_data));
+	m_nCollNldx = 0;
 
 	if (m_pInstance == NULL)
 	{
 		// 自身のポインタを代入
 		m_pInstance = this;
 	}
+
 }
 
 //-------------------------------------
@@ -119,11 +125,32 @@ void CKazedama::Unload(void)
 //-------------------------------------
 HRESULT CKazedama::Init(TEX tex)
 {
+	// 当たり判定のポインタ取得
+	CCollision *pCollision = CManager::GetCollision();
+
+	// 当たり判定の有無を判定
+	if (pCollision == NULL)
+	{
+		// 処理を抜ける
+		return E_FAIL;
+	}
+
 	// テクスチャ割当
 	BindTexture(m_nTextureNldx[tex]);
 
 	// ビルボードオブジェクトの初期化
 	CObjectBillboard::Init();
+
+	// 当たり判定設定
+	m_nCollNldx = pCollision->SetColl(
+		CCollision::TAG_KAZEDAMA,
+		CCollision::TYPE_RECTANGLE,
+		CObjectBillboard::GetVtxData().pos,
+		CObjectBillboard::GetVtxData().size,
+		this);
+
+	// 相手タグの設定処理
+	pCollision->SetHit(m_nCollNldx, CCollision::TAG_ENEMY, true);
 
 	// 成功を返す
 	return S_OK;
@@ -134,6 +161,19 @@ HRESULT CKazedama::Init(TEX tex)
 //-------------------------------------
 void CKazedama::Uninit(void)
 {
+	// 当たり判定のポインタ取得
+	CCollision *pCollision = CManager::GetCollision();
+
+	// 当たり判定の有無を判定
+	if (pCollision == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
+	// 当たり判定の終了処理
+	pCollision->UninitColl(m_nCollNldx);
+
 	// 自身のポインタを初期化
 	m_pInstance = NULL;
 
@@ -146,12 +186,35 @@ void CKazedama::Uninit(void)
 //-------------------------------------
 void CKazedama::Update(void)
 {
+	// 当たり判定のポインタ取得
+	CCollision *pCollision = CManager::GetCollision();
+
+	// 当たり判定の有無を判定
+	if (pCollision == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
+	// 当たり判定位置の更新処理
+	pCollision->UpdateData(
+		m_nCollNldx,
+		CObjectBillboard::GetVtxData().pos,
+		CObjectBillboard::GetVtxData().size);
+
 	switch (m_data.state)
 	{
 	case STATE_ACTIVE:
 
 		// 行動処理
 		Active();
+
+		// 敵との当たり判定
+		if (pCollision->Hit(m_nCollNldx, CCollision::TAG_ENEMY) == true)
+		{
+			// 消失処理
+			m_data.state = STATE_HIT;
+		}
 
 		break;
 
@@ -169,6 +232,13 @@ void CKazedama::Update(void)
 
 		// 処理を抜ける
 		return;
+
+		break;
+
+	case STATE_HIT:
+
+		// 接触処理
+		Hit();
 
 		break;
 	}
@@ -441,4 +511,24 @@ void CKazedama::Lost(void)
 {
 	// 終了処理
 	Uninit();
+}
+
+//-------------------------------------
+//- 風だまのヒット時の処理
+//-------------------------------------
+void CKazedama::Hit(void)
+{
+	// 帰還状態に変更
+	m_data.state = STATE_RETURN;
+
+	// 保持敵を生成
+	CEnemyHave *pEnemyHave = CEnemyHave::Create(CEnemyHave::MODEL_ALIEN_000);
+
+	if (pEnemyHave == NULL)
+	{
+		return;
+	}
+
+	// 保持敵の値設定
+	pEnemyHave->Set(GetVtxData().pos,D3DXVECTOR3(50.0f,50.0f,50.0f));
 }

@@ -24,6 +24,7 @@
 #include "camera.h"
 
 #include "kazedama.h"
+#include "enemy_have.h"
 
 //-======================================
 //-	マクロ定義
@@ -46,6 +47,7 @@ CPlayer::CPlayer()
 	ZeroMemory(&m_data, sizeof(m_data));
 
 	m_bJump = false;
+	m_bHave = false;
 
 	ZeroMemory(m_mtxWorld, sizeof(D3DXMATRIX));
 
@@ -270,6 +272,14 @@ CPlayer::Data CPlayer::GetData(void)
 }
 
 //-------------------------------------
+//- プレイヤーの所持状態の設定処理
+//-------------------------------------
+void CPlayer::SetHave(bool bHave)
+{
+	m_bHave = bHave;
+}
+
+//-------------------------------------
 //- プレイヤーのインスタンス取得処理
 //-------------------------------------
 CPlayer * CPlayer::GetInstance(void)
@@ -426,6 +436,23 @@ void CPlayer::InputMove(void)
 //-------------------------------------
 void CPlayer::InputJump(void)
 {
+	if (m_bJump == false)
+	{
+		// 通常ジャンプ処理
+		InputNormalJump();
+	}
+	else if (m_bJump == true && m_bHave == true)
+	{
+		// 二段ジャンプ
+		InputDoubleJump();
+	}
+}
+
+//-------------------------------------
+//- プレイヤーの通常ジャンプ入力処理
+//-------------------------------------
+void CPlayer::InputNormalJump(void)
+{
 	// キーボードのポインタを宣言
 	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
 
@@ -456,9 +483,59 @@ void CPlayer::InputJump(void)
 	{
 		// ジャンプ状態に変更
 		m_bJump = true;
-		
+
 		// ジャンプ量を設定
 		move.y = 20.0f;
+	}
+
+	// 情報更新
+	m_data.move = move;			// 移動量
+}
+
+//-------------------------------------
+//- プレイヤーの二段ジャンプ入力処理
+//-------------------------------------
+void CPlayer::InputDoubleJump(void)
+{
+	// キーボードのポインタを宣言
+	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+
+	// キーボードの情報取得の成功を判定
+	if (pInputKeyboard == NULL)
+	{// 失敗時
+
+	 // 移動処理を抜ける
+		return;
+	}
+
+	// X入力のポインタを宣言
+	CXInput *pXInput = CManager::GetXInput();
+
+	// X入力の情報取得の成功を判定
+	if (pXInput == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
+	// 変数宣言
+	D3DXVECTOR3 move = m_data.move;			// 移動量を取得
+
+	if (pInputKeyboard->GetTrigger(DIK_SPACE) != NULL && m_bJump == true && m_bHave == true ||
+		pXInput->GetTrigger(XINPUT_GAMEPAD_A, CXInput::TYPE_INPUT_BUTTON) && m_bJump == true && m_bHave == true)
+	{
+		// 保持状態を解除
+		m_bHave = false;
+
+		// 保持敵の有無を判定
+		if (CEnemyHave::GetInstance() != NULL)
+		{
+			// 保持敵の終了処理
+			CEnemyHave::GetInstance()->Uninit();
+		}
+
+		// ジャンプ量を設定
+		move.y = 30.0f;
 	}
 
 	// 情報更新
@@ -469,6 +546,24 @@ void CPlayer::InputJump(void)
 //- プレイヤーのアクション入力処理
 //-------------------------------------
 void CPlayer::InputAction(void)
+{
+	// 所持状態の有無を判定
+	if (m_bHave == true)
+	{
+		// 発射入力処理
+		InputShot();
+	}
+	else
+	{
+		// 風だま入力処理
+		InputKazedama();
+	}
+}
+
+//-------------------------------------
+//- プレイヤーの風だま入力処理
+//-------------------------------------
+void CPlayer::InputKazedama(void)
 {
 	// キーボードのポインタを宣言
 	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
@@ -532,6 +627,76 @@ void CPlayer::InputAction(void)
 					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
 					D3DXVECTOR3(20.0f, 0.0f, 0.0f),
 					CKazedama::TYPE_ROT_RIGHT);
+			}
+		}
+	}
+}
+
+//-------------------------------------
+//- プレイヤーの発射入力処理
+//-------------------------------------
+void CPlayer::InputShot(void)
+{
+	// キーボードのポインタを宣言
+	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+
+	// キーボードの情報取得の成功を判定
+	if (pInputKeyboard == NULL)
+	{// 失敗時
+
+	 // 移動処理を抜ける
+		return;
+	}
+
+	// X入力のポインタを宣言
+	CXInput *pXInput = CManager::GetXInput();
+
+	// X入力の情報取得の成功を判定
+	if (pXInput == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
+	CEnemyHave *pEnemyHave = CEnemyHave::GetInstance();
+
+	// 風だまのポインタの有無を判定
+	if (pEnemyHave != NULL)
+	{
+		// 入力処理（Jキー / Bボタン）
+		if (pInputKeyboard->GetTrigger(DIK_J) != NULL ||
+			pXInput->GetTrigger(XINPUT_GAMEPAD_B, CXInput::TYPE_INPUT_BUTTON))
+		{
+			// 保持状態を解除
+			m_bHave = false;
+
+			// 情報取得
+			D3DXVECTOR3 pos = m_data.pos;
+			D3DXVECTOR3 rot = m_data.rot;
+
+			// 変数宣言
+			D3DXVECTOR3 posBody = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+			// 銃の位置を代入（番号ベタ打ち[15]番）
+			posBody.x = m_apModel[0]->GetMtxWorld()._41;
+			posBody.y = m_apModel[0]->GetMtxWorld()._42;
+			posBody.z = m_apModel[0]->GetMtxWorld()._43;
+
+			if (rot.y >= 0.0f && rot.y <= D3DX_PI)
+			{
+				pEnemyHave->SetShot(
+					posBody,
+					D3DXVECTOR3(-30.0f,0.0f,0.0f),
+					60,
+					CEnemyHave::TYPE_ROT_LEFT);
+			}
+			else if (rot.y <= 0.0f && rot.y <= D3DX_PI)
+			{
+				pEnemyHave->SetShot(
+					posBody,
+					D3DXVECTOR3(30.0f, 0.0f, 0.0f),
+					60,
+					CEnemyHave::TYPE_ROT_RIGHT);
 			}
 		}
 	}

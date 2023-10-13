@@ -11,6 +11,7 @@
 //=======================================
 
 #include "manager.h"
+#include "renderer.h"
 
 #include "fade.h"
 
@@ -29,7 +30,7 @@
 #include "camera.h"
 #include "light.h"
 
-#include "renderer.h"
+#include "collision.h"
 
 //=======================================
 //=	マクロ定義
@@ -54,6 +55,8 @@ CManagerModel *CManager::m_pManagerModel = NULL;
 
 CCamera *CManager::m_pCamera = NULL;
 CLight *CManager::m_pLight = NULL;
+
+CCollision *CManager::m_pCollision = NULL;
 
 //-------------------------------------------------------------------------
 //- シーン
@@ -478,6 +481,35 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		}
 	}
 
+	// 当たり判定
+	{
+		// 当たり判定の有無を判定
+		if (m_pCollision == NULL)
+		{
+			// 当たり判定の生成
+			m_pCollision = CCollision::Create();
+
+			// 当たり判定の有無を判定
+			if (m_pCollision == NULL)
+			{
+				// 失敗メッセージ
+				MessageBox(hWnd, "当たり判定の初期化", "初期処理失敗！", MB_ICONWARNING);
+
+				// 初期化を抜ける
+				return E_FAIL;
+			}
+		}
+		else
+		{// ゴミが入っているとき
+
+			// 失敗メッセージ
+			MessageBox(hWnd, "当たり判定の初期化", "初期処理失敗！", MB_ICONWARNING);
+
+			// 初期化を抜ける
+			return E_FAIL;
+		}
+	}
+
 	// シーン
 	{
 		// シーンの有無を判定
@@ -611,6 +643,17 @@ void CManager::Uninit(void)
 		m_pLight = NULL;
 	}
 
+	// 当たり判定の破棄
+	if (m_pCollision != NULL)
+	{
+		// 当たり判定の終了処理
+		m_pCollision->Uninit();
+
+		// 当たり判定の開放処理
+		delete m_pCollision;
+		m_pCollision = NULL;
+	}
+
 	// シーンの破棄
 	if (m_pScene != NULL)
 	{
@@ -681,6 +724,13 @@ void CManager::Update(void)
 		m_pLight->Update();
 	}
 
+	// 当たり判定の有無を判定
+	if (m_pCollision != NULL)
+	{
+		// 当たり判定の更新処理
+		m_pCollision->Update();
+	}
+
 	// デバックプロックの有無を判定
 	if (m_pDbugProc != NULL)
 	{
@@ -732,6 +782,13 @@ void CManager::Draw(void)
 	{
 		// カメラの設定
 		pCamera->SetCamera();
+	}
+
+	// 当たり判定の有無を判定
+	if (m_pCollision != NULL)
+	{
+		// 当たり判定の設定
+		m_pCollision->Draw();
 	}
 
 	// レンダラーの有無を判定
@@ -858,6 +915,14 @@ CCamera *CManager::GetCamera(void)
 CLight * CManager::GetLight(void)
 {
 	return m_pLight;
+}
+
+//-------------------------------------
+//- 当たり判定の情報を取得
+//-------------------------------------
+CCollision * CManager::GetCollision(void)
+{
+	return m_pCollision;
 }
 
 //-------------------------------------

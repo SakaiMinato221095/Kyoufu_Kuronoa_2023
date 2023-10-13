@@ -45,6 +45,7 @@ public:
 		STATE_ACTIVE = 0,	// 活動状態
 		STATE_RETURN,		// 帰還状態
 		STATE_LOST,			// 消滅状態
+		STATE_HIT,			// ヒット状態
 		STATE_MAX
 	}STATE;
 	
@@ -90,12 +91,14 @@ private:
 	void Active(void);
 	void Return(void);
 	void Lost(void);
+	void Hit(void);
+
+	static int m_nTextureNldx[TEX_MAX];		// テクスチャの番号
+	static CKazedama *m_pInstance;			// 自身のポインタ
 
 	Data m_data;							// 情報値
 
-	static int m_nTextureNldx[TEX_MAX];		// テクスチャの番号
-
-	static CKazedama *m_pInstance;			// 自身のポインタ
+	int m_nCollNldx;						// 当たり判定の番号
 };
 
 #endif	// 二重インクルード防止の終了

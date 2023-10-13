@@ -32,7 +32,7 @@
 CCollision::CCollision()
 {
 	ZeroMemory(&m_data, sizeof(m_data));
-	m_nNldxMax = -1;
+	m_nNldxMax = 0;
 }
 
 //-------------------------------------
@@ -89,7 +89,7 @@ void CCollision::Update(void)
 				case TYPE_RECTANGLE:
 
 					// 矩形の当たり判定
-					if(hitRectangle(posMy,sizeMy,posPair, sizePair) == true)
+					if (hitRectangle(posMy, sizeMy, posPair, sizePair) == true)
 					{
 						bIsHit = true;
 					}
@@ -104,6 +104,7 @@ void CCollision::Update(void)
 					int nHitNldxMax = m_data[nCount].nHitNldxMax;							// 配列番号
 					m_data[nCount].hitData[nHitNldxMax].tag = m_data[nCountPair].tag;		// 相手のタグを保存
 					m_data[nCount].hitData[nHitNldxMax].nNldx = m_data[nCountPair].nNldx;	// 接触番号を保存
+					m_data[nCount].hitData[nHitNldxMax].pObj = m_data[nCountPair].pObj;		// オブジェクト情報を保存
 					m_data[nCount].nHitNldxMax++;											// 配列番号を進める
 				}
 			}
@@ -133,7 +134,7 @@ CCollision * CCollision::Create(void)
 		if (FAILED(pCollision->Init()))
 		{// 失敗時
 
-		 // 「なし」を返す
+			// 「なし」を返す
 			return NULL;
 		}
 	}
@@ -149,11 +150,67 @@ CCollision * CCollision::Create(void)
 }
 
 //-------------------------------------
+//- 当たり判定の終了処理
+//-------------------------------------
+void CCollision::UninitColl(int nNldxColl)
+{
+	ZeroMemory(&m_data[nNldxColl], sizeof(m_data[nNldxColl]));
+}
+
+//-------------------------------------
+//- タグの相手を判定設定処理
+//-------------------------------------
+void CCollision::UpdateData(int nNldxColl, D3DXVECTOR3 pos, D3DXVECTOR3 size)
+{
+	// 設定したタグの当たり判定の有無を設定
+	m_data[nNldxColl].pos = pos;		// 位置
+	m_data[nNldxColl].size = size;		// サイズ
+}
+
+//-------------------------------------
 //- 当たり判定の設定処理
 //-------------------------------------
-void CCollision::SetColl(TAG tag,TYPE type,D3DXVECTOR3 pos , D3DXVECTOR3 size)
+int CCollision::SetColl(TAG tag,TYPE type,D3DXVECTOR3 pos , D3DXVECTOR3 size,CObject *pObj)
 {
+	m_data[m_nNldxMax].tag = tag;		// タグ
+	m_data[m_nNldxMax].type = type;		// 当たり判定種類
+	m_data[m_nNldxMax].pos = pos;		// 位置
+	m_data[m_nNldxMax].size = size;		// サイズ
+	m_data[m_nNldxMax].pObj = pObj;		// オブジェクト情報
+
+	// 番号を加算
 	m_nNldxMax++;
+
+	// 番号を返す
+	return m_nNldxMax - 1;
+}
+
+//-------------------------------------
+//- タグの相手を判定設定処理
+//-------------------------------------
+void CCollision::SetHit(int nNldxColl,TAG hitTag,bool bIsActive)
+{
+	// 設定したタグの当たり判定の有無を設定
+	m_data[nNldxColl].bHitTag[hitTag] = bIsActive;
+}
+
+//-------------------------------------
+//- タグの相手との接触判定処理
+//-------------------------------------
+bool CCollision::Hit(int nNldxColl, CCollision::TAG hitTag)
+{
+	for (int nCount = 0; nCount < m_data[nNldxColl].nHitNldxMax; nCount++)
+	{
+		if (m_data[nNldxColl].hitData[nCount].tag == hitTag)
+		{
+			// 終了処理
+			m_data[nNldxColl].hitData[nCount].pObj->Uninit();
+
+			return true;
+		}
+	}
+
+	return false;
 }
 
 //-------------------------------------

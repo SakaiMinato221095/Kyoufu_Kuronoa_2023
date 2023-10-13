@@ -65,7 +65,7 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	virtual void Hit(int nDamage);
+	void Hit(int nDamage);
 
 	void DebugPlayer(void);
 
@@ -76,18 +76,28 @@ public:
 	void SetData(Data data);
 	Data GetData(void);
 
+	void SetHave(bool bHave);
+
 	static CPlayer *GetInstance(void);
+
 private:
 
 	void UpdatePos(void);
 	void UpdateRot(void);
 
 	void InputMove(void);
+
 	void InputJump(void);
+	void InputNormalJump(void);
+	void InputDoubleJump(void);
+
 	void InputAction(void);
+	void InputKazedama(void);
+	void InputShot(void);
 
 	Data m_data;								// 値を格納
 	bool m_bJump;								// ジャンプ状態の有無
+	bool m_bHave;								// 所持状態の有無
 
 	D3DXMATRIX m_mtxWorld;						// ワールドマトリックス
 

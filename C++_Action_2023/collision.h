@@ -42,6 +42,7 @@ public:
 		TAG_PLAYER,		// プレイヤー
 		TAG_ENEMY,		// 敵
 		TAG_KAZEDAMA,	// 風だま
+		TAG_ENEMY_HAVE,	// 保持敵
 		TAG_MAX
 	}TAG;
 
@@ -57,6 +58,7 @@ public:
 	{
 		TAG tag;			// タグ
 		int nNldx;			// 番号
+		CObject *pObj;		// オブジェクト情報
 	}HitData;
 
 	// 当たり判定情報
@@ -70,7 +72,7 @@ public:
 		D3DXVECTOR3 pos;					// 位置
 		D3DXVECTOR3 size;					// 大きさ
 
-		CObject *pObj;						// オブジェクトのポインタ
+		CObject *pObj;						// オブジェクト情報
 
 		HitData hitData[COLLSION_NUM_MAX];	// 接触相手の当たり判定情報
 		int nHitNldxMax;					// 接触相手の番号の最大数
@@ -86,7 +88,13 @@ public:
 
 	static CCollision *Create(void);
 
-	void SetColl(TAG tag, TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 size);
+	void UninitColl(int nNldxColl);
+	void UpdateData(int nNldxColl, D3DXVECTOR3 pos, D3DXVECTOR3 size);
+
+	int SetColl(TAG tag, TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 size, CObject * pObj);
+	void SetHit(int nNldxColl, TAG hitTag, bool bIsActive);
+
+	bool Hit(int nNldxColl, TAG hitTag);
 
 	bool hitRectangle(D3DXVECTOR3 posMy, D3DXVECTOR3 sizeMy, D3DXVECTOR3 posPair, D3DXVECTOR3 sizePair);
 	bool hitRectangleRot(D3DXVECTOR3 posMy, D3DXVECTOR3 sizeMy, D3DXVECTOR3 rot, D3DXVECTOR3 posPair, D3DXVECTOR3 sizePair, D3DXVECTOR3 rotPair);

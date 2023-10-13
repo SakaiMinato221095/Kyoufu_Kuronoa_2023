@@ -17,6 +17,8 @@
 
 #include "manager_model.h"
 
+#include "collision.h"
+
 //-======================================
 //-	マクロ定義
 //-======================================
@@ -44,7 +46,9 @@ CEnemy::ModelData CEnemy::m_modelData[MODEL_MAX] = {};	// モデル情報
 //-------------------------------------
 CEnemy::CEnemy()
 {
-
+	m_model = MODEL(0);
+	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_nCollNldx = -1;
 }
 
 //-------------------------------------
@@ -128,6 +132,16 @@ HRESULT CEnemy::Init(MODEL modelType)
 		return E_FAIL;
 	}
 
+	// 当たり判定のポインタ取得
+	CCollision *pCollision = CManager::GetCollision();
+
+	// 当たり判定の有無を判定
+	if (pCollision == NULL)
+	{
+		// 処理を抜ける
+		return E_FAIL;
+	}
+
 	// モデル番号を取得
 	int nModelNldx = m_nModelNldx[modelType];
 
@@ -141,6 +155,23 @@ HRESULT CEnemy::Init(MODEL modelType)
 		return E_FAIL;
 	}
 
+	// 頂点値情報を取得
+	VtxData vtxData = GetVtxData();
+
+	// サイズを設定
+	vtxData.size = D3DXVECTOR3(50.0f, 50.0f, 50.0f);
+
+	// 頂点値情報を更新
+	SetVtxData(vtxData);
+
+	// 当たり判定設定
+	m_nCollNldx = pCollision->SetColl(
+		CCollision::TAG_ENEMY,
+		CCollision::TYPE_RECTANGLE,
+		CObjectX::GetVtxData().pos,
+		CObjectX::GetVtxData().size,
+		this);
+
 	// 成功を返す
 	return S_OK;
 }
@@ -150,6 +181,19 @@ HRESULT CEnemy::Init(MODEL modelType)
 //-------------------------------------
 void CEnemy::Uninit(void)
 {
+	// 当たり判定のポインタ取得
+	CCollision *pCollision = CManager::GetCollision();
+
+	// 当たり判定の有無を判定
+	if (pCollision == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
+	// 当たり判定の終了処理
+	pCollision->UninitColl(m_nCollNldx);
+
 	// Xファイルオブジェクトの終了
 	CObjectX::Uninit();
 }
@@ -159,6 +203,22 @@ void CEnemy::Uninit(void)
 //-------------------------------------
 void CEnemy::Update(void)
 {
+	// 当たり判定のポインタ取得
+	CCollision *pCollision = CManager::GetCollision();
+
+	// 当たり判定の有無を判定
+	if (pCollision == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
+	// 当たり判定位置の更新処理
+	pCollision->UpdateData(
+		m_nCollNldx,
+		CObjectX::GetVtxData().pos,
+		CObjectX::GetVtxData().size);
+
 	// Xファイルオブジェクトの更新処理
 	CObjectX::Update();
 }
@@ -170,6 +230,18 @@ void CEnemy::Draw(void)
 {
 	// Xファイルオブジェクトの描画処理
 	CObjectX::Draw();
+}
+
+//-------------------------------------
+//- 敵の描画処理
+//-------------------------------------
+void CEnemy::Set(D3DXVECTOR3 pos)
+{
+	VtxData vtxData = GetVtxData();
+
+	vtxData.pos = pos;
+
+	SetVtxData(vtxData);
 }
 
 //-------------------------------------

@@ -21,6 +21,7 @@
 
 #include "objectx_none.h"
 #include "enemy.h"
+#include "enemy_have.h"
 
 //-------------------------------------
 //-	モデル管理のコンストラクタ
@@ -65,7 +66,7 @@ HRESULT CManagerModel::Load(HWND hWnd)
 		return E_FAIL;
 	}
 
-	// 効果なしオブジェクト
+	// 敵オブジェクト
 	if (FAILED(CEnemy::Load()))
 	{// 失敗時
 
@@ -75,6 +76,18 @@ HRESULT CManagerModel::Load(HWND hWnd)
 		// データ読み込みを抜ける
 		return E_FAIL;
 	}
+
+	// 保持敵オブジェクト
+	if (FAILED(CEnemyHave::Load()))
+	{// 失敗時
+
+	 // 失敗メッセージ
+		MessageBox(hWnd, "保持敵のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
+
 
 	// 成功を返す
 	return S_OK;

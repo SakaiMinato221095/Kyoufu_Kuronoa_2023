@@ -43,6 +43,7 @@ public:
 	{
 		STATE_TYPE_NEUTRAL = 0,		// ‘Ò‹@
 		STATE_TYPE_MOVE,			// ˆÚ“®
+		STATE_TYPE_HAVING,			// ŠŽó‘Ô
 		STATE_TYPE_MAX			
 	}STATE_TYPE;
 

@@ -82,7 +82,14 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		D3DXVECTOR3(5000.0f, 0.0f, 5000.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
-	CEnemy *pEnemy = CEnemy::Create(CEnemy::MODEL_ALIEN_000);
+	CEnemy *pEnemy1 = CEnemy::Create(CEnemy::MODEL_ALIEN_000);
+	pEnemy1->Set(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	CEnemy *pEnemy2 = CEnemy::Create(CEnemy::MODEL_ALIEN_000);
+	pEnemy2->Set(D3DXVECTOR3(300.0f, 0.0f, 0.0f));
+
+	CEnemy *pEnemy3 = CEnemy::Create(CEnemy::MODEL_ALIEN_000);
+	pEnemy3->Set(D3DXVECTOR3(600.0f, 0.0f, 0.0f));
 
 	// ¬Œ÷‚ğ•Ô‚·
 	return S_OK;

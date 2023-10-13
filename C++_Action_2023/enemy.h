@@ -56,6 +56,8 @@ public:
 	void Update(void);
 	void Draw(void);
 
+	void Set(D3DXVECTOR3 pos);
+
 	static CEnemy *Create(MODEL modelType);
 
 	int GetModel(void);
@@ -69,9 +71,11 @@ private:
 	static int m_nModelNldx[MODEL_MAX];			// モデルの番号
 	static ModelData m_modelData[MODEL_MAX];	// モデルの情報
 	
-	MODEL m_model;	// 自身のモデル
+	MODEL m_model;		// 自身のモデル
 
 	D3DXVECTOR3 m_move;	// 移動量
+
+	int m_nCollNldx;	// 当たり判定の番号
 };
 
 #endif	// 二重インクルード防止の終了

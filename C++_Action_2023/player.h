@@ -32,6 +32,7 @@
 
 class CObjectX;
 class CObject3d;
+class CColl;
 
 //-======================================
 //-	クラス定義
@@ -78,8 +79,6 @@ public:
 
 	void SetHave(bool bHave);
 
-	static CPlayer *GetInstance(void);
-
 private:
 
 	void UpdatePos(void);
@@ -101,12 +100,12 @@ private:
 
 	D3DXMATRIX m_mtxWorld;						// ワールドマトリックス
 
+	CColl *m_pColl;								// 当たり判定の情報
+
 	CModel *m_apModel[MODEL_PARTS_MAX];			// モデル（パーツ）のポインタ
 	int m_nNumModel;							// モデル（パーツ）の総数
 
 	CMotion *m_pMotion;							// モーションのポインタ
-
-	static CPlayer *m_pInstance;				// 自身のポインタ
 };
 
 #endif	// 二重インクルード防止の終了

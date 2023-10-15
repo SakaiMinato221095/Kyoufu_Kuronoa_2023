@@ -1,3 +1,37 @@
-﻿  game.cpp
-  C++_Action_2023.vcxproj -> C:\Users\student\Desktop\強風のクロノア\Kyoufu_Kuronoa_2023\C++_Action_2023\Debug\C++_Action_2023.exe
-  C++_Action_2023.vcxproj -> C:\Users\student\Desktop\強風のクロノア\Kyoufu_Kuronoa_2023\C++_Action_2023\Debug\C++_Action_2023.pdb (Full PDB)
+﻿  player.cpp
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.cpp(151): error C2065: 'm_pInstance': 定義されていない識別子です。
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.cpp(282): error C2039: 'GetInstance': 'CPlayer' のメンバーではありません。
+  c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.h(41): note: 'CPlayer' の宣言を確認してください
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.cpp(284): error C2065: 'm_pInstance': 定義されていない識別子です。
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.cpp(528): error C2039: 'GetInstance': 'CEnemyHave' のメンバーではありません。
+  c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\enemy_have.h(36): note: 'CEnemyHave' の宣言を確認してください
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.cpp(531): error C2039: 'GetInstance': 'CEnemyHave' のメンバーではありません。
+  c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\enemy_have.h(36): note: 'CEnemyHave' の宣言を確認してください
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.cpp(587): error C2039: 'GetInstance': 'CKazedama' のメンバーではありません。
+  c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\kazedama.h(36): note: 'CKazedama' の宣言を確認してください
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.cpp(658): error C2039: 'GetInstance': 'CEnemyHave' のメンバーではありません。
+  c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\enemy_have.h(36): note: 'CEnemyHave' の宣言を確認してください
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.cpp(658): error C2440: '初期化中': 'CPlayer *' から 'CEnemyHave *' に変換できません。
+  c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.cpp(658): note: 指示された型は関連がありません。変換には reinterpret_cast、C スタイル キャストまたは関数スタイルのキャストが必要です。
+  kazedama.cpp
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\kazedama.cpp(309): error C2039: 'GetInstance': 'CPlayer' のメンバーではありません。
+  c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.h(41): note: 'CPlayer' の宣言を確認してください
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\kazedama.cpp(309): error C3861: 'GetInstance': 識別子が見つかりませんでした
+  game.cpp
+  enemy_have.cpp
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\enemy_have.cpp(303): error C2039: 'GetInstance': 'CKazedama' のメンバーではありません。
+  c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\kazedama.h(36): note: 'CKazedama' の宣言を確認してください
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\enemy_have.cpp(303): error C3861: 'GetInstance': 識別子が見つかりませんでした
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\enemy_have.cpp(312): error C2039: 'GetInstance': 'CPlayer' のメンバーではありません。
+  c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.h(41): note: 'CPlayer' の宣言を確認してください
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\enemy_have.cpp(312): error C3861: 'GetInstance': 識別子が見つかりませんでした
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\enemy_have.cpp(344): error C2039: 'GetInstance': 'CPlayer' のメンバーではありません。
+  c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.h(41): note: 'CPlayer' の宣言を確認してください
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\enemy_have.cpp(344): error C3861: 'GetInstance': 識別子が見つかりませんでした
+  enemy.cpp
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\enemy.cpp : fatal error C1041: プログラム データベース 'C:\Users\student\Desktop\強風のクロノア\Kyoufu_Kuronoa_2023\C++_Action_2023\Debug\vc140.pdb' を開けません。複数の CL.EXE が同じ .PDB ファイルに書き込む場合、/FS を使用してください。
+  camera.cpp
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\camera.cpp(281): error C2039: 'GetInstance': 'CPlayer' のメンバーではありません。
+  c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\player.h(41): note: 'CPlayer' の宣言を確認してください
+c:\users\student\desktop\強風のクロノア\kyoufu_kuronoa_2023\c++_action_2023\camera.cpp(281): error C3861: 'GetInstance': 識別子が見つかりませんでした
+  コードを生成中...

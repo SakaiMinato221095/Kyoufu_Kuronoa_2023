@@ -17,7 +17,7 @@
 
 #include "manager_model.h"
 
-#include "collision.h"
+#include "coll.h"
 
 #include "kazedama.h"
 #include "player.h"
@@ -41,24 +41,16 @@ const char *pModelEnemyHave[] =
 //-======================================
 
 int CEnemyHave::m_nModelNldx[MODEL_MAX] = {};	// モデルの番号
-CEnemyHave *CEnemyHave::m_pInstance = NULL;		// 自身のポインタ
 
 //-------------------------------------
 //-	保持敵のコンストラクタ
 //-------------------------------------
 CEnemyHave::CEnemyHave()
 {
-	ZeroMemory(&m_data, sizeof(m_data));
-
 	m_model = MODEL(0);
-	m_nCollNldx = -1;
 
-
-	if (m_pInstance == NULL)
-	{
-		// 自身のポインタを代入
-		m_pInstance = this;
-	}
+	ZeroMemory(&m_data, sizeof(m_data));
+	m_pColl = NULL;
 }
 
 //-------------------------------------
@@ -142,16 +134,6 @@ HRESULT CEnemyHave::Init(MODEL modelType)
 		return E_FAIL;
 	}
 
-	// 当たり判定のポインタ取得
-	CCollision *pCollision = CManager::GetCollision();
-
-	// 当たり判定の有無を判定
-	if (pCollision == NULL)
-	{
-		// 処理を抜ける
-		return E_FAIL;
-	}
-
 	// モデル番号を取得
 	int nModelNldx = m_nModelNldx[modelType];
 
@@ -175,12 +157,11 @@ HRESULT CEnemyHave::Init(MODEL modelType)
 	SetVtxData(vtxData);
 
 	// 当たり判定設定
-	m_nCollNldx = pCollision->SetColl(
-		CCollision::TAG_ENEMY_HAVE,
-		CCollision::TYPE_RECTANGLE,
-		CObjectX::GetVtxData().pos,
-		CObjectX::GetVtxData().size,
-		this);
+	m_pColl = CColl::Create(
+		CMgrColl::TAG_ENEMY_HAVE,
+		CMgrColl::TYPE_RECTANGLE,
+		GetVtxData().pos,
+		GetVtxData().size);
 
 	// 成功を返す
 	return S_OK;
@@ -191,21 +172,15 @@ HRESULT CEnemyHave::Init(MODEL modelType)
 //-------------------------------------
 void CEnemyHave::Uninit(void)
 {
-	// 当たり判定のポインタ取得
-	CCollision *pCollision = CManager::GetCollision();
-
-	// 当たり判定の有無を判定
-	if (pCollision == NULL)
+	if (m_pColl != NULL)
 	{
-		// 処理を抜ける
-		return;
+		// 当たり判定の終了処理
+		m_pColl->Uninit();
+
+		// 当たり判定の開放処理
+		delete m_pColl;
+		m_pColl = NULL;
 	}
-
-	// 当たり判定の終了処理
-	pCollision->UninitColl(m_nCollNldx);
-
-	// 自身のポインタを初期化
-	m_pInstance = NULL;
 
 	// Xファイルオブジェクトの終了
 	CObjectX::Uninit();
@@ -216,21 +191,10 @@ void CEnemyHave::Uninit(void)
 //-------------------------------------
 void CEnemyHave::Update(void)
 {
-	// 当たり判定のポインタ取得
-	CCollision *pCollision = CManager::GetCollision();
-
-	// 当たり判定の有無を判定
-	if (pCollision == NULL)
-	{
-		// 処理を抜ける
-		return;
-	}
-
-	// 当たり判定位置の更新処理
-	pCollision->UpdateData(
-		m_nCollNldx,
-		CObjectX::GetVtxData().pos,
-		CObjectX::GetVtxData().size);
+	// 当たり判定の情報更新処理
+	m_pColl->UpdateData(
+		GetVtxData().pos,
+		GetVtxData().size);
 
 	switch (m_data.state)
 	{
@@ -297,7 +261,7 @@ CEnemyHave *CEnemyHave::Create(MODEL modelType)
 		if (FAILED(pEnemy->Init(modelType)))
 		{// 失敗時
 
-		 // 「なし」を返す
+			// 「なし」を返す
 			return NULL;
 		}
 	}
@@ -310,14 +274,6 @@ CEnemyHave *CEnemyHave::Create(MODEL modelType)
 
 	// 保持敵のポインタを返す
 	return pEnemy;
-}
-
-//-------------------------------------
-//-	保持敵のモデルのポインタ取得処理
-//-------------------------------------
-CEnemyHave * CEnemyHave::GetInstance(void)
-{
-	return m_pInstance;
 }
 
 //-------------------------------------
@@ -450,5 +406,6 @@ void CEnemyHave::SetShot(D3DXVECTOR3 pos,D3DXVECTOR3 move, int nLife, TYPE_ROT t
 	m_data.nLife = nLife;
 	m_data.typeRot = typeRot;
 
-	// 当たり判定の設定
+	// 相手タグの設定処理
+	m_pColl->SetTagTgt(CMgrColl::TAG_GIMMICK_JEWEL, true);
 }

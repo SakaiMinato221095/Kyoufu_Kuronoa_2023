@@ -19,9 +19,10 @@
 
 #include "player.h"
 
-#include "collision.h"
+#include "coll.h"
 
 #include "enemy_have.h"
+
 
 //=======================================
 //=	マクロ定義
@@ -42,7 +43,6 @@ const char *pTextureKazedama[] =
 //-======================================
 
 int CKazedama::m_nTextureNldx[TEX_MAX] = {};	// テクスチャ
-CKazedama *CKazedama::m_pInstance = NULL;		// 自身のポインタ
 
 //-------------------------------------
 //-	風だまのコンストラクタ
@@ -50,14 +50,8 @@ CKazedama *CKazedama::m_pInstance = NULL;		// 自身のポインタ
 CKazedama::CKazedama(int nPriority) : CObjectBillboard(nPriority)
 {
 	ZeroMemory(&m_data, sizeof(m_data));
-	m_nCollNldx = 0;
 
-	if (m_pInstance == NULL)
-	{
-		// 自身のポインタを代入
-		m_pInstance = this;
-	}
-
+	m_pColl = NULL;
 }
 
 //-------------------------------------
@@ -125,32 +119,29 @@ void CKazedama::Unload(void)
 //-------------------------------------
 HRESULT CKazedama::Init(TEX tex)
 {
-	// 当たり判定のポインタ取得
-	CCollision *pCollision = CManager::GetCollision();
-
-	// 当たり判定の有無を判定
-	if (pCollision == NULL)
-	{
-		// 処理を抜ける
-		return E_FAIL;
-	}
-
 	// テクスチャ割当
 	BindTexture(m_nTextureNldx[tex]);
 
 	// ビルボードオブジェクトの初期化
 	CObjectBillboard::Init();
 
-	// 当たり判定設定
-	m_nCollNldx = pCollision->SetColl(
-		CCollision::TAG_KAZEDAMA,
-		CCollision::TYPE_RECTANGLE,
-		CObjectBillboard::GetVtxData().pos,
-		CObjectBillboard::GetVtxData().size,
-		this);
+	if (m_pColl == NULL)
+	{
+		// 当たり判定設定
+		m_pColl = CColl::Create(
+			CMgrColl::TAG_KAZEDAMA,
+			CMgrColl::TYPE_RECTANGLE,
+			CObjectBillboard::GetVtxData().pos,
+			CObjectBillboard::GetVtxData().size);
 
-	// 相手タグの設定処理
-	pCollision->SetHit(m_nCollNldx, CCollision::TAG_ENEMY, true);
+		// 相手タグの設定処理
+		m_pColl->SetTagTgt(CMgrColl::TAG_ENEMY, true);
+	}
+	else
+	{
+		return E_FAIL;
+	}
+
 
 	// 成功を返す
 	return S_OK;
@@ -161,21 +152,15 @@ HRESULT CKazedama::Init(TEX tex)
 //-------------------------------------
 void CKazedama::Uninit(void)
 {
-	// 当たり判定のポインタ取得
-	CCollision *pCollision = CManager::GetCollision();
-
-	// 当たり判定の有無を判定
-	if (pCollision == NULL)
+	if (m_pColl != NULL)
 	{
-		// 処理を抜ける
-		return;
+		// 当たり判定の終了処理
+		m_pColl->Uninit();
+
+		// 当たり判定の開放処理
+		delete m_pColl;
+		m_pColl = NULL;
 	}
-
-	// 当たり判定の終了処理
-	pCollision->UninitColl(m_nCollNldx);
-
-	// 自身のポインタを初期化
-	m_pInstance = NULL;
 
 	// ビルボードオブジェクトの終了
 	CObjectBillboard::Uninit();
@@ -186,21 +171,10 @@ void CKazedama::Uninit(void)
 //-------------------------------------
 void CKazedama::Update(void)
 {
-	// 当たり判定のポインタ取得
-	CCollision *pCollision = CManager::GetCollision();
-
-	// 当たり判定の有無を判定
-	if (pCollision == NULL)
-	{
-		// 処理を抜ける
-		return;
-	}
-
-	// 当たり判定位置の更新処理
-	pCollision->UpdateData(
-		m_nCollNldx,
-		CObjectBillboard::GetVtxData().pos,
-		CObjectBillboard::GetVtxData().size);
+	// 当たり判定の情報更新処理
+	m_pColl->UpdateData(
+		GetVtxData().pos,
+		GetVtxData().size);
 
 	switch (m_data.state)
 	{
@@ -208,13 +182,6 @@ void CKazedama::Update(void)
 
 		// 行動処理
 		Active();
-
-		// 敵との当たり判定
-		if (pCollision->Hit(m_nCollNldx, CCollision::TAG_ENEMY) == true)
-		{
-			// 消失処理
-			m_data.state = STATE_HIT;
-		}
 
 		break;
 
@@ -334,14 +301,6 @@ CKazedama *CKazedama::Create(TEX tex)
 }
 
 //-------------------------------------
-//- 風だまの自身のポインタ取得処理
-//-------------------------------------
-CKazedama * CKazedama::GetInstance(void)
-{
-	return m_pInstance;
-}
-
-//-------------------------------------
 //- 風だまの情報更新処理
 //-------------------------------------
 void CKazedama::UpdateData(void)
@@ -387,39 +346,49 @@ void CKazedama::UpdateMove(void)
 //-------------------------------------
 void CKazedama::Active(void)
 {
-	// 変数宣言
-	bool bIsSwitch = false;	// 条件分岐の条件の有無
-
-	// 向きの種類
-	switch (m_data.typeRot)
+	// 敵との当たり判定
+	if (m_pColl->Hit(CMgrColl::TAG_ENEMY,CMgrColl::STATE_HIT_DEAD) == true)
 	{
-	case TYPE_ROT_LEFT:
+		// 消失処理
+		m_data.state = STATE_HIT;
+	}
+	else
+	{
+		// 変数宣言
+		bool bIsSwitch = false;	// 条件分岐の条件の有無
 
-		// 移動蓄積値の判定（目的の移動蓄積）
-		if (m_data.moveAccum.x <= -200.0f)
+		// 向きの種類
+		switch (m_data.typeRot)
 		{
-			bIsSwitch = true;
+		case TYPE_ROT_LEFT:
+
+			// 移動蓄積値の判定（目的の移動蓄積）
+			if (m_data.moveAccum.x <= -200.0f)
+			{
+				bIsSwitch = true;
+			}
+
+			break;
+
+		case TYPE_ROT_RIGHT:
+
+			// 移動蓄積値の判定（目的の移動蓄積）
+			if (m_data.moveAccum.x >= 200.0f)
+			{
+				bIsSwitch = true;
+			}
+
+			break;
 		}
 
-		break;
-
-	case TYPE_ROT_RIGHT:
-
-		// 移動蓄積値の判定（目的の移動蓄積）
-		if (m_data.moveAccum.x >= 200.0f)
+		// 風だまの蓄積値を判定
+		if (bIsSwitch == true)
 		{
-			bIsSwitch = true;
+			// 帰還状態に変更
+			m_data.state = STATE_RETURN;
 		}
-
-		break;
 	}
 
-	// 風だまの蓄積値を判定
-	if (bIsSwitch == true)
-	{
-		// 帰還状態に変更
-		m_data.state = STATE_RETURN;
-	}
 }
 
 //-------------------------------------

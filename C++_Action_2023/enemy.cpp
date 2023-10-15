@@ -17,7 +17,7 @@
 
 #include "manager_model.h"
 
-#include "collision.h"
+#include "mgr_coll.h"
 
 //-======================================
 //-	マクロ定義
@@ -133,7 +133,7 @@ HRESULT CEnemy::Init(MODEL modelType)
 	}
 
 	// 当たり判定のポインタ取得
-	CCollision *pCollision = CManager::GetCollision();
+	CMgrColl *pCollision = CManager::GetCollision();
 
 	// 当たり判定の有無を判定
 	if (pCollision == NULL)
@@ -166,8 +166,8 @@ HRESULT CEnemy::Init(MODEL modelType)
 
 	// 当たり判定設定
 	m_nCollNldx = pCollision->SetColl(
-		CCollision::TAG_ENEMY,
-		CCollision::TYPE_RECTANGLE,
+		CMgrColl::TAG_ENEMY,
+		CMgrColl::TYPE_RECTANGLE,
 		CObjectX::GetVtxData().pos,
 		CObjectX::GetVtxData().size,
 		this);
@@ -182,7 +182,7 @@ HRESULT CEnemy::Init(MODEL modelType)
 void CEnemy::Uninit(void)
 {
 	// 当たり判定のポインタ取得
-	CCollision *pCollision = CManager::GetCollision();
+	CMgrColl *pCollision = CManager::GetCollision();
 
 	// 当たり判定の有無を判定
 	if (pCollision == NULL)
@@ -204,7 +204,7 @@ void CEnemy::Uninit(void)
 void CEnemy::Update(void)
 {
 	// 当たり判定のポインタ取得
-	CCollision *pCollision = CManager::GetCollision();
+	CMgrColl *pCollision = CManager::GetCollision();
 
 	// 当たり判定の有無を判定
 	if (pCollision == NULL)
@@ -233,7 +233,7 @@ void CEnemy::Draw(void)
 }
 
 //-------------------------------------
-//- 敵の描画処理
+//- 敵の設定処理
 //-------------------------------------
 void CEnemy::Set(D3DXVECTOR3 pos)
 {

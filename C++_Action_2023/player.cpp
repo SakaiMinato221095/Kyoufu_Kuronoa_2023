@@ -23,6 +23,8 @@
 
 #include "camera.h"
 
+#include "coll.h"
+
 #include "kazedama.h"
 #include "enemy_have.h"
 
@@ -35,8 +37,6 @@
 //-======================================
 //-	静的変数宣言
 //-======================================
-
-CPlayer *CPlayer::m_pInstance = NULL;
 
 //-------------------------------------
 //-	コンストラクタ
@@ -51,17 +51,14 @@ CPlayer::CPlayer()
 
 	ZeroMemory(m_mtxWorld, sizeof(D3DXMATRIX));
 
+	m_pColl = NULL;
+
 	ZeroMemory(m_apModel, sizeof(m_apModel));
 
 	m_nNumModel = 0;
 
 	m_pMotion = NULL;
 
-	if (m_pInstance == NULL)
-	{
-		// 自身のポインタを代入
-		m_pInstance = this;
-	}
 }
 
 //-------------------------------------
@@ -717,7 +714,10 @@ void CPlayer::DebugPlayer(void)
 	}
 
 	pDebugProc->Print("\n");
-	pDebugProc->Print("プレイヤーの位置\n");
+	pDebugProc->Print("プレイヤーの位置");
+	pDebugProc->Print("\n");
 	pDebugProc->Print("%f,%f,%f",m_data.pos.x, m_data.pos.y, m_data.pos.z);
+	pDebugProc->Print("\n");
+	pDebugProc->Print("プレイヤーの所持状況 %d",m_bHave);
 	pDebugProc->Print("\n");
 }

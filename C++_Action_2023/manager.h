@@ -35,7 +35,7 @@ class CManagerModel;
 class CCamera;
 class CLight;
 
-class CCollision;
+class CMgrColl;
 
 //-======================================
 //-	クラス定義
@@ -104,7 +104,7 @@ public:
 	static CCamera *GetCamera(void);
 	static CLight *GetLight(void);
 
-	static CCollision *GetCollision(void);
+	static CMgrColl *GetMgrColl(void);
 
 private:
 
@@ -125,7 +125,7 @@ private:
 	static CCamera *m_pCamera;					// カメラのポインタ
 	static CLight *m_pLight;					// ライトのポインタ
 
-	static CCollision *m_pCollision;				// コリジョンのポインタ
+	static CMgrColl *m_pMgrColl;				// 当たり判定管理のポインタ
 };
 
 #endif	// 二重インクルード防止の終了

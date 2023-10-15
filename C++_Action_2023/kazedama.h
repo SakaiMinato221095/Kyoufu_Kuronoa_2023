@@ -23,6 +23,12 @@
 //-	マクロ定義
 //-======================================
 
+//=======================================
+//=	前方宣言
+//=======================================
+
+class CColl;
+
 //-======================================
 //-	クラス定義
 //-======================================
@@ -82,7 +88,6 @@ public:
 
 	static CKazedama * Create(TEX tex);
 
-	static CKazedama *GetInstance(void);
 private:
 
 	void UpdateData(void);
@@ -94,11 +99,11 @@ private:
 	void Hit(void);
 
 	static int m_nTextureNldx[TEX_MAX];		// テクスチャの番号
-	static CKazedama *m_pInstance;			// 自身のポインタ
 
 	Data m_data;							// 情報値
 
-	int m_nCollNldx;						// 当たり判定の番号
+	CColl *m_pColl;							// 当たり判定の情報
+	
 };
 
 #endif	// 二重インクルード防止の終了

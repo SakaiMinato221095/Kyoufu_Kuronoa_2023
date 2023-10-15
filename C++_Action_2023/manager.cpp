@@ -30,7 +30,7 @@
 #include "camera.h"
 #include "light.h"
 
-#include "collision.h"
+#include "mgr_coll.h"
 
 //=======================================
 //=	マクロ定義
@@ -56,7 +56,7 @@ CManagerModel *CManager::m_pManagerModel = NULL;
 CCamera *CManager::m_pCamera = NULL;
 CLight *CManager::m_pLight = NULL;
 
-CCollision *CManager::m_pCollision = NULL;
+CMgrColl *CManager::m_pMgrColl = NULL;
 
 //-------------------------------------------------------------------------
 //- シーン
@@ -481,19 +481,19 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		}
 	}
 
-	// 当たり判定
+	// 当たり判定管理
 	{
-		// 当たり判定の有無を判定
-		if (m_pCollision == NULL)
+		// 当たり判定管理の有無を判定
+		if (m_pMgrColl == NULL)
 		{
-			// 当たり判定の生成
-			m_pCollision = CCollision::Create();
+			// 当たり判定管理の生成
+			m_pMgrColl = CMgrColl::Create();
 
-			// 当たり判定の有無を判定
-			if (m_pCollision == NULL)
+			// 当たり判定管理の有無を判定
+			if (m_pMgrColl == NULL)
 			{
 				// 失敗メッセージ
-				MessageBox(hWnd, "当たり判定の初期化", "初期処理失敗！", MB_ICONWARNING);
+				MessageBox(hWnd, "当たり判定管理の初期化", "初期処理失敗！", MB_ICONWARNING);
 
 				// 初期化を抜ける
 				return E_FAIL;
@@ -503,7 +503,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		{// ゴミが入っているとき
 
 			// 失敗メッセージ
-			MessageBox(hWnd, "当たり判定の初期化", "初期処理失敗！", MB_ICONWARNING);
+			MessageBox(hWnd, "当たり判定管理の初期化", "初期処理失敗！", MB_ICONWARNING);
 
 			// 初期化を抜ける
 			return E_FAIL;
@@ -643,15 +643,15 @@ void CManager::Uninit(void)
 		m_pLight = NULL;
 	}
 
-	// 当たり判定の破棄
-	if (m_pCollision != NULL)
+	// 当たり判定管理の破棄
+	if (m_pMgrColl != NULL)
 	{
-		// 当たり判定の終了処理
-		m_pCollision->Uninit();
+		// 当たり判定管理の終了処理
+		m_pMgrColl->Uninit();
 
-		// 当たり判定の開放処理
-		delete m_pCollision;
-		m_pCollision = NULL;
+		// 当たり判定管理の開放処理
+		delete m_pMgrColl;
+		m_pMgrColl = NULL;
 	}
 
 	// シーンの破棄
@@ -724,11 +724,11 @@ void CManager::Update(void)
 		m_pLight->Update();
 	}
 
-	// 当たり判定の有無を判定
-	if (m_pCollision != NULL)
+	// 当たり判定管理の有無を判定
+	if (m_pMgrColl != NULL)
 	{
-		// 当たり判定の更新処理
-		m_pCollision->Update();
+		// 当たり判定管理の更新処理
+		m_pMgrColl->Update();
 	}
 
 	// デバックプロックの有無を判定
@@ -784,11 +784,11 @@ void CManager::Draw(void)
 		pCamera->SetCamera();
 	}
 
-	// 当たり判定の有無を判定
-	if (m_pCollision != NULL)
+	// 当たり判定管理の有無を判定
+	if (m_pMgrColl != NULL)
 	{
-		// 当たり判定の設定
-		m_pCollision->Draw();
+		// 当たり判定管理の設定
+		m_pMgrColl->Draw();
 	}
 
 	// レンダラーの有無を判定
@@ -918,11 +918,11 @@ CLight * CManager::GetLight(void)
 }
 
 //-------------------------------------
-//- 当たり判定の情報を取得
+//- 当たり判定管理の情報を取得
 //-------------------------------------
-CCollision * CManager::GetCollision(void)
+CMgrColl * CManager::GetMgrColl(void)
 {
-	return m_pCollision;
+	return m_pMgrColl;
 }
 
 //-------------------------------------

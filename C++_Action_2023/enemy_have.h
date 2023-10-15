@@ -23,6 +23,12 @@
 //-	マクロ定義
 //-======================================
 
+//=======================================
+//=	前方宣言
+//=======================================
+
+class CColl;
+
 //-======================================
 //-	クラス定義
 //-======================================
@@ -91,18 +97,15 @@ public:
 
 	static CEnemyHave * Create(MODEL model);
 
-	static CEnemyHave *GetInstance(void);
-
 private:
 
 	static int m_nModelNldx[MODEL_MAX];		// モデルの番号
-	static CEnemyHave *m_pInstance;			// 自身のポインタ
 
 	MODEL m_model;							// 自身のモデル
 
 	Data m_data;							// 情報値
 
-	int m_nCollNldx;						// 当たり判定の番号
+	CColl *m_pColl;							// 当たり判定の番号
 };
 
 #endif	// 二重インクルード防止の終了

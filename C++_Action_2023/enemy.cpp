@@ -17,7 +17,7 @@
 
 #include "manager_model.h"
 
-#include "mgr_coll.h"
+#include "coll.h"
 
 //-======================================
 //-	マクロ定義
@@ -48,7 +48,7 @@ CEnemy::CEnemy()
 {
 	m_model = MODEL(0);
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_nCollNldx = -1;
+	m_pColl = NULL;
 }
 
 //-------------------------------------
@@ -132,16 +132,6 @@ HRESULT CEnemy::Init(MODEL modelType)
 		return E_FAIL;
 	}
 
-	// 当たり判定のポインタ取得
-	CMgrColl *pCollision = CManager::GetCollision();
-
-	// 当たり判定の有無を判定
-	if (pCollision == NULL)
-	{
-		// 処理を抜ける
-		return E_FAIL;
-	}
-
 	// モデル番号を取得
 	int nModelNldx = m_nModelNldx[modelType];
 
@@ -159,18 +149,24 @@ HRESULT CEnemy::Init(MODEL modelType)
 	VtxData vtxData = GetVtxData();
 
 	// サイズを設定
-	vtxData.size = D3DXVECTOR3(50.0f, 50.0f, 50.0f);
+	vtxData.size = D3DXVECTOR3(50.0f, 100.0f, 50.0f);
 
 	// 頂点値情報を更新
 	SetVtxData(vtxData);
 
-	// 当たり判定設定
-	m_nCollNldx = pCollision->SetColl(
-		CMgrColl::TAG_ENEMY,
-		CMgrColl::TYPE_RECTANGLE,
-		CObjectX::GetVtxData().pos,
-		CObjectX::GetVtxData().size,
-		this);
+	if (m_pColl == NULL)
+	{
+		// 当たり判定設定
+		m_pColl = CColl::Create(
+			CMgrColl::TAG_ENEMY,
+			CMgrColl::TYPE_RECTANGLE,
+			GetVtxData().pos,
+			GetVtxData().size);
+	}
+	else
+	{
+		return E_FAIL;
+	}
 
 	// 成功を返す
 	return S_OK;
@@ -181,18 +177,15 @@ HRESULT CEnemy::Init(MODEL modelType)
 //-------------------------------------
 void CEnemy::Uninit(void)
 {
-	// 当たり判定のポインタ取得
-	CMgrColl *pCollision = CManager::GetCollision();
-
-	// 当たり判定の有無を判定
-	if (pCollision == NULL)
+	if (m_pColl != NULL)
 	{
-		// 処理を抜ける
-		return;
-	}
+		// 当たり判定の終了処理
+		m_pColl->Uninit();
 
-	// 当たり判定の終了処理
-	pCollision->UninitColl(m_nCollNldx);
+		// 当たり判定の開放処理
+		delete m_pColl;
+		m_pColl = NULL;
+	}
 
 	// Xファイルオブジェクトの終了
 	CObjectX::Uninit();
@@ -203,24 +196,19 @@ void CEnemy::Uninit(void)
 //-------------------------------------
 void CEnemy::Update(void)
 {
-	// 当たり判定のポインタ取得
-	CMgrColl *pCollision = CManager::GetCollision();
-
-	// 当たり判定の有無を判定
-	if (pCollision == NULL)
-	{
-		// 処理を抜ける
-		return;
-	}
-
-	// 当たり判定位置の更新処理
-	pCollision->UpdateData(
-		m_nCollNldx,
-		CObjectX::GetVtxData().pos,
-		CObjectX::GetVtxData().size);
+	// 当たり判定の情報更新処理
+	m_pColl->UpdateData(
+		GetVtxData().pos,
+		GetVtxData().size);
 
 	// Xファイルオブジェクトの更新処理
 	CObjectX::Update();
+
+	if (m_pColl->GetData().stateHit == CMgrColl::STATE_HIT_DEAD)
+	{
+		// 終了処理
+		Uninit();
+	}
 }
 
 //-------------------------------------

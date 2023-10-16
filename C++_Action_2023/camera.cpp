@@ -278,7 +278,7 @@ void CCamera::UpdateFollowing(void)
 	D3DXVECTOR3 rot = m_data.rot;				// 向き
 
 	// プレイヤーの情報取得
-	CPlayer *pPlayer = CPlayer::GetInstance();
+	CPlayer *pPlayer = CGame::GetPlayer();
 
 	// プレイヤーの情報取得の成功を判定
 	if (pPlayer == NULL)

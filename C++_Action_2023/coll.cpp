@@ -47,6 +47,19 @@ CColl::~CColl()
 //-------------------------------------
 HRESULT CColl::Init(CMgrColl::TAG tag, CMgrColl::TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
+	// 当たり判定のポインタ取得
+	CMgrColl *pMgrColl = CManager::GetMgrColl();
+
+	// 当たり判定の有無を判定
+	if (pMgrColl == NULL)
+	{
+		// 処理を抜ける
+		return false;
+	}
+
+	// 当たり判定管理に設定処理
+	m_data.nNldx = pMgrColl->Set(this);
+
 	// 初期設定処理
 	InitSet(tag, type, pos, size);
 
@@ -58,7 +71,18 @@ HRESULT CColl::Init(CMgrColl::TAG tag, CMgrColl::TYPE type, D3DXVECTOR3 pos, D3D
 //-------------------------------------
 void CColl::Uninit(void)
 {
+	// 当たり判定のポインタ取得
+	CMgrColl *pMgrColl = CManager::GetMgrColl();
 
+	// 当たり判定の有無を判定
+	if (pMgrColl == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
+	// 当たり判定管理に設定処理
+	pMgrColl->Reset(m_data.nNldx);
 }
 
 //-------------------------------------
@@ -80,7 +104,6 @@ void CColl::Draw(void)
 //- 当たり判定の生成処理
 //-------------------------------------
 CColl * CColl::Create(CMgrColl::TAG tag, CMgrColl::TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 size)
-
 {
 	// 当たり判定の生成
 	CColl *pCollision = DBG_NEW CColl;

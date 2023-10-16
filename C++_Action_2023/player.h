@@ -26,6 +26,8 @@
 //=	マクロ定義
 //=======================================
 
+#define INSTANCE_MAX	(8)		// 自身のポインタの最大数
+
 //-======================================
 //-	前方宣言
 //-======================================
@@ -33,6 +35,9 @@
 class CObjectX;
 class CObject3d;
 class CColl;
+
+class CKazedama;
+class CEnemyHave;
 
 //-======================================
 //-	クラス定義
@@ -42,6 +47,14 @@ class CPlayer : public CObject
 {
 
 public:
+
+	typedef enum
+	{
+		STATE_TYPE_NEUTRAL = 0,		// 待機
+		STATE_TYPE_MOVE,			// 移動
+		STATE_TYPE_HAVING,			// 所持状態
+		STATE_TYPE_MAX
+	}STATE_TYPE;
 
 	typedef struct
 	{
@@ -60,15 +73,13 @@ public:
 	CPlayer();
 	~CPlayer();
 
-	HRESULT Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, int nStateMax);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, int nStateMax);
 
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	void Hit(int nDamage);
-
-	void DebugPlayer(void);
+	static CPlayer * Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType);
 
 	CMotion *GetMotion(void);
 
@@ -77,12 +88,16 @@ public:
 	void SetData(Data data);
 	Data GetData(void);
 
-	void SetHave(bool bHave);
+	void SetHave(bool bHave, CEnemyHave *enemyHave);
 
 private:
 
+	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+
 	void UpdatePos(void);
 	void UpdateRot(void);
+	void UpdateKazedama(void);
+	void UpdateEnemyHave(void);
 
 	void InputMove(void);
 
@@ -94,13 +109,21 @@ private:
 	void InputKazedama(void);
 	void InputShot(void);
 
+	void UpdateMotion(void);
+
+	void DebugPlayer(void);
+
 	Data m_data;								// 値を格納
 	bool m_bJump;								// ジャンプ状態の有無
 	bool m_bHave;								// 所持状態の有無
 
-	D3DXMATRIX m_mtxWorld;						// ワールドマトリックス
+	CKazedama *m_pKazedama;						// 風だまのポインタ
+	CEnemyHave *m_pEnemyHave;					// 保持敵のポインタ
 
-	CColl *m_pColl;								// 当たり判定の情報
+	STATE_TYPE m_stateType;						// 状態の種類
+	STATE_TYPE m_stateTypeNew;					// 最新の状態の種類
+
+	D3DXMATRIX m_mtxWorld;						// ワールドマトリックス
 
 	CModel *m_apModel[MODEL_PARTS_MAX];			// モデル（パーツ）のポインタ
 	int m_nNumModel;							// モデル（パーツ）の総数

@@ -66,62 +66,69 @@ void CMgrColl::Uninit(void)
 //-------------------------------------
 void CMgrColl::Update(void)
 {
-	for (int nCountMy = 0; nCountMy < m_nNldxMax; nCountMy++)
+	for (int nCountMy = 0; nCountMy < COLLSION_NUM_MAX; nCountMy++)
 	{
-		// 変数宣言
-		CColl *pCollMy = m_apColl[nCountMy];	// 自身の当たり判定情報
-		pCollMy->ResetHitData();				// 接触情報の初期化
-
-		for (int nCountPair = 0; nCountPair < m_nNldxMax; nCountPair++)
+		if (m_apColl[nCountMy] != NULL)
 		{
-			CColl *pCollPair = m_apColl[nCountPair];			// 相手の当たり判定情報
+			// 変数宣言
+			CColl *pCollMy = m_apColl[nCountMy];	// 自身の当たり判定情報
+			pCollMy->ResetHitData();				// 接触情報の初期化
 
-			TAG tagTgt = pCollPair->GetData().tag;				// 相手のタグ情報
-			bool bTgt = pCollMy->GetData().bTagTgt[tagTgt];		// タグの接触の有無
-
-			// 当たり判定タグの判定
-			if (bTgt == true)
+			for (int nCountPair = 0; nCountPair < COLLSION_NUM_MAX; nCountPair++)
 			{
-				// 変数宣言（情報取得）
-				D3DXVECTOR3 posMy = pCollMy->GetData().pos;			// 自身の位置
-				D3DXVECTOR3 sizeMy = pCollMy->GetData().size;		// 自身の大きさ
-				TYPE type = pCollMy->GetData().type;				// 接触種類
-
-				// 変数宣言 (相手の情報取得)
-				D3DXVECTOR3 posPair = pCollPair->GetData().pos;		// 相手の位置
-				D3DXVECTOR3 sizePair = pCollPair->GetData().size;	// 相手の大きさ
-
-				// 変数宣言
-				bool bIsHit = false;								// 接触の有無
-
-				switch (type)
+				if (m_apColl[nCountPair] != NULL)
 				{
-				case TYPE_RECTANGLE:
+					CColl *pCollPair = m_apColl[nCountPair];			// 相手の当たり判定情報
 
-					// 矩形の当たり判定
-					if (hitRectangle(posMy, sizeMy, posPair, sizePair) == true)
+					TAG tagTgt = pCollPair->GetData().tag;				// 相手のタグ情報
+					bool bTgt = pCollMy->GetData().bTagTgt[tagTgt];		// タグの接触の有無
+
+					// 当たり判定タグの判定
+					if (bTgt == true)
 					{
-						// 接触
-						bIsHit = true;
+						// 変数宣言（情報取得）
+						D3DXVECTOR3 posMy = pCollMy->GetData().pos;			// 自身の位置
+						D3DXVECTOR3 sizeMy = pCollMy->GetData().size;		// 自身の大きさ
+						TYPE type = pCollMy->GetData().type;				// 接触種類
+
+						// 変数宣言 (相手の情報取得)
+						D3DXVECTOR3 posPair = pCollPair->GetData().pos;		// 相手の位置
+						D3DXVECTOR3 sizePair = pCollPair->GetData().size;	// 相手の大きさ
+
+						// 変数宣言
+						bool bIsHit = false;								// 接触の有無
+
+						switch (type)
+						{
+						case TYPE_RECTANGLE:
+
+							// 矩形の当たり判定
+							if (hitRectangle(posMy, sizeMy, posPair, sizePair) == true)
+							{
+								// 接触
+								bIsHit = true;
+							}
+
+							break;
+						}
+
+						// 接触の有無
+						if (bIsHit == true)
+						{
+							// 接触相手の情報設定
+							CColl::HitData hitData;
+
+							// 相手の番号を代入
+							hitData.nNldx = nCountPair;
+
+							// 接触相手の情報を設定
+							pCollMy->SetHitData(hitData);
+						}
 					}
-
-					break;
-				}
-
-				// 接触の有無
-				if (bIsHit == true)
-				{
-					// 接触相手の情報設定
-					CColl::HitData hitData;
-
-					// 相手の番号を代入
-					hitData.nNldx = nCountPair;
-
-					// 接触相手の情報を設定
-					pCollMy->SetHitData(hitData);
 				}
 			}
 		}
+
 	}
 }
 
@@ -181,6 +188,9 @@ bool CMgrColl::Hit(int nNldxColl, CMgrColl::TAG hitTag, STATE_HIT stateHit)
 
 		if (tagPair == hitTag)
 		{
+			// 接触判定を設定
+			bHitTgt = true;
+
 			// 接触状態を代入
 			dataPair.stateHit = stateHit;
 			
@@ -193,14 +203,40 @@ bool CMgrColl::Hit(int nNldxColl, CMgrColl::TAG hitTag, STATE_HIT stateHit)
 }
 
 //-------------------------------------
+//- 当たり判定管理の設定処理
+//-------------------------------------
+int CMgrColl::Set(CColl *pColl)
+{
+	for (int nCount = 0; nCount < COLLSION_NUM_MAX; nCount++)
+	{
+		if (m_apColl[nCount] == NULL)
+		{
+			m_apColl[nCount] = pColl;
+
+			return nCount;
+		}
+	}
+
+	return -1;
+}
+
+//-------------------------------------
+//- 当たり判定管理の初期化設定処理
+//-------------------------------------
+void CMgrColl::Reset(int nNldx)
+{
+	m_apColl[nNldx] = NULL;
+}
+
+//-------------------------------------
 //- 当たり判定管理の矩形の当たり判定
 //-------------------------------------
 bool CMgrColl::hitRectangle(D3DXVECTOR3 posMy, D3DXVECTOR3 sizeMy, D3DXVECTOR3 posPair, D3DXVECTOR3 sizePair)
 {
 	if (posMy.x + sizeMy.x >= posPair.x - sizePair.x &&
 		posMy.x - sizeMy.x <= posPair.x + sizePair.x &&
-		posMy.z + sizeMy.z >= posPair.z - sizePair.z &&
-		posMy.z - sizeMy.z <= posPair.z + sizePair.z)
+		posMy.y + sizeMy.y >= posPair.y - sizePair.y &&
+		posMy.y - sizeMy.y <= posPair.y + sizePair.y)
 	{
 		return true;
 	}

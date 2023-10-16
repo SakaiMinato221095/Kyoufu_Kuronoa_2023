@@ -79,12 +79,12 @@ public:
 	static HRESULT Load(void);
 	static void Unload(void);
 
-	HRESULT Init(MODEL model);
+	HRESULT Init(MODEL model, STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 size);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	void Set(D3DXVECTOR3 pos, D3DXVECTOR3 size);
+	void InitSet(STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 size);
 
 	int GetModel(void);
 	void SetModel(int nModelNldx);
@@ -95,7 +95,7 @@ public:
 
 	void SetShot(D3DXVECTOR3 pos, D3DXVECTOR3 move, int nLife, TYPE_ROT typeRot);
 
-	static CEnemyHave * Create(MODEL model);
+	static CEnemyHave * Create(MODEL model,STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 size);
 
 private:
 

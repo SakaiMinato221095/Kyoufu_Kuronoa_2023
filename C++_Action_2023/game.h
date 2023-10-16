@@ -27,7 +27,7 @@
 //-	前方宣言
 //-======================================
 
-class CPause;
+class CPlayer;
 
 //-======================================
 //-	クラス定義
@@ -52,12 +52,11 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-
-	static CPause *GetPause(void);
-
+	
+	static CPlayer *GetPlayer(void);
 private:
 
-	static CPause *m_pPause;				// ポーズ
+	static CPlayer *m_pPlayer;				// プレイヤー
 
 	GAME m_game;							// ゲーム状態
 };

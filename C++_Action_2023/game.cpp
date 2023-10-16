@@ -19,7 +19,6 @@
 #include "sound.h"
 
 #include "player.h"
-#include "player_battle.h"
 
 #include "obj_3d_field.h"
 #include "objectx_none.h"
@@ -34,7 +33,7 @@
 //=	静的変数宣言
 //=======================================
 
-CPause *CGame::m_pPause = NULL;
+CPlayer *CGame::m_pPlayer = NULL;
 
 //-------------------------------------
 //-	ゲーム画面のコンストラクタ
@@ -58,14 +57,14 @@ CGame::~CGame()
 HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
 	// 戦闘ステータスの生成
-	CPlayer *pPlayer = CPlayerBattle::Create(
+	m_pPlayer = CPlayer::Create(
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),				// 位置
 		D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f),	// 向き
 		CModel::MODEL_TYPE_PLAYER,					// モデル
 		CMotion::MOTION_TYPE_PLAYER);				// モーション
 
 	// 戦闘ステータスの初期化処理
-	if (pPlayer == NULL)
+	if (m_pPlayer == NULL)
 	{// 失敗時
 
 		// 失敗メッセージ
@@ -100,6 +99,12 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //-------------------------------------
 void CGame::Uninit(void)
 {
+	if (m_pPlayer != NULL)
+	{
+		m_pPlayer->Uninit();
+		m_pPlayer = NULL;
+	}
+
 	// オブジェクトの全開放処理
 	CObject::ReleaseAll();
 }
@@ -148,9 +153,9 @@ void CGame::Draw(void)
 }
 
 //-------------------------------------
-//-	ポーズの情報を取得
+//- ゲーム画面のプレイヤーの取得処理
 //-------------------------------------
-CPause * CGame::GetPause(void)
+CPlayer * CGame::GetPlayer(void)
 {
-	return m_pPause;
+	return m_pPlayer;
 }

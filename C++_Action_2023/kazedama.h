@@ -1,7 +1,7 @@
 
 //-===============================================
 //-
-//-	風だまの処理のヘッダー[bullet.h]
+//-	風だまの処理のヘッダー[kazedama.h]
 //- Author Sakai Minato
 //-
 //-===============================================
@@ -28,6 +28,7 @@
 //=======================================
 
 class CColl;
+class CEnemyHave;
 
 //-======================================
 //-	クラス定義
@@ -50,8 +51,8 @@ public:
 	{
 		STATE_ACTIVE = 0,	// 活動状態
 		STATE_RETURN,		// 帰還状態
-		STATE_LOST,			// 消滅状態
-		STATE_HIT,			// ヒット状態
+		STATE_SUCCE,		// 成功状態
+		STATE_FAIL,			// 失敗状態
 		STATE_MAX
 	}STATE;
 	
@@ -79,31 +80,37 @@ public:
 	static HRESULT Load(void);
 	static void Unload(void);
 
-	HRESULT Init(TEX tex);
+	HRESULT Init(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color, D3DXVECTOR3 move, TYPE_ROT typeRot);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	void Set(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color, D3DXVECTOR3 move, TYPE_ROT typeRot);
+	static CKazedama *Create(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color, D3DXVECTOR3 move, TYPE_ROT typeRot);
 
-	static CKazedama * Create(TEX tex);
+	void SetParent(D3DXVECTOR3 pos);
+
+	void LostFail(void);
+	void LostSucce(void);
+
+	Data GetData(void);
 
 private:
 
-	void UpdateData(void);
+	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color, D3DXVECTOR3 move, TYPE_ROT typeRot);
+
 	void UpdateMove(void);
 
 	void Active(void);
 	void Return(void);
-	void Lost(void);
-	void Hit(void);
+
+	void Obtain(void);
 
 	static int m_nTextureNldx[TEX_MAX];		// テクスチャの番号
 
 	Data m_data;							// 情報値
 
 	CColl *m_pColl;							// 当たり判定の情報
-	
+	CEnemyHave *m_pEnemyHave;				// 保持敵のポインタ
 };
 
 #endif	// 二重インクルード防止の終了

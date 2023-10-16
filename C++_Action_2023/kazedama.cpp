@@ -23,7 +23,6 @@
 
 #include "enemy_have.h"
 
-
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -42,7 +41,7 @@ const char *pTextureKazedama[] =
 //-	静的変数宣言
 //-======================================
 
-int CKazedama::m_nTextureNldx[TEX_MAX] = {};	// テクスチャ
+int CKazedama::m_nTextureNldx[TEX_MAX] = {};			// テクスチャ
 
 //-------------------------------------
 //-	風だまのコンストラクタ
@@ -50,8 +49,8 @@ int CKazedama::m_nTextureNldx[TEX_MAX] = {};	// テクスチャ
 CKazedama::CKazedama(int nPriority) : CObjectBillboard(nPriority)
 {
 	ZeroMemory(&m_data, sizeof(m_data));
-
 	m_pColl = NULL;
+	m_pEnemyHave = NULL;
 }
 
 //-------------------------------------
@@ -117,10 +116,13 @@ void CKazedama::Unload(void)
 //-------------------------------------
 //- 風だまの初期化処理
 //-------------------------------------
-HRESULT CKazedama::Init(TEX tex)
+HRESULT CKazedama::Init(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color, D3DXVECTOR3 move, TYPE_ROT typeRot)
 {
 	// テクスチャ割当
 	BindTexture(m_nTextureNldx[tex]);
+
+	// 初期設定処理
+	InitSet(pos,size,color,move,typeRot);
 
 	// ビルボードオブジェクトの初期化
 	CObjectBillboard::Init();
@@ -131,8 +133,8 @@ HRESULT CKazedama::Init(TEX tex)
 		m_pColl = CColl::Create(
 			CMgrColl::TAG_KAZEDAMA,
 			CMgrColl::TYPE_RECTANGLE,
-			CObjectBillboard::GetVtxData().pos,
-			CObjectBillboard::GetVtxData().size);
+			GetVtxData().pos,
+			GetVtxData().size);
 
 		// 相手タグの設定処理
 		m_pColl->SetTagTgt(CMgrColl::TAG_ENEMY, true);
@@ -141,7 +143,6 @@ HRESULT CKazedama::Init(TEX tex)
 	{
 		return E_FAIL;
 	}
-
 
 	// 成功を返す
 	return S_OK;
@@ -160,6 +161,13 @@ void CKazedama::Uninit(void)
 		// 当たり判定の開放処理
 		delete m_pColl;
 		m_pColl = NULL;
+	}
+
+	if (m_pEnemyHave != NULL)
+	{
+		// 保持敵の終了処理
+		m_pEnemyHave->Uninit();
+		m_pEnemyHave = NULL;
 	}
 
 	// ビルボードオブジェクトの終了
@@ -191,27 +199,7 @@ void CKazedama::Update(void)
 		Return();
 
 		break;
-
-	case STATE_LOST:
-
-		// 消失処理
-		Lost();
-
-		// 処理を抜ける
-		return;
-
-		break;
-
-	case STATE_HIT:
-
-		// 接触処理
-		Hit();
-
-		break;
 	}
-
-	// 情報更新処理
-	UpdateData();
 
 	// 移動処理
 	UpdateMove();
@@ -253,27 +241,9 @@ void CKazedama::Draw(void)
 }
 
 //-------------------------------------
-//- 風だまの設定処理
-//-------------------------------------
-void CKazedama::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color, D3DXVECTOR3 move, CKazedama::TYPE_ROT typeRot)
-{
-	// 変数を宣言（情報取得）
-	CObjectBillboard::VtxData vtxData = GetVtxData();
-
-	vtxData.pos = pos;			// 位置
-	vtxData.size = size;		// 大きさ
-	vtxData.color = color;		// 色
-	m_data.move = move;			// 移動量
-	m_data.typeRot = typeRot;	// 向きの種類
-
-	// 情報更新
-	SetVtxData(vtxData);
-}
-
-//-------------------------------------
 //- 風だまの生成処理
 //-------------------------------------
-CKazedama *CKazedama::Create(TEX tex)
+CKazedama * CKazedama::Create(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color, D3DXVECTOR3 move, TYPE_ROT typeRot)
 {
 	// 風だまの生成
 	CKazedama *pCKazedama = DBG_NEW CKazedama(5);
@@ -282,7 +252,7 @@ CKazedama *CKazedama::Create(TEX tex)
 	if (pCKazedama != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pCKazedama->Init(tex)))
+		if (FAILED(pCKazedama->Init(tex,pos,size,color,move,typeRot)))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -301,28 +271,48 @@ CKazedama *CKazedama::Create(TEX tex)
 }
 
 //-------------------------------------
-//- 風だまの情報更新処理
+//- 風だまの親の情報更新処理
 //-------------------------------------
-void CKazedama::UpdateData(void)
+void CKazedama::SetParent(D3DXVECTOR3 pos)
 {
-	// プレイヤーの情報取得処理
-	CPlayer *pPlayer = CPlayer::GetInstance();
-
-	if(pPlayer == NULL)
-	{
-		return;
-	}
-
-	// 変数宣言
-	D3DXVECTOR3 posBody = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	
-	// 銃の位置を代入（番号ベタ打ち[15]番）
-	posBody.x = pPlayer->GetModel(0)->GetMtxWorld()._41;
-	posBody.y = pPlayer->GetModel(0)->GetMtxWorld()._42;
-	posBody.z = pPlayer->GetModel(0)->GetMtxWorld()._43;
-
 	// 親の位置を更新
-	m_data.posParent = posBody;
+	m_data.posParent = pos;
+}
+
+//-------------------------------------
+//- 風だまの失敗時の消滅時の処理
+//-------------------------------------
+void CKazedama::LostFail(void)
+{
+	// 終了処理
+	Uninit();
+}
+
+//-------------------------------------
+//- 風だまの成功時の消滅時の処理
+//-------------------------------------
+void CKazedama::LostSucce(void)
+{
+	// 終了処理
+	Uninit();
+}
+
+//-------------------------------------
+//- 風だまの設定処理
+//-------------------------------------
+void CKazedama::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color, D3DXVECTOR3 move, CKazedama::TYPE_ROT typeRot)
+{
+	// 変数を宣言（情報取得）
+	CObjectBillboard::VtxData vtxData = GetVtxData();
+
+	vtxData.pos = pos;			// 位置
+	vtxData.size = size;		// 大きさ
+	vtxData.color = color;		// 色
+	m_data.move = move;			// 移動量
+	m_data.typeRot = typeRot;	// 向きの種類
+
+	// 情報更新
+	SetVtxData(vtxData);
 }
 
 //-------------------------------------
@@ -349,8 +339,8 @@ void CKazedama::Active(void)
 	// 敵との当たり判定
 	if (m_pColl->Hit(CMgrColl::TAG_ENEMY,CMgrColl::STATE_HIT_DEAD) == true)
 	{
-		// 消失処理
-		m_data.state = STATE_HIT;
+		// 獲得時の処理
+		Obtain();
 	}
 	else
 	{
@@ -468,36 +458,40 @@ void CKazedama::Return(void)
 
 	if(bIsSwitch == true)
 	{
-		// 消滅状態に変更
-		m_data.state = STATE_LOST;
+		if (m_pEnemyHave != NULL)
+		{
+			// 成功状態に変更
+			m_data.state = STATE_SUCCE;
+		}
+		else if(m_pEnemyHave == NULL)
+		{
+			// 成功状態に変更
+			m_data.state = STATE_FAIL;
+		}
+
 	}
 }
 
 //-------------------------------------
-//- 風だまの消滅時の処理
+//- 風だまの情報取得処理
 //-------------------------------------
-void CKazedama::Lost(void)
+CKazedama::Data CKazedama::GetData(void)
 {
-	// 終了処理
-	Uninit();
+	return m_data;
 }
 
 //-------------------------------------
-//- 風だまのヒット時の処理
+//- 風だまの獲得時の処理
 //-------------------------------------
-void CKazedama::Hit(void)
+void CKazedama::Obtain(void)
 {
 	// 帰還状態に変更
 	m_data.state = STATE_RETURN;
 
 	// 保持敵を生成
-	CEnemyHave *pEnemyHave = CEnemyHave::Create(CEnemyHave::MODEL_ALIEN_000);
-
-	if (pEnemyHave == NULL)
-	{
-		return;
-	}
-
-	// 保持敵の値設定
-	pEnemyHave->Set(GetVtxData().pos,D3DXVECTOR3(50.0f,50.0f,50.0f));
+	m_pEnemyHave = CEnemyHave::Create(
+		CEnemyHave::MODEL_ALIEN_000,
+		CEnemyHave::STATE_OBTAIN,
+		GetVtxData().pos,
+		D3DXVECTOR3(50.0f, 50.0f, 50.0f));
 }

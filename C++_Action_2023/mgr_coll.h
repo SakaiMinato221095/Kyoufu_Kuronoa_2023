@@ -81,6 +81,9 @@ public:
 
 	bool Hit(int nNldxColl, TAG hitTag, STATE_HIT stateHit);
 
+	int Set(CColl *pColl);
+	void Reset(int nNldx);
+
 	bool hitRectangle(D3DXVECTOR3 posMy, D3DXVECTOR3 sizeMy, D3DXVECTOR3 posPair, D3DXVECTOR3 sizePair);
 	bool hitRectangleRot(D3DXVECTOR3 posMy, D3DXVECTOR3 sizeMy, D3DXVECTOR3 rot, D3DXVECTOR3 posPair, D3DXVECTOR3 sizePair, D3DXVECTOR3 rotPair);
 	bool hitRectangleSide(float fPos, float fSize, float fPosPair, float fSizePair);

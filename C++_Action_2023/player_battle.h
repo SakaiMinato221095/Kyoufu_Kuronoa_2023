@@ -39,13 +39,7 @@ class CPlayerBattle : public CPlayer
 
 public:
 
-	typedef enum
-	{
-		STATE_TYPE_NEUTRAL = 0,		// 待機
-		STATE_TYPE_MOVE,			// 移動
-		STATE_TYPE_HAVING,			// 所持状態
-		STATE_TYPE_MAX			
-	}STATE_TYPE;
+
 
 	CPlayerBattle();
 	~CPlayerBattle();
@@ -62,9 +56,6 @@ public:
 private:
 
 	void UpdateMotion(void);
-
-	STATE_TYPE m_stateType;			// 状態の種類
-	STATE_TYPE m_stateTypeNew;		// 最新の状態の種類
 };
 
 #endif	// 二重インクルード防止の終了

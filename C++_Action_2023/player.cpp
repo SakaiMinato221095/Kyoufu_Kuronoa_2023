@@ -49,16 +49,19 @@ CPlayer::CPlayer()
 	m_bJump = false;
 	m_bHave = false;
 
-	ZeroMemory(m_mtxWorld, sizeof(D3DXMATRIX));
+	m_pKazedama = NULL;
+	m_pEnemyHave = NULL;
 
-	m_pColl = NULL;
+	m_stateType = STATE_TYPE(0);
+	m_stateTypeNew = m_stateType;
+
+	ZeroMemory(m_mtxWorld, sizeof(D3DXMATRIX));
 
 	ZeroMemory(m_apModel, sizeof(m_apModel));
 
 	m_nNumModel = 0;
 
 	m_pMotion = NULL;
-
 }
 
 //-------------------------------------
@@ -72,8 +75,11 @@ CPlayer::~CPlayer()
 //-------------------------------------
 //- プレイヤーの初期化処理
 //-------------------------------------
-HRESULT CPlayer::Init(CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, int nStateMax)
+HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType, int nStateMax)
 {
+	// 戦闘プレイヤーの設定処理
+	InitSet(pos, rot);
+
 	// モデルのパーツ数を取得
 	m_nNumModel = CModel::GetPartsNum(modelType);
 
@@ -147,9 +153,6 @@ void CPlayer::Uninit(void)
 		m_pMotion = NULL;
 	}
 
-	// 自身のポインタを初期化
-	m_pInstance = NULL;
-
 	// 自分自身のポインタの開放
 	Release();
 }
@@ -176,6 +179,15 @@ void CPlayer::Update(void)
 
 	// 位置情報の更新処理
 	UpdatePos();
+
+	// モーションの更新処理
+	UpdateMotion();
+
+	// 風だまの更新処理
+	UpdateKazedama();
+
+	// 敵保持の更新処理
+	UpdateEnemyHave();
 
 	// デバック表示
 	DebugPlayer();
@@ -228,11 +240,33 @@ void CPlayer::Draw(void)
 }
 
 //-------------------------------------
-//- プレイヤーのモーション情報取得処理
+//- プレイヤーの生成処理
 //-------------------------------------
-void CPlayer::Hit(int nDamage)
+CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, CModel::MODEL_TYPE modelType, CMotion::MOTION_TYPE motionType)
 {
+	// プレイヤーのポインタを宣言
+	CPlayer *pPlayer = new CPlayer;
 
+	// 生成の成功の有無を判定
+	if (pPlayer != NULL)
+	{
+		// 初期化処理
+		if (FAILED(pPlayer->Init(pos, rot, modelType, motionType, STATE_TYPE_MAX)))
+		{// 失敗時
+
+		 // 「なし」を返す
+			return NULL;
+		}
+	}
+	else if (pPlayer == NULL)
+	{// 失敗時
+
+	 // 「なし」を返す
+		return NULL;
+	}
+
+	// プレイヤーのポインタを返す
+	return pPlayer;
 }
 
 //-------------------------------------
@@ -271,17 +305,20 @@ CPlayer::Data CPlayer::GetData(void)
 //-------------------------------------
 //- プレイヤーの所持状態の設定処理
 //-------------------------------------
-void CPlayer::SetHave(bool bHave)
+void CPlayer::SetHave(bool bHave,CEnemyHave *enemyHave)
 {
 	m_bHave = bHave;
+
+	m_pEnemyHave = enemyHave;
 }
 
 //-------------------------------------
-//- プレイヤーのインスタンス取得処理
+//- プレイヤーの初期設定処理
 //-------------------------------------
-CPlayer * CPlayer::GetInstance(void)
+void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	return m_pInstance;
+	m_data.pos = pos;
+	m_data.rot = rot;
 }
 
 //-------------------------------------
@@ -363,6 +400,77 @@ void CPlayer::UpdateRot(void)
 	// 情報更新
 	m_data.rot = rot;			// 向き
 	m_data.rotDest = rotDest;	// 目的の向き
+}
+
+//-------------------------------------
+//- プレイヤーの風だま更新処理
+//-------------------------------------
+void CPlayer::UpdateKazedama(void)
+{
+	if (m_pKazedama != NULL)
+	{
+		// 変数宣言
+		D3DXVECTOR3 posBody = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+		// 銃の位置を代入（番号ベタ打ち[15]番）
+		posBody.x = m_apModel[0]->GetMtxWorld()._41;
+		posBody.y = m_apModel[0]->GetMtxWorld()._42;
+		posBody.z = m_apModel[0]->GetMtxWorld()._43;
+
+		// 親の位置を設定
+		m_pKazedama->SetParent(posBody);
+
+		// 風だまの状態を取得
+		CKazedama::STATE state = m_pKazedama->GetData().state;
+
+		if (state == CKazedama::STATE_FAIL)
+		{
+			// 失敗時の消滅処理
+			m_pKazedama->LostFail();
+
+			// 風だまの初期化
+			m_pKazedama = NULL;
+		}
+		else if (state == CKazedama::STATE_SUCCE)
+		{
+			// 成功時の消滅処理
+			m_pKazedama->LostSucce();
+
+			// 風だまの初期化
+			m_pKazedama = NULL;
+
+			// 所持状況を更新
+			m_bHave = true;
+
+			if (m_pEnemyHave == NULL)
+			{
+				// 保持敵の生成処理
+				m_pEnemyHave = CEnemyHave::Create(
+					CEnemyHave::MODEL_ALIEN_000,
+					CEnemyHave::STATE_WAIT,
+					D3DXVECTOR3(m_data.pos.x,m_data.pos.y + 200.0f,m_data.pos.z),
+					D3DXVECTOR3(50.0f, 50.0f, 50.0f));
+			}
+		}
+	}
+}
+
+//-------------------------------------
+//- プレイヤーの保持敵更新処理
+//-------------------------------------
+void CPlayer::UpdateEnemyHave(void)
+{
+	if (m_pEnemyHave != NULL)
+	{
+		// 情報取得
+		CEnemyHave::VtxData vtxData = m_pEnemyHave->GetVtxData();
+
+		// 位置を風だまの位置に変更
+		vtxData.pos = D3DXVECTOR3(m_data.pos.x, m_data.pos.y + 200.0f, m_data.pos.z);
+
+		// 情報更新
+		m_pEnemyHave->SetVtxData(vtxData);
+	}
 }
 
 //-------------------------------------
@@ -525,10 +633,11 @@ void CPlayer::InputDoubleJump(void)
 		m_bHave = false;
 
 		// 保持敵の有無を判定
-		if (CEnemyHave::GetInstance() != NULL)
+		if (m_pEnemyHave != NULL)
 		{
 			// 保持敵の終了処理
-			CEnemyHave::GetInstance()->Uninit();
+			m_pEnemyHave->Uninit();
+			m_pEnemyHave = NULL;
 		}
 
 		// ジャンプ量を設定
@@ -583,8 +692,7 @@ void CPlayer::InputKazedama(void)
 		return;
 	}
 
-	// 風だまのポインタの有無を判定
-	if (CKazedama::GetInstance() == NULL)
+	if (m_pKazedama == NULL)
 	{
 		// 入力処理（Jキー / Bボタン）
 		if (pInputKeyboard->GetTrigger(DIK_J) != NULL ||
@@ -602,25 +710,25 @@ void CPlayer::InputKazedama(void)
 			posBody.y = m_apModel[0]->GetMtxWorld()._42;
 			posBody.z = m_apModel[0]->GetMtxWorld()._43;
 
-			// 風だまの生成処理
-			CKazedama *pKazedama = CKazedama::Create(CKazedama::TEX_NULL);
-
 			if (rot.y >= 0.0f && rot.y <= D3DX_PI)
 			{
-				// 風だまの設定処理
-				pKazedama->Set(
+				// 風だまの生成処理
+				m_pKazedama = CKazedama::Create(
+					CKazedama::TEX_NULL,
 					posBody,
-					D3DXVECTOR3(50.0f, 50.0f, 0.0f),
+					D3DXVECTOR3(50.0f, 50.0f, 50.0f),
 					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
 					D3DXVECTOR3(-20.0f, 0.0f, 0.0f),
 					CKazedama::TYPE_ROT_LEFT);
+;
 			}
 			else if (rot.y <= 0.0f && rot.y <= D3DX_PI)
 			{
-				// 風だまの設定処理
-				pKazedama->Set(
+				// 風だまの生成処理
+				m_pKazedama = CKazedama::Create(
+					CKazedama::TEX_NULL,
 					posBody,
-					D3DXVECTOR3(50.0f, 50.0f, 0.0f),
+					D3DXVECTOR3(50.0f, 50.0f, 50.0f),
 					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
 					D3DXVECTOR3(20.0f, 0.0f, 0.0f),
 					CKazedama::TYPE_ROT_RIGHT);
@@ -655,10 +763,8 @@ void CPlayer::InputShot(void)
 		return;
 	}
 
-	CEnemyHave *pEnemyHave = CEnemyHave::GetInstance();
-
 	// 風だまのポインタの有無を判定
-	if (pEnemyHave != NULL)
+	if (m_pEnemyHave != NULL)
 	{
 		// 入力処理（Jキー / Bボタン）
 		if (pInputKeyboard->GetTrigger(DIK_J) != NULL ||
@@ -681,7 +787,8 @@ void CPlayer::InputShot(void)
 
 			if (rot.y >= 0.0f && rot.y <= D3DX_PI)
 			{
-				pEnemyHave->SetShot(
+				// 保持敵を発射
+				m_pEnemyHave->SetShot(
 					posBody,
 					D3DXVECTOR3(-30.0f,0.0f,0.0f),
 					60,
@@ -689,12 +796,77 @@ void CPlayer::InputShot(void)
 			}
 			else if (rot.y <= 0.0f && rot.y <= D3DX_PI)
 			{
-				pEnemyHave->SetShot(
+				// 保持敵を発射
+				m_pEnemyHave->SetShot(
 					posBody,
 					D3DXVECTOR3(30.0f, 0.0f, 0.0f),
 					60,
 					CEnemyHave::TYPE_ROT_RIGHT);
 			}
+
+			// 保持敵のポインタを初期化
+			m_pEnemyHave = NULL;
+		}
+	}
+}
+
+//-------------------------------------
+//- プレイヤーのモーション更新処理
+//-------------------------------------
+void CPlayer::UpdateMotion(void)
+{
+	// 変数宣言（情報取得）
+	CMotion *pMotion = GetMotion();		// モーション
+	D3DXVECTOR3 move = GetData().move;	// 移動量
+
+	// 状態を判定
+	if (m_stateTypeNew == STATE_TYPE_NEUTRAL ||
+		m_stateTypeNew == STATE_TYPE_MOVE)
+	{
+		// 移動量で状態を変更
+		if (move.x >= 0.3f ||
+			move.x <= -0.3f ||
+			move.z >= 0.3f ||
+			move.z <= -0.3f)
+		{
+			// 移動状態に変更
+			m_stateTypeNew = STATE_TYPE_MOVE;
+		}
+		else
+		{
+			// 待機状態の変更
+			m_stateTypeNew = STATE_TYPE_NEUTRAL;
+		}
+	}
+
+	// モーションの終了状況を判定
+	if (pMotion->IsFinsih() == true)
+	{
+		// モーションの更新
+		pMotion->Update();
+	}
+	else
+	{
+		// 待機状態を設定
+		m_stateTypeNew = STATE_TYPE_NEUTRAL;
+	}
+
+	// モーションの設定処理
+	if (m_stateType != m_stateTypeNew)
+	{
+		// 状態の更新
+		m_stateType = m_stateTypeNew;
+
+		// 状態の判定
+		if (m_stateType == STATE_TYPE_NEUTRAL)
+		{
+			// 待機モーションの設定
+			pMotion->Set(STATE_TYPE_NEUTRAL);
+		}
+		else if (m_stateType == STATE_TYPE_MOVE)
+		{
+			// 移動モーションの設定
+			pMotion->Set(STATE_TYPE_MOVE);
 		}
 	}
 }

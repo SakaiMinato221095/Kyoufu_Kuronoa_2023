@@ -122,7 +122,7 @@ void CEnemyHave::Unload(void)
 //-------------------------------------
 //- 保持敵の初期化処理
 //-------------------------------------
-HRESULT CEnemyHave::Init(MODEL modelType)
+HRESULT CEnemyHave::Init(MODEL model, STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// モデル管理の生成
 	CManagerModel *pManagerModel = CManager::GetManagerModel();
@@ -134,11 +134,14 @@ HRESULT CEnemyHave::Init(MODEL modelType)
 		return E_FAIL;
 	}
 
+	// 初期設定処理
+	InitSet(state,pos,size);
+
 	// モデル番号を取得
-	int nModelNldx = m_nModelNldx[modelType];
+	int nModelNldx = m_nModelNldx[model];
 
 	// 効果なしオブジェクトのモデル割当
-	BindModel(nModelNldx, modelType);
+	BindModel(nModelNldx, model);
 
 	// Xファイルオブジェクトの初期化 if(初期化成功の有無を判定)
 	if (FAILED(CObjectX::Init()))
@@ -236,10 +239,11 @@ void CEnemyHave::Draw(void)
 //-------------------------------------
 //- 保持敵の設定処理
 //-------------------------------------
-void CEnemyHave::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+void CEnemyHave::InitSet(STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	VtxData vtxData;
 
+	m_data.state = state;
 	vtxData.pos = pos;
 	vtxData.size = size;
 
@@ -249,7 +253,7 @@ void CEnemyHave::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //-------------------------------------
 //- 保持敵の生成処理
 //-------------------------------------
-CEnemyHave *CEnemyHave::Create(MODEL modelType)
+CEnemyHave * CEnemyHave::Create(MODEL model, STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// 保持敵の生成
 	CEnemyHave *pEnemy = DBG_NEW CEnemyHave;
@@ -258,7 +262,7 @@ CEnemyHave *CEnemyHave::Create(MODEL modelType)
 	if (pEnemy != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pEnemy->Init(modelType)))
+		if (FAILED(pEnemy->Init(model,state, pos, size)))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -299,40 +303,7 @@ void CEnemyHave::SetModel(int nModelNldx)
 //-------------------------------------
 void CEnemyHave::UpdateObtain(void)
 {
-	// 風だまの取得処理
-	CKazedama *pKazedama = CKazedama::GetInstance();
 
-	// 風だまの有無を判定
-	if (pKazedama == NULL)
-	{
-		// 待機状態に変更
-		m_data.state = STATE_WAIT;
-
-		// プレイヤーの取得処理
-		CPlayer *pPlayer = CPlayer::GetInstance();
-
-		if (pPlayer == NULL)
-		{
-			return;
-		}
-
-		// 保持状態を更新
-		pPlayer->SetHave(true);
-
-		return;
-	}
-
-	// 情報取得
-	VtxData vtxData = GetVtxData();
-	
-	// 情報取得（風だま）
-	D3DXVECTOR3 posKaze = pKazedama->GetVtxData().pos;	// 位置
-
-	// 位置を風だまの位置に変更
-	vtxData.pos = posKaze;
-
-	// 情報更新
-	SetVtxData(vtxData);
 }
 
 //-------------------------------------
@@ -340,25 +311,7 @@ void CEnemyHave::UpdateObtain(void)
 //-------------------------------------
 void CEnemyHave::UpdateWait(void)
 {
-	// プレイヤーの取得処理
-	CPlayer *pPlayer = CPlayer::GetInstance();
 
-	if (pPlayer == NULL)
-	{
-		return;
-	}
-
-	// 情報取得
-	VtxData vtxData = GetVtxData();
-
-	// 情報取得（風だま）
-	D3DXVECTOR3 posPlayer = pPlayer->GetData().pos;	// 位置
-
-	// 位置を風だまの位置に変更
-	vtxData.pos = D3DXVECTOR3(posPlayer.x,posPlayer.y + 300.0f,posPlayer.z);
-
-	// 情報更新
-	SetVtxData(vtxData);
 }
 
 //-------------------------------------

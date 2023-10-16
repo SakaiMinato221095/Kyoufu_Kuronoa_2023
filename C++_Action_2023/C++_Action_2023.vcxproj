@@ -35,6 +35,7 @@
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="manager_model.cpp" />
     <ClCompile Include="manager_texture.cpp" />
+    <ClCompile Include="mgr_obj.cpp" />
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="model.cpp" />
@@ -45,7 +46,6 @@
     <ClCompile Include="object_x.cpp" />
     <ClCompile Include="obj_3d_field.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="player_battle.cpp" />
     <ClCompile Include="precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -73,6 +73,7 @@
     <ClInclude Include="manager.h" />
     <ClInclude Include="manager_model.h" />
     <ClInclude Include="manager_texture.h" />
+    <ClInclude Include="mgr_obj.h" />
     <ClInclude Include="motion.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="model.h" />
@@ -83,7 +84,6 @@
     <ClInclude Include="object_x.h" />
     <ClInclude Include="obj_3d_field.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="player_battle.h" />
     <ClInclude Include="precompile.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />

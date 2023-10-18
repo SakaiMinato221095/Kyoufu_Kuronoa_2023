@@ -67,7 +67,7 @@ CKazedama::~CKazedama()
 HRESULT CKazedama::Load(void)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -78,7 +78,7 @@ HRESULT CKazedama::Load(void)
 	}
 
 	// テクスチャ管理の生成
-	CManagerTexture *pManagerTexture = CManager::GetManagerTexture();
+	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の有無を判定
 	if (pManagerTexture == NULL)
@@ -214,7 +214,7 @@ void CKazedama::Update(void)
 void CKazedama::Draw(void)
 {
 	// デバイスを取得
-	CRenderer *pRenderer = CManager::GetRenderer();
+	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();
 
 	// デバイスの情報取得の成功を判定
 	if (pRenderer == NULL)
@@ -493,5 +493,6 @@ void CKazedama::Obtain(void)
 		CEnemyHave::MODEL_ALIEN_000,
 		CEnemyHave::STATE_OBTAIN,
 		GetVtxData().pos,
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(50.0f, 50.0f, 50.0f));
 }

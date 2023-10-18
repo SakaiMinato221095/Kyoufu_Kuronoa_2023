@@ -99,7 +99,7 @@ void CCamera::Uninit(void)
 void CCamera::Update(void)
 {
 	// キーボードのポインタを宣言
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
 	if (pInputKeyboard == NULL)
@@ -109,7 +109,7 @@ void CCamera::Update(void)
 		return;
 	}
 
-	if (CManager::GetMode() == CScene::MODE_GAME)
+	if (CManager::GetInstance()->GetMode() == CScene::MODE_GAME)
 	{
 		// カメラのモード
 		switch (m_mode)
@@ -132,7 +132,7 @@ void CCamera::Update(void)
 			break;
 		}
 	}
-	else if (CManager::GetMode() == CScene::MODE_TITEL)
+	else if (CManager::GetInstance()->GetMode() == CScene::MODE_TITEL)
 	{
 		// タイトルの更新処理
 		UpdateTitle();
@@ -151,7 +151,7 @@ void CCamera::UpdateOperation(void)
 	float fLength = m_data.fLength;		// カメラとの距離
 
 	// キーボードのポインタを宣言
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
 	if (pInputKeyboard == NULL)
@@ -333,7 +333,7 @@ void CCamera::UpdateFollowing(void)
 void CCamera::UpdateRot(void)
 {
 	// キーボードのポインタを宣言
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
 	if (pInputKeyboard == NULL)
@@ -461,7 +461,7 @@ void CCamera::SetCamera(void)
 	D3DXVECTOR3 vecU = m_data.vecU;		// 上方向のベクトル
 
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)

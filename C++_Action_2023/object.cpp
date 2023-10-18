@@ -87,7 +87,7 @@ void CObject::ReleaseAll(void)
 void CObject::UpdateAll(void)
 {
 	// キーボードの情報取得
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
 	if (pInputKeyboard == NULL)
@@ -187,7 +187,7 @@ void CObject::Release(void)
 void CObject::Debug(void)
 {
 	// デバックプロックの取得
-	CDebugProc *pDebugProc = CManager::GetDbugProc();
+	CDebugProc *pDebugProc = CManager::GetInstance()->GetDbugProc();
 
 	// デバックプロック取得の有無を判定
 	if (pDebugProc == NULL)

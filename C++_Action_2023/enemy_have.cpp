@@ -67,7 +67,7 @@ CEnemyHave::~CEnemyHave()
 HRESULT CEnemyHave::Load(void)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -78,7 +78,7 @@ HRESULT CEnemyHave::Load(void)
 	}
 
 	// モデル管理の生成
-	CManagerModel *pManagerModel = CManager::GetManagerModel();
+	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
 	if (pManagerModel == NULL)
@@ -122,10 +122,10 @@ void CEnemyHave::Unload(void)
 //-------------------------------------
 //- 保持敵の初期化処理
 //-------------------------------------
-HRESULT CEnemyHave::Init(MODEL model, STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 size)
+HRESULT CEnemyHave::Init(MODEL model, STATE state, D3DXVECTOR3 pos,D3DXVECTOR3 rot, D3DXVECTOR3 size)
 {
 	// モデル管理の生成
-	CManagerModel *pManagerModel = CManager::GetManagerModel();
+	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
 	if (pManagerModel == NULL)
@@ -135,7 +135,7 @@ HRESULT CEnemyHave::Init(MODEL model, STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 
 	}
 
 	// 初期設定処理
-	InitSet(state,pos,size);
+	InitSet(state,pos,rot,size);
 
 	// モデル番号を取得
 	int nModelNldx = m_nModelNldx[model];
@@ -149,15 +149,6 @@ HRESULT CEnemyHave::Init(MODEL model, STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 
 		// 失敗を返す
 		return E_FAIL;
 	}
-
-	// 頂点値情報を取得
-	VtxData vtxData = GetVtxData();
-
-	// サイズを設定
-	vtxData.size = D3DXVECTOR3(50.0f, 50.0f, 50.0f);
-
-	// 頂点値情報を更新
-	SetVtxData(vtxData);
 
 	// 当たり判定設定
 	m_pColl = CColl::Create(
@@ -218,8 +209,11 @@ void CEnemyHave::Update(void)
 	case STATE_SHOT:
 
 		// 発射時の更新処理
-		UpdateShot();
-
+		if (UpdateShot())
+		{
+			return;
+		}
+		
 		break;
 	}
 
@@ -237,23 +231,9 @@ void CEnemyHave::Draw(void)
 }
 
 //-------------------------------------
-//- 保持敵の設定処理
-//-------------------------------------
-void CEnemyHave::InitSet(STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 size)
-{
-	VtxData vtxData;
-
-	m_data.state = state;
-	vtxData.pos = pos;
-	vtxData.size = size;
-
-	SetVtxData(vtxData);
-}
-
-//-------------------------------------
 //- 保持敵の生成処理
 //-------------------------------------
-CEnemyHave * CEnemyHave::Create(MODEL model, STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CEnemyHave * CEnemyHave::Create(MODEL model, STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 size)
 {
 	// 保持敵の生成
 	CEnemyHave *pEnemy = DBG_NEW CEnemyHave;
@@ -262,7 +242,7 @@ CEnemyHave * CEnemyHave::Create(MODEL model, STATE state, D3DXVECTOR3 pos, D3DXV
 	if (pEnemy != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pEnemy->Init(model,state, pos, size)))
+		if (FAILED(pEnemy->Init(model,state, pos,rot, size)))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -317,7 +297,7 @@ void CEnemyHave::UpdateWait(void)
 //-------------------------------------
 //-	保持敵の発射更新処理
 //-------------------------------------
-void CEnemyHave::UpdateShot(void)
+bool CEnemyHave::UpdateShot(void)
 {
 	// 変数を宣言（情報取得）
 	VtxData vtxData = GetVtxData();
@@ -328,6 +308,15 @@ void CEnemyHave::UpdateShot(void)
 	// 情報更新
 	SetVtxData(vtxData);
 
+	// 宝石との当たり判定
+	if (m_pColl->Hit(CMgrColl::TAG_GIMMICK_JEWEL, CMgrColl::STATE_HIT_DEAD) == true)
+	{
+		// 終了処理
+		Uninit();
+
+		return true;
+	}
+
 	// 体力カウント
 	m_data.nLifeCut++;
 
@@ -336,7 +325,11 @@ void CEnemyHave::UpdateShot(void)
 	{
 		// 終了処理
 		Uninit();
+
+		return true;
 	}
+
+	return false;
 }
 
 //-------------------------------------
@@ -361,4 +354,19 @@ void CEnemyHave::SetShot(D3DXVECTOR3 pos,D3DXVECTOR3 move, int nLife, TYPE_ROT t
 
 	// 相手タグの設定処理
 	m_pColl->SetTagTgt(CMgrColl::TAG_GIMMICK_JEWEL, true);
+}
+
+//-------------------------------------
+//- 保持敵の設定処理
+//-------------------------------------
+void CEnemyHave::InitSet(STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 size)
+{
+	VtxData vtxData;
+
+	m_data.state = state;
+	vtxData.pos = pos;
+	vtxData.rot = rot;
+	vtxData.size = size;
+
+	SetVtxData(vtxData);
 }

@@ -20,8 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bg.cpp" />
+    <ClCompile Include="obj_block.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="coll.cpp" />
+    <ClCompile Include="gimmick.cpp" />
+    <ClCompile Include="gimmick_jewel.cpp" />
     <ClCompile Include="mgr_coll.cpp" />
     <ClCompile Include="debugproc.cpp" />
     <ClCompile Include="enemy.cpp" />
@@ -58,8 +61,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bg.h" />
+    <ClInclude Include="obj_block.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="coll.h" />
+    <ClInclude Include="gimmick.h" />
+    <ClInclude Include="gimmick_jewel.h" />
     <ClInclude Include="mgr_coll.h" />
     <ClInclude Include="debugproc.h" />
     <ClInclude Include="enemy.h" />

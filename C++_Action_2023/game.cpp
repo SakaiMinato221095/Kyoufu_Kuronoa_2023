@@ -25,6 +25,9 @@
 
 #include "enemy.h"
 
+#include "gimmick_jewel.h"
+#include "obj_block.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -90,8 +93,19 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CEnemy *pEnemy3 = CEnemy::Create(CEnemy::MODEL_ALIEN_000);
 	pEnemy3->Set(D3DXVECTOR3(600.0f, 0.0f, 0.0f));
 
-	// 成功を返す
-	return S_OK;
+	CGimmick *pGimmick = CGimmickJewel::Create(
+		CGimmick::MODEL_JEWEL_000,
+		CGimmickJewel::TYPE_EFFECT_SPEED_UP,
+		D3DXVECTOR3(100.0f, 200.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	CObjectXNone *pBlock = CObjBlock::Create(
+		CObjectXNone::MODEL_BLOCK_000,
+		D3DXVECTOR3(-300.0f, 200.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+		// 成功を返す
+		return S_OK;
 }
 
 //-------------------------------------
@@ -115,7 +129,7 @@ void CGame::Uninit(void)
 void CGame::Update(void)
 {
 	// キーボードの情報取得
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
 	if (pInputKeyboard == NULL)
@@ -126,7 +140,7 @@ void CGame::Update(void)
 	}
 
 	// X入力のポインタを宣言
-	CXInput *pXInput = CManager::GetXInput();
+	CXInput *pXInput = CManager::GetInstance()->GetXInput();
 
 	// X入力の情報取得の成功を判定
 	if (pXInput == NULL)
@@ -140,7 +154,7 @@ void CGame::Update(void)
 		pXInput->GetTrigger(XINPUT_GAMEPAD_A, CXInput::TYPE_INPUT_BUTTON))
 	{
 		// ゲームモード
-		CManager::GetFade()->SetFade(CScene::MODE_RESULT);
+		CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RESULT);
 	}
 }
 

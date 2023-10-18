@@ -236,7 +236,9 @@ bool CMgrColl::hitRectangle(D3DXVECTOR3 posMy, D3DXVECTOR3 sizeMy, D3DXVECTOR3 p
 	if (posMy.x + sizeMy.x >= posPair.x - sizePair.x &&
 		posMy.x - sizeMy.x <= posPair.x + sizePair.x &&
 		posMy.y + sizeMy.y >= posPair.y - sizePair.y &&
-		posMy.y - sizeMy.y <= posPair.y + sizePair.y)
+		posMy.y - sizeMy.y <= posPair.y + sizePair.y &&
+		posMy.z + sizeMy.z >= posPair.z - sizePair.z &&
+		posMy.z - sizeMy.z <= posPair.z + sizePair.z)
 	{
 		return true;
 	}

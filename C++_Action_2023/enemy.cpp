@@ -65,7 +65,7 @@ CEnemy::~CEnemy()
 HRESULT CEnemy::Load(void)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -76,7 +76,7 @@ HRESULT CEnemy::Load(void)
 	}
 
 	// モデル管理の生成
-	CManagerModel *pManagerModel = CManager::GetManagerModel();
+	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
 	if (pManagerModel == NULL)
@@ -123,7 +123,7 @@ void CEnemy::Unload(void)
 HRESULT CEnemy::Init(MODEL modelType)
 {
 	// モデル管理の生成
-	CManagerModel *pManagerModel = CManager::GetManagerModel();
+	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
 	if (pManagerModel == NULL)

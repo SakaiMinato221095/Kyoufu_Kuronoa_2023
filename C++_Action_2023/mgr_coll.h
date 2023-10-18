@@ -49,6 +49,7 @@ public:
 		TAG_ENEMY,			// 敵
 		TAG_KAZEDAMA,		// 風だま
 		TAG_ENEMY_HAVE,		// 保持敵
+		TAG_BLOCK,			// ブロック
 		TAG_GIMMICK_JEWEL,	// 宝石ギミック
 		TAG_MAX
 	}TAG;

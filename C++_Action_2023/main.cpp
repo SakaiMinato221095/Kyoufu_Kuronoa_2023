@@ -113,10 +113,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLime
 	UpdateWindow(hWnd);				// クライアント領域を更新
 
 	// マネージャのポインタを宣言
-	CManager *pManager = NULL;
-
-	// マネージャを生成
-	pManager = DBG_NEW CManager;
+	CManager *pManager = CManager::GetInstance();
 
 	// マネージャの初期化
 	if (pManager != NULL)
@@ -186,13 +183,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLime
 	// マネージャの終了処理
 	pManager->Uninit();
 
-	// レンダラーの破棄
+	// 管理の破棄
 	if (pManager != NULL)
 	{
-		// レンダラーの終了処理
+		// 管理の終了処理
 		pManager->Uninit();
 
-		// レンダラーの開放
+		// 管理の開放
 		delete pManager;
 		pManager = NULL;
 	}

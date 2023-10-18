@@ -27,7 +27,7 @@
 //-	クラス定義
 //-======================================
 
-// アイテムのクラス
+// 効果なしオブジェクトのクラス
 class CObjectXNone : public CObjectX
 {
 
@@ -36,7 +36,7 @@ public:
 	// モデルの列挙型
 	typedef enum
 	{
-		MODEL_SAKURA_000,			// 桜
+		MODEL_BLOCK_000 = 0,
 		MODEL_MAX
 	}MODEL;
 
@@ -52,12 +52,12 @@ public:
 	static HRESULT Load(void);
 	static void Unload(void);
 
-	HRESULT Init(MODEL model);
+	HRESULT Init(MODEL model, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	static CObjectXNone * Create(MODEL model);
+	static CObjectXNone * Create(MODEL model, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 	int GetModel(void);
 	void SetModel(int nModelNldx);
@@ -67,9 +67,9 @@ public:
 
 private:
 
-	void InitSet(MODEL model);
+	void InitSet(MODEL model, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
-	MODEL m_model;	// 自身のモデル
+	MODEL m_model;								// 自身のモデル
 	static ModelData m_modelData[MODEL_MAX];	// モデルの情報
 	static int m_nModelNldx[MODEL_MAX];			// モデルの番号
 };

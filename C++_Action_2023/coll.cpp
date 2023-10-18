@@ -48,7 +48,7 @@ CColl::~CColl()
 HRESULT CColl::Init(CMgrColl::TAG tag, CMgrColl::TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// 当たり判定のポインタ取得
-	CMgrColl *pMgrColl = CManager::GetMgrColl();
+	CMgrColl *pMgrColl = CManager::GetInstance()->GetMgrColl();
 
 	// 当たり判定の有無を判定
 	if (pMgrColl == NULL)
@@ -72,7 +72,7 @@ HRESULT CColl::Init(CMgrColl::TAG tag, CMgrColl::TYPE type, D3DXVECTOR3 pos, D3D
 void CColl::Uninit(void)
 {
 	// 当たり判定のポインタ取得
-	CMgrColl *pMgrColl = CManager::GetMgrColl();
+	CMgrColl *pMgrColl = CManager::GetInstance()->GetMgrColl();
 
 	// 当たり判定の有無を判定
 	if (pMgrColl == NULL)
@@ -146,7 +146,7 @@ void CColl::UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 bool CColl::Hit(CMgrColl::TAG hitTag, CMgrColl::STATE_HIT stateHit)
 {
 	// 当たり判定のポインタ取得
-	CMgrColl *pMgrColl = CManager::GetMgrColl();		
+	CMgrColl *pMgrColl = CManager::GetInstance()->GetMgrColl();		
 
 	// 当たり判定の有無を判定
 	if (pMgrColl == NULL)

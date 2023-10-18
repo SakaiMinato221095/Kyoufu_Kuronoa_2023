@@ -22,6 +22,7 @@
 #include "objectx_none.h"
 #include "enemy.h"
 #include "enemy_have.h"
+#include "gimmick.h"
 
 //-------------------------------------
 //-	モデル管理のコンストラクタ
@@ -88,6 +89,16 @@ HRESULT CManagerModel::Load(HWND hWnd)
 		return E_FAIL;
 	}
 
+	// ギミックオブジェクト
+	if (FAILED(CGimmick::Load()))
+	{// 失敗時
+
+	 // 失敗メッセージ
+		MessageBox(hWnd, "ギミックのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
 
 	// 成功を返す
 	return S_OK;
@@ -145,7 +156,7 @@ void CManagerModel::Unload(void)
 int CManagerModel::Regist(const char *pFilename)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -156,7 +167,7 @@ int CManagerModel::Regist(const char *pFilename)
 	}
 
 	// テクスチャ管理の生成
-	CManagerTexture *pManagerTexture = CManager::GetManagerTexture();
+	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の有無を判定
 	if (pManagerTexture == NULL)

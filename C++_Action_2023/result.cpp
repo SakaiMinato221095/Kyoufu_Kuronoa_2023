@@ -93,7 +93,7 @@ void CResult::Uninit(void)
 void CResult::Update(void)
 {
 	// キーボードの情報取得
-	CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
 	// キーボードの情報取得の成功を判定
 	if (pInputKeyboard == NULL)
@@ -104,7 +104,7 @@ void CResult::Update(void)
 	}
 
 	// X入力のポインタを宣言
-	CXInput *pXInput = CManager::GetXInput();
+	CXInput *pXInput = CManager::GetInstance()->GetXInput();
 
 	// X入力の情報取得の成功を判定
 	if (pXInput == NULL)
@@ -118,7 +118,7 @@ void CResult::Update(void)
 		pXInput->GetTrigger(XINPUT_GAMEPAD_A, CXInput::TYPE_INPUT_BUTTON))
 	{
 		// ゲームモード
-		CManager::GetFade()->SetFade(CScene::MODE_TITEL);
+		CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_TITEL);
 	}
 
 }

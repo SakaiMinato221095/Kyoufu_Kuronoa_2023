@@ -48,6 +48,7 @@ class CPlayer : public CObject
 
 public:
 
+	// 状態
 	typedef enum
 	{
 		STATE_TYPE_NEUTRAL = 0,		// 待機
@@ -56,6 +57,15 @@ public:
 		STATE_TYPE_MAX
 	}STATE_TYPE;
 
+	// 追加値の情報
+	typedef struct
+	{
+		float speedRate;	// 速度追加の倍率
+		int sppedPlusTime;	// 速度追加の時間
+
+	}DataPlus;
+
+	// 情報値
 	typedef struct
 	{
 		D3DXVECTOR3 pos;		// 位置
@@ -68,6 +78,8 @@ public:
 		D3DXVECTOR3 moveHold;	// 保持した移動量
 
 		D3DXVECTOR3 size;		// 大きさ
+
+		DataPlus plus;			// 追加値
 	}Data;
 
 	CPlayer();
@@ -88,7 +100,7 @@ public:
 	void SetData(Data data);
 	Data GetData(void);
 
-	void SetHave(bool bHave, CEnemyHave *enemyHave);
+	void SetPlus(float fRate, int nTime);
 
 private:
 
@@ -96,6 +108,9 @@ private:
 
 	void UpdatePos(void);
 	void UpdateRot(void);
+	void UpdatePlusData(void);
+	void UpdateMotion(void);
+
 	void UpdateKazedama(void);
 	void UpdateEnemyHave(void);
 
@@ -108,8 +123,6 @@ private:
 	void InputAction(void);
 	void InputKazedama(void);
 	void InputShot(void);
-
-	void UpdateMotion(void);
 
 	void DebugPlayer(void);
 

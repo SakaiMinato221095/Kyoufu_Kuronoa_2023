@@ -48,7 +48,7 @@ CObject3d::~CObject3d()
 HRESULT CObject3d::Init(TYPE_CREATE type)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -115,7 +115,7 @@ void CObject3d::Update(void)
 void CObject3d::Draw(void)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -126,7 +126,7 @@ void CObject3d::Draw(void)
 	}
 
 	// テクスチャ管理の取得
-	CManagerTexture *pManagerTexture = CManager::GetManagerTexture();
+	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の情報取得の成功を判定
 	if (pManagerTexture == NULL)
@@ -258,7 +258,7 @@ void CObject3d::SetVtx(void)
 	D3DXCOLOR color = m_vtxData.color;	// 色
 
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)

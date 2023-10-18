@@ -40,23 +40,7 @@
 //=	静的変数宣言
 //=======================================
 
-CScene *CManager::m_pScene = NULL;
-CFade *CManager::m_pFade = NULL;
-
-CRenderer *CManager::m_pRenderer = NULL;
-
-CInputKeyboard *CManager::m_pInputKeyboard = NULL;
-CXInput *CManager::m_pXInput = NULL;
-CSound *CManager::m_pSound = NULL;
-CDebugProc *CManager::m_pDbugProc = NULL;
-
-CManagerTexture *CManager::m_pManagerTexture = NULL;
-CManagerModel *CManager::m_pManagerModel = NULL;
-
-CCamera *CManager::m_pCamera = NULL;
-CLight *CManager::m_pLight = NULL;
-
-CMgrColl *CManager::m_pMgrColl = NULL;
+CManager *CManager::m_pManager = NULL;
 
 //-------------------------------------------------------------------------
 //- シーン
@@ -193,6 +177,23 @@ CScene::MODE CScene::GetMode(void)
 //-------------------------------------
 CManager::CManager()
 {
+	m_pScene = NULL;
+	m_pFade = NULL;
+
+	m_pRenderer = NULL;
+
+	m_pInputKeyboard = NULL;
+	m_pXInput = NULL;
+	m_pSound = NULL;
+	m_pDbugProc = NULL;
+
+	m_pManagerTexture = NULL;
+	m_pManagerModel = NULL;
+
+	m_pCamera = NULL;
+	m_pLight = NULL;
+
+	m_pMgrColl = NULL;
 }
 
 //-------------------------------------
@@ -923,6 +924,23 @@ CLight * CManager::GetLight(void)
 CMgrColl * CManager::GetMgrColl(void)
 {
 	return m_pMgrColl;
+}
+
+//-------------------------------------
+//- 管理のポインタ設定処理
+//-------------------------------------
+CManager * CManager::GetInstance()
+{
+	if (m_pManager == NULL)
+	{
+		// 管理の生成
+		return m_pManager = new CManager;
+	}
+	else
+	{
+		// 現在の管理を返す
+		return m_pManager;
+	}
 }
 
 //-------------------------------------

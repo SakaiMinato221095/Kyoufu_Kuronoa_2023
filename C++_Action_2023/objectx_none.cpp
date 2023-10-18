@@ -28,7 +28,7 @@
 // 効果なしオブジェクトのモデルのコンスト定義
 const char *pModelObjectXNone[] =
 {
-	"data\\MODEL\\none\\Sakura000.x",			// 桜
+	"data\\MODEL\\None\\Block_000.x",			// ブロック
 };
 
 //-======================================
@@ -60,7 +60,7 @@ CObjectXNone::~CObjectXNone()
 HRESULT CObjectXNone::Load(void)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -71,7 +71,7 @@ HRESULT CObjectXNone::Load(void)
 	}
 
 	// モデル管理の生成
-	CManagerModel *pManagerModel = CManager::GetManagerModel();
+	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
 	if (pManagerModel == NULL)
@@ -100,6 +100,8 @@ HRESULT CObjectXNone::Load(void)
 		m_nModelNldx[nCount] = nModelNldx;
 	}
 
+	m_modelData[MODEL_BLOCK_000].size = D3DXVECTOR3(50.0f, 50.0f, 50.0f);
+
 	// 成功を返す
 	return S_OK;
 }
@@ -115,10 +117,10 @@ void CObjectXNone::Unload(void)
 //-------------------------------------
 //- 効果なしオブジェクトの初期化処理（Xファイルオブジェクト設定）
 //-------------------------------------
-HRESULT CObjectXNone::Init(MODEL model)
+HRESULT CObjectXNone::Init(MODEL model, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// モデル管理の生成
-	CManagerModel *pManagerModel = CManager::GetManagerModel();
+	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
 
 	// モデル管理の有無を判定
 	if (pManagerModel == NULL)
@@ -133,11 +135,8 @@ HRESULT CObjectXNone::Init(MODEL model)
 	// 効果なしオブジェクトのモデル割当
 	BindModel(nModelNldx,model);
 
-	// データ設定
-	m_modelData[model].size = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
 	// 初期設定処理
-	InitSet(model);
+	InitSet(model,pos,rot);
 
 	// Xファイルオブジェクトの初期化 if(初期化成功の有無を判定)
 	if (FAILED(CObjectX::Init()))
@@ -180,7 +179,7 @@ void CObjectXNone::Draw(void)
 //-------------------------------------
 //- 効果なしオブジェクトの生成処理（Xファイルオブジェクト設定）
 //-------------------------------------
-CObjectXNone * CObjectXNone::Create(MODEL model)
+CObjectXNone * CObjectXNone::Create(MODEL model, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// 効果なしオブジェクトのポインタを宣言
 	CObjectXNone *pCObjectXNone = DBG_NEW CObjectXNone(4);
@@ -189,7 +188,7 @@ CObjectXNone * CObjectXNone::Create(MODEL model)
 	if (pCObjectXNone != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pCObjectXNone->Init(model)))
+		if (FAILED(pCObjectXNone->Init(model,pos,rot)))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -246,7 +245,13 @@ CObjectXNone::ModelData CObjectXNone::GetModelData(int nNum)
 //-------------------------------------
 //- 効果なしオブジェクトの初期設定処理
 //-------------------------------------
-void CObjectXNone::InitSet(MODEL model)
+void CObjectXNone::InitSet(MODEL model, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
+	VtxData vtxData;
 
+	vtxData.pos = pos;
+	vtxData.rot = rot;
+	vtxData.size = m_modelData[model].size;
+
+	SetVtxData(vtxData);
 }

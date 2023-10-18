@@ -47,7 +47,7 @@ CObjectBillboard::~CObjectBillboard()
 HRESULT CObjectBillboard::Init(void)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -115,7 +115,7 @@ void CObjectBillboard::Draw(void)
 	D3DXVECTOR3 pos = m_vtxData.pos;	// 位置
 
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -126,7 +126,7 @@ void CObjectBillboard::Draw(void)
 	}
 
 	// テクスチャ管理の取得
-	CManagerTexture *pManagerTexture = CManager::GetManagerTexture();
+	CManagerTexture *pManagerTexture = CManager::GetInstance()->GetManagerTexture();
 
 	// テクスチャ管理の情報取得の成功を判定
 	if (pManagerTexture == NULL)

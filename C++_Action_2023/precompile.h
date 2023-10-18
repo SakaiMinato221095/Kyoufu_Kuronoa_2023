@@ -31,6 +31,8 @@
 
 #include <xaudio2.h>					// サウンド処理に必要
 
+#include <assert.h>						// 警告
+
 // メモリリーク出力用マクロ
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>

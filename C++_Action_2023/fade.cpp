@@ -46,7 +46,7 @@ CFade::~CFade()
 HRESULT CFade::Init(void)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)
@@ -119,7 +119,7 @@ void CFade::Update(void)
 			m_state = STATE_IN;
 
 			// モードを設定
-			CManager::SetMode(m_mode);
+			CManager::GetInstance()->SetMode(m_mode);
 		}
 	}
 	else if (m_state == STATE_IN)
@@ -152,7 +152,7 @@ void CFade::Update(void)
 void CFade::Draw(void)
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
 
 	// デバイスの情報取得の成功を判定
 	if (pDevice == NULL)

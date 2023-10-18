@@ -79,25 +79,25 @@ public:
 	static HRESULT Load(void);
 	static void Unload(void);
 
-	HRESULT Init(MODEL model, STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 size);
+	HRESULT Init(MODEL model, STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 size);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	void InitSet(STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 size);
+	static CEnemyHave * Create(MODEL model, STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 size);
 
 	int GetModel(void);
 	void SetModel(int nModelNldx);
 
 	void UpdateObtain(void);
 	void UpdateWait(void);
-	void UpdateShot(void);
+	bool UpdateShot(void);
 
 	void SetShot(D3DXVECTOR3 pos, D3DXVECTOR3 move, int nLife, TYPE_ROT typeRot);
 
-	static CEnemyHave * Create(MODEL model,STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 size);
-
 private:
+
+	void InitSet(STATE state, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 size);
 
 	static int m_nModelNldx[MODEL_MAX];		// ÉÇÉfÉãÇÃî‘çÜ
 

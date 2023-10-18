@@ -153,7 +153,6 @@ HRESULT CEnemyHave::Init(MODEL model, STATE state, D3DXVECTOR3 pos,D3DXVECTOR3 r
 	// “–‚½‚è”»’èÝ’è
 	m_pColl = CColl::Create(
 		CMgrColl::TAG_ENEMY_HAVE,
-		CMgrColl::TYPE_RECTANGLE,
 		GetVtxData().pos,
 		GetVtxData().size);
 
@@ -353,7 +352,7 @@ void CEnemyHave::SetShot(D3DXVECTOR3 pos,D3DXVECTOR3 move, int nLife, TYPE_ROT t
 	m_data.typeRot = typeRot;
 
 	// ‘ŠŽèƒ^ƒO‚ÌÝ’èˆ—
-	m_pColl->SetTagTgt(CMgrColl::TAG_GIMMICK_JEWEL, true);
+	m_pColl->SetTagTgt(CMgrColl::TAG_GIMMICK_JEWEL, CMgrColl::TYPE_RECTANGLE, true);
 }
 
 //-------------------------------------

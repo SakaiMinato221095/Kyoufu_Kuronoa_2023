@@ -132,12 +132,11 @@ HRESULT CKazedama::Init(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR co
 		// 当たり判定設定
 		m_pColl = CColl::Create(
 			CMgrColl::TAG_KAZEDAMA,
-			CMgrColl::TYPE_RECTANGLE,
 			GetVtxData().pos,
 			GetVtxData().size);
 
 		// 相手タグの設定処理
-		m_pColl->SetTagTgt(CMgrColl::TAG_ENEMY, true);
+		m_pColl->SetTagTgt(CMgrColl::TAG_ENEMY, CMgrColl::TYPE_RECTANGLE, true);
 	}
 	else
 	{
@@ -179,11 +178,6 @@ void CKazedama::Uninit(void)
 //-------------------------------------
 void CKazedama::Update(void)
 {
-	// 当たり判定の情報更新処理
-	m_pColl->UpdateData(
-		GetVtxData().pos,
-		GetVtxData().size);
-
 	switch (m_data.state)
 	{
 	case STATE_ACTIVE:
@@ -206,6 +200,11 @@ void CKazedama::Update(void)
 
 	// ビルボードオブジェクトの更新処理
 	CObjectBillboard::Update();
+
+	// 当たり判定の情報更新処理
+	m_pColl->UpdateData(
+		GetVtxData().pos,
+		GetVtxData().size);
 }
 
 //-------------------------------------

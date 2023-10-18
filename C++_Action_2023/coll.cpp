@@ -45,7 +45,7 @@ CColl::~CColl()
 //-------------------------------------
 //- 当たり判定の初期化処理
 //-------------------------------------
-HRESULT CColl::Init(CMgrColl::TAG tag, CMgrColl::TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 size)
+HRESULT CColl::Init(CMgrColl::TAG tag, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// 当たり判定のポインタ取得
 	CMgrColl *pMgrColl = CManager::GetInstance()->GetMgrColl();
@@ -61,7 +61,7 @@ HRESULT CColl::Init(CMgrColl::TAG tag, CMgrColl::TYPE type, D3DXVECTOR3 pos, D3D
 	m_data.nNldx = pMgrColl->Set(this);
 
 	// 初期設定処理
-	InitSet(tag, type, pos, size);
+	InitSet(tag, pos, size);
 
 	return S_OK;
 }
@@ -103,7 +103,7 @@ void CColl::Draw(void)
 //-------------------------------------
 //- 当たり判定の生成処理
 //-------------------------------------
-CColl * CColl::Create(CMgrColl::TAG tag, CMgrColl::TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CColl * CColl::Create(CMgrColl::TAG tag, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// 当たり判定の生成
 	CColl *pCollision = DBG_NEW CColl;
@@ -112,7 +112,7 @@ CColl * CColl::Create(CMgrColl::TAG tag, CMgrColl::TYPE type, D3DXVECTOR3 pos, D
 	if (pCollision != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pCollision->Init(tag,type,pos,size)))
+		if (FAILED(pCollision->Init(tag,pos,size)))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -131,12 +131,23 @@ CColl * CColl::Create(CMgrColl::TAG tag, CMgrColl::TYPE type, D3DXVECTOR3 pos, D
 }
 
 //-------------------------------------
-//- タグの相手を判定設定処理
+//- 当たり判定の情報更新処理
 //-------------------------------------
 void CColl::UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-	// 設定したタグの当たり判定の有無を設定
+	// 当たり判定情報の代入
 	m_data.pos = pos;		// 位置
+	m_data.size = size;		// サイズ
+}
+
+//-------------------------------------
+//- 当たり判定の情報更新処理（posOld）
+//-------------------------------------
+void CColl::UpdateData(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 size)
+{
+	// 当たり判定情報の代入
+	m_data.pos = pos;		// 位置
+	m_data.posOld = posOld;	// 前回の位置
 	m_data.size = size;		// サイズ
 }
 
@@ -167,10 +178,13 @@ bool CColl::Hit(CMgrColl::TAG hitTag, CMgrColl::STATE_HIT stateHit)
 //-------------------------------------
 //- タグの相手を判定設定処理
 //-------------------------------------
-void CColl::SetTagTgt(CMgrColl::TAG hitTag, bool bIsActive)
+void CColl::SetTagTgt(CMgrColl::TAG hitTag, CMgrColl::TYPE type, bool bIsActive)
 {
 	// 設定したタグの当たり判定の有無を設定
-	m_data.bTagTgt[hitTag] = bIsActive;
+	m_data.abTagTgt[hitTag] = bIsActive;
+
+	// 判定の種類を代入
+	m_data.aType[hitTag] = type;
 }
 
 //-------------------------------------
@@ -225,10 +239,10 @@ void CColl::ResetHitData(void)
 //-------------------------------------
 //- 当たり判定の初期設定処理
 //-------------------------------------
-void CColl::InitSet(CMgrColl::TAG tag, CMgrColl::TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 size)
+void CColl::InitSet(CMgrColl::TAG tag, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	m_data.tag = tag;
-	m_data.type = type;
 	m_data.pos = pos;
 	m_data.size = size;
 }
+

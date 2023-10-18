@@ -39,6 +39,8 @@ class CColl;
 class CKazedama;
 class CEnemyHave;
 
+class CColl;
+
 //-======================================
 //-	クラス定義
 //-======================================
@@ -129,6 +131,8 @@ private:
 	Data m_data;								// 値を格納
 	bool m_bJump;								// ジャンプ状態の有無
 	bool m_bHave;								// 所持状態の有無
+
+	CColl *m_pColl;								// 当たり判定情報
 
 	CKazedama *m_pKazedama;						// 風だまのポインタ
 	CEnemyHave *m_pEnemyHave;					// 保持敵のポインタ

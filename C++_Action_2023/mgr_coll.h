@@ -57,7 +57,9 @@ public:
 	// “–‚½‚èŽí—Þ
 	typedef enum
 	{
-		TYPE_RECTANGLE = 0,	// ‹éŒ`
+		TYPE_NONE = 0,			// Œø‰Ê‚È‚µ
+		TYPE_RECTANGLE,			// ‹éŒ`
+		TYPE_RECTANGLE_SIDE,	// ‹éŒ`‚Ì•Ó“Á’è
 		TYPE_MAX
 	}TYPE;
 

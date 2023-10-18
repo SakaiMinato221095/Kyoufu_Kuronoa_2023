@@ -125,6 +125,16 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos , D3DXVECTOR3 rot,CModel::MODEL_TYPE model
 //-------------------------------------
 void CPlayer::Uninit(void)
 {
+	if (m_pColl != NULL)
+	{
+		// 当たり判定の終了処理
+		m_pColl->Uninit();
+
+		// 当たり判定の開放処理
+		delete m_pColl;
+		m_pColl = NULL;
+	}
+
 	// モデルの終了処理
 	for (int nCount = 0; nCount < m_nNumModel; nCount++)
 	{
@@ -191,6 +201,37 @@ void CPlayer::Update(void)
 
 	// 敵保持の更新処理
 	UpdateEnemyHave();
+	
+	// 当たり判定の情報更新処理
+	m_pColl->UpdateData(
+		m_data.pos,
+		m_data.posOld,
+		m_data.size);
+
+	// プレイヤーの当たり判定
+	if (m_pColl->Hit(CMgrColl::TAG_BLOCK, CMgrColl::STATE_HIT_NONE) == true)
+	{
+		bool bHitSxisX = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_X];
+		bool bHitSxisY = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_Y];
+
+		if (bHitSxisX == true)
+		{
+			// 移動量をなくす
+			m_data.move.x = 0.0f;
+
+			// プレイヤーのX座標移動を停止
+			m_data.pos.x = m_data.posOld.x;
+		}
+
+		else if (bHitSxisY == true)
+		{
+			// 移動量をなくす
+			m_data.move.y = 0.0f;
+
+			// プレイヤーのY座標移動を停止
+			m_data.pos.y = m_data.posOld.y;
+		}
+	}
 
 	// デバック表示
 	DebugPlayer();
@@ -321,6 +362,16 @@ void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	m_data.pos = pos;
 	m_data.rot = rot;
+	m_data.size = D3DXVECTOR3(50.0f, 100.0f, 50.0f);
+
+	// 当たり判定設定
+	m_pColl = CColl::Create(
+		CMgrColl::TAG_PLAYER,
+		m_data.pos,
+		m_data.size);
+
+	// 相手タグの設定処理
+	m_pColl->SetTagTgt(CMgrColl::TAG_BLOCK, CMgrColl::TYPE_RECTANGLE_SIDE, true);
 
 	m_data.plus.speedRate = 1.0f;
 }
@@ -349,6 +400,7 @@ void CPlayer::UpdatePos(void)
 	{
 		m_bJump = false;
 		pos.y = 0.0f;
+		move.y = 0.0f;
 	}
 
 	// 情報更新
@@ -601,7 +653,7 @@ void CPlayer::InputMove(void)
 	{//Aキーが押されたとき
 
 		move.x -= sinf((D3DX_PI * 0.5f) + rotCamera.y) * speed.x;
-		move.z -= cosf((D3DX_PI * 0.5f) + rotCamera.y) * speed.z;
+		//move.z -= cosf((D3DX_PI * 0.5f) + rotCamera.y) * speed.z;
 
 		rotDest.y = (D3DX_PI * 0.5f) + rotCamera.y;
 	}
@@ -611,7 +663,7 @@ void CPlayer::InputMove(void)
 	{//Dキーが押されたとき
 
 		move.x += sinf((D3DX_PI * 0.5f) + rotCamera.y) * speed.x;
-		move.z += cosf((D3DX_PI * 0.5f) + rotCamera.y) * speed.z;
+		//move.z += cosf((D3DX_PI * 0.5f) + rotCamera.y) * speed.z;
 
 		rotDest.y = -(D3DX_PI * 0.5f) + rotCamera.y;
 	}

@@ -88,6 +88,16 @@ HRESULT CObjBlock::Init(MODEL model, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //-------------------------------------
 void CObjBlock::Uninit(void)
 {
+	if (m_pColl != NULL)
+	{
+		// 当たり判定の終了処理
+		m_pColl->Uninit();
+
+		// 当たり判定の開放処理
+		delete m_pColl;
+		m_pColl = NULL;
+	}
+
 	// 効果なしオブジェクトの終了
 	CObjectXNone::Uninit();
 }
@@ -153,7 +163,6 @@ void CObjBlock::InitSet(void)
 	// 当たり判定設定
 	m_pColl = CColl::Create(
 		CMgrColl::TAG_BLOCK,
-		CMgrColl::TYPE_RECTANGLE,
 		GetVtxData().pos,
 		GetVtxData().size);
 }

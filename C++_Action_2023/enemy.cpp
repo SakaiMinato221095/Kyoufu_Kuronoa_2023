@@ -159,7 +159,6 @@ HRESULT CEnemy::Init(MODEL modelType)
 		// ìñÇΩÇËîªíËê›íË
 		m_pColl = CColl::Create(
 			CMgrColl::TAG_ENEMY,
-			CMgrColl::TYPE_RECTANGLE,
 			GetVtxData().pos,
 			GetVtxData().size);
 	}

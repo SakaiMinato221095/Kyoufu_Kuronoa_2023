@@ -189,7 +189,6 @@ void CGimmickJewel::InitSet(TYPE_EFFECT typeEffect)
 	// ìñÇΩÇËîªíËê›íË
 	m_pColl = CColl::Create(
 		CMgrColl::TAG_GIMMICK_JEWEL,
-		CMgrColl::TYPE_RECTANGLE,
 		GetVtxData().pos,
 		GetVtxData().size);
 }

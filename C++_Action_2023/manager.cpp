@@ -32,6 +32,8 @@
 
 #include "mgr_coll.h"
 
+#include "csv_stage.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -194,6 +196,8 @@ CManager::CManager()
 	m_pLight = NULL;
 
 	m_pMgrColl = NULL;
+
+	m_pCsvStage = NULL;
 }
 
 //-------------------------------------
@@ -540,6 +544,43 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		}
 	}
 
+
+	// シーン
+	{
+		// シーンの有無を判定
+		if (m_pCsvStage == NULL)
+		{
+			// シーンの生成
+			m_pCsvStage = CCsvStage::Create();
+
+			// シーンの有無を判定
+			if (m_pCsvStage == NULL)
+			{
+				// 失敗メッセージ
+				MessageBox(hWnd, "CSVステージの初期化", "初期処理失敗！", MB_ICONWARNING);
+
+				// 初期化を抜ける
+				return E_FAIL;
+			}
+		}
+		else
+		{// ゴミが入っているとき
+
+			// 失敗メッセージ
+			MessageBox(hWnd, "CSVステージの初期化", "初期処理失敗！", MB_ICONWARNING);
+
+			// 初期化を抜ける
+			return E_FAIL;
+		}
+	}
+
+	// ステージCSVの処理
+	if (m_pCsvStage != NULL)
+	{
+		// CSVステージのロード処理
+		m_pCsvStage->Load(CCsvStage::CSV_STAGE_000);
+	}
+	
 	// 音の設定
 	if (m_pSound != NULL)
 	{
@@ -653,6 +694,17 @@ void CManager::Uninit(void)
 		// 当たり判定管理の開放処理
 		delete m_pMgrColl;
 		m_pMgrColl = NULL;
+	}
+
+	// CSVステージの破棄
+	if (m_pCsvStage != NULL)
+	{
+		// CSVステージの終了処理
+		m_pCsvStage->Uninit();
+
+		// CSVステージの開放処理
+		delete m_pCsvStage;
+		m_pCsvStage = NULL;
 	}
 
 	// シーンの破棄
@@ -924,6 +976,14 @@ CLight * CManager::GetLight(void)
 CMgrColl * CManager::GetMgrColl(void)
 {
 	return m_pMgrColl;
+}
+
+//-------------------------------------
+//- 管理のステージCSVを取得処理
+//-------------------------------------
+CCsvStage * CManager::GetCsvStage(void)
+{
+	return m_pCsvStage;
 }
 
 //-------------------------------------

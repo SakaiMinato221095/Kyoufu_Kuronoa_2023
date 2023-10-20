@@ -23,6 +23,7 @@
 #include "enemy.h"
 #include "enemy_have.h"
 #include "gimmick.h"
+#include "goal.h"
 
 //-------------------------------------
 //-	モデル管理のコンストラクタ
@@ -95,6 +96,17 @@ HRESULT CManagerModel::Load(HWND hWnd)
 
 	 // 失敗メッセージ
 		MessageBox(hWnd, "ギミックのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
+
+	// ゴールオブジェクト
+	if (FAILED(CGoal::Load()))
+	{// 失敗時
+
+		// 失敗メッセージ
+		MessageBox(hWnd, "ゴールのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
 
 		// データ読み込みを抜ける
 		return E_FAIL;

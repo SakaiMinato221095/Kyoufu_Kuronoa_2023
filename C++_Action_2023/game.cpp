@@ -12,6 +12,8 @@
 
 #include "game.h"
 
+#include "manager.h"
+
 #include "fade.h"
 
 #include "input.h"
@@ -23,10 +25,9 @@
 #include "obj_3d_field.h"
 #include "objectx_none.h"
 
-#include "enemy.h"
+#include "csv_stage.h"
 
-#include "gimmick_jewel.h"
-#include "obj_block.h"
+#include "timer.h"
 
 //=======================================
 //=	マクロ定義
@@ -37,6 +38,7 @@
 //=======================================
 
 CPlayer *CGame::m_pPlayer = NULL;
+CTimer *CGame::m_pTimer = NULL;
 
 //-------------------------------------
 //-	ゲーム画面のコンストラクタ
@@ -84,28 +86,26 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		D3DXVECTOR3(5000.0f, 0.0f, 5000.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
-	CEnemy *pEnemy1 = CEnemy::Create(CEnemy::MODEL_ALIEN_000);
-	pEnemy1->Set(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	// 時間の生成
+	m_pTimer = CTimer::Create(
+		D3DXVECTOR3(SCREEN_WIDTH * 0.04f, SCREEN_HEIGHT * 0.075f, 0.0f),
+		D3DXVECTOR3(60.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(40.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(30.0f, 40.0f, 0.0f),
+		D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
 
-	CEnemy *pEnemy2 = CEnemy::Create(CEnemy::MODEL_ALIEN_000);
-	pEnemy2->Set(D3DXVECTOR3(300.0f, 0.0f, 0.0f));
+	// 
+	CCsvStage *pCsvStage = CManager::GetInstance()->GetCsvStage();
 
-	CEnemy *pEnemy3 = CEnemy::Create(CEnemy::MODEL_ALIEN_000);
-	pEnemy3->Set(D3DXVECTOR3(600.0f, 0.0f, 0.0f));
+	if (pCsvStage != NULL)
+	{
+		// CSVステージの設置
+		pCsvStage->SetObj();
+	}
 
-	CGimmick *pGimmick = CGimmickJewel::Create(
-		CGimmick::MODEL_JEWEL_000,
-		CGimmickJewel::TYPE_EFFECT_SPEED_UP,
-		D3DXVECTOR3(100.0f, 200.0f, 0.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
-	CObjectXNone *pBlock = CObjBlock::Create(
-		CObjectXNone::MODEL_BLOCK_000,
-		D3DXVECTOR3(-300.0f, 200.0f, 0.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-		// 成功を返す
-		return S_OK;
+	// 成功を返す
+	return S_OK;
 }
 
 //-------------------------------------
@@ -117,6 +117,14 @@ void CGame::Uninit(void)
 	{
 		m_pPlayer->Uninit();
 		m_pPlayer = NULL;
+	}
+
+	if (m_pTimer != NULL)
+	{
+		m_pTimer->Uninit();
+		m_pTimer = NULL;
+
+		delete m_pTimer;
 	}
 
 	// オブジェクトの全開放処理
@@ -148,6 +156,9 @@ void CGame::Update(void)
 		// 処理を抜ける
 		return;
 	}
+
+	// 時間の更新処理
+	m_pTimer->Update();
 
 	// 遷移ボタン（えんたー）
 	if (pInputKeyboard->GetTrigger(DIK_RETURN) != NULL ||

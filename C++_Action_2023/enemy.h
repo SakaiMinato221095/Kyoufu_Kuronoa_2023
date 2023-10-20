@@ -57,14 +57,12 @@ public:
 	static HRESULT Load(void);
 	static void Unload(void);
 
-	HRESULT Init(MODEL modelType);
+	HRESULT Init(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	void Set(D3DXVECTOR3 pos);
-
-	static CEnemy *Create(MODEL modelType);
+	static CEnemy *Create(MODEL modelType,D3DXVECTOR3 pos,D3DXVECTOR3 rot);
 
 	int GetModel(void);
 	void SetModel(int nModelNldx);
@@ -73,6 +71,8 @@ public:
 	static ModelData GetModelData(int nNum);
 
 private:
+
+	void InitSet(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 	static int m_nModelNldx[MODEL_MAX];			// ÉÇÉfÉãÇÃî‘çÜ
 	static ModelData m_modelData[MODEL_MAX];	// ÉÇÉfÉãÇÃèÓïÒ

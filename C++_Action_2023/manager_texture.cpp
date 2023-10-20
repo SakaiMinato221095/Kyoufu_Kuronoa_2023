@@ -18,6 +18,7 @@
 #include "obj_3d_field.h"
 
 #include "bg.h"
+#include "number.h"
 
 //-------------------------------------
 //-	テクスチャのコンストラクタ
@@ -57,6 +58,17 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 
 	 // 失敗メッセージ
 		MessageBox(hWnd, "背景のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
+
+	// 数字
+	if (FAILED(CNumber::Load()))
+	{// 失敗時
+
+		// 失敗メッセージ
+		MessageBox(hWnd, "数字のデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
 
 		// データ読み込みを抜ける
 		return E_FAIL;

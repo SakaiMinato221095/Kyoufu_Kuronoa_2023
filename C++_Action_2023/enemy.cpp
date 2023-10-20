@@ -105,6 +105,8 @@ HRESULT CEnemy::Load(void)
 		m_nModelNldx[nCount] = nModelNldx;
 	}
 
+	m_modelData[MODEL_ALIEN_000].size = D3DXVECTOR3(50.0f, 100.0f, 50.0f);
+
 	// 成功を返す
 	return S_OK;
 }
@@ -120,7 +122,7 @@ void CEnemy::Unload(void)
 //-------------------------------------
 //- 敵の初期化処理
 //-------------------------------------
-HRESULT CEnemy::Init(MODEL modelType)
+HRESULT CEnemy::Init(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// モデル管理の生成
 	CManagerModel *pManagerModel = CManager::GetInstance()->GetManagerModel();
@@ -138,21 +140,15 @@ HRESULT CEnemy::Init(MODEL modelType)
 	// 効果なしオブジェクトのモデル割当
 	BindModel(nModelNldx, modelType);
 
+	// 初期設定処理
+	InitSet(modelType, pos, rot);
+
 	// Xファイルオブジェクトの初期化 if(初期化成功の有無を判定)
 	if (FAILED(CObjectX::Init()))
 	{
 		// 失敗を返す
 		return E_FAIL;
 	}
-
-	// 頂点値情報を取得
-	VtxData vtxData = GetVtxData();
-
-	// サイズを設定
-	vtxData.size = D3DXVECTOR3(50.0f, 100.0f, 50.0f);
-
-	// 頂点値情報を更新
-	SetVtxData(vtxData);
 
 	if (m_pColl == NULL)
 	{
@@ -220,21 +216,9 @@ void CEnemy::Draw(void)
 }
 
 //-------------------------------------
-//- 敵の設定処理
-//-------------------------------------
-void CEnemy::Set(D3DXVECTOR3 pos)
-{
-	VtxData vtxData = GetVtxData();
-
-	vtxData.pos = pos;
-
-	SetVtxData(vtxData);
-}
-
-//-------------------------------------
 //- 通常敵の生成処理
 //-------------------------------------
-CEnemy *CEnemy::Create(MODEL modelType)
+CEnemy * CEnemy::Create(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// 通常敵の生成
 	CEnemy *pEnemy = DBG_NEW CEnemy;
@@ -243,17 +227,17 @@ CEnemy *CEnemy::Create(MODEL modelType)
 	if (pEnemy != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pEnemy->Init(modelType)))
+		if (FAILED(pEnemy->Init(modelType,pos,rot)))
 		{// 失敗時
 
-		 // 「なし」を返す
+			// 「なし」を返す
 			return NULL;
 		}
 	}
 	else if (pEnemy == NULL)
 	{// 失敗時
 
-	 // 「なし」を返す
+		// 「なし」を返す
 		return NULL;
 	}
 
@@ -295,4 +279,21 @@ CEnemy::ModelData CEnemy::GetModelData(int nNum)
 {
 	// モデル情報を返す
 	return m_modelData[nNum];
+}
+
+//-------------------------------------
+//-	敵のモデルの初期設定
+//-------------------------------------
+void CEnemy::InitSet(MODEL modelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+{
+	// 頂点値情報を取得
+	CObjectX::VtxData vtxData = GetVtxData();
+
+	// データの代入
+	vtxData.pos = pos;								// 位置
+	vtxData.rot = rot;								// 向き
+	vtxData.size = m_modelData[modelType].size;		// サイズ
+
+	// 情報更新（頂点値情報）
+	SetVtxData(vtxData);
 }

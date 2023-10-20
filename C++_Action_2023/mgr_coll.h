@@ -51,6 +51,7 @@ public:
 		TAG_ENEMY_HAVE,		// 保持敵
 		TAG_BLOCK,			// ブロック
 		TAG_GIMMICK_JEWEL,	// 宝石ギミック
+		TAG_GOAL,			// ゴール
 		TAG_MAX
 	}TAG;
 

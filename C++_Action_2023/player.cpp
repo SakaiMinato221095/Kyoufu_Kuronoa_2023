@@ -202,36 +202,44 @@ void CPlayer::Update(void)
 	// 敵保持の更新処理
 	UpdateEnemyHave();
 	
+	//縦幅の処理
+	if (m_data.pos.y <= 0.0f)
+	{
+		m_bJump = false;
+		m_data.pos.y = 0.0f;
+		m_data.move.y = 0.0f;
+	}
+
 	// 当たり判定の情報更新処理
 	m_pColl->UpdateData(
 		m_data.pos,
 		m_data.posOld,
 		m_data.size);
 
-	// プレイヤーの当たり判定
-	if (m_pColl->Hit(CMgrColl::TAG_BLOCK, CMgrColl::STATE_HIT_NONE) == true)
-	{
-		bool bHitSxisX = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_X];
-		bool bHitSxisY = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_Y];
+	//// プレイヤーの当たり判定
+	//if (m_pColl->Hit(CMgrColl::TAG_BLOCK, CMgrColl::STATE_HIT_NONE) == true)
+	//{
+	//	bool bHitSxisX = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_X];
+	//	bool bHitSxisY = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_Y];
 
-		if (bHitSxisX == true)
-		{
-			// 移動量をなくす
-			m_data.move.x = 0.0f;
+	//	if (bHitSxisX == true)
+	//	{
+	//		// 移動量をなくす
+	//		m_data.move.x = 0.0f;
 
-			// プレイヤーのX座標移動を停止
-			m_data.pos.x = m_data.posOld.x;
-		}
+	//		// プレイヤーのX座標移動を停止
+	//		m_data.pos.x = m_data.posOld.x;
+	//	}
 
-		else if (bHitSxisY == true)
-		{
-			// 移動量をなくす
-			m_data.move.y = 0.0f;
+	//	if (bHitSxisY == true)
+	//	{
+	//		// 移動量をなくす
+	//		m_data.move.y = 0.0f;
 
-			// プレイヤーのY座標移動を停止
-			m_data.pos.y = m_data.posOld.y;
-		}
-	}
+	//		// プレイヤーのY座標移動を停止
+	//		m_data.pos.y = m_data.posOld.y;
+	//	}
+	//}
 
 	// デバック表示
 	DebugPlayer();
@@ -395,14 +403,6 @@ void CPlayer::UpdatePos(void)
 	move.x += (0.0f - move.x) * 0.3f;
 	move.z += (0.0f - move.z) * 0.3f;
 
-	//縦幅の処理
-	if (pos.y <= 0.0f)
-	{
-		m_bJump = false;
-		pos.y = 0.0f;
-		move.y = 0.0f;
-	}
-
 	// 情報更新
 	m_data.pos = pos;
 	m_data.move = move;
@@ -483,7 +483,7 @@ void CPlayer::UpdateMotion(void)
 	CMotion *pMotion = GetMotion();		// モーション
 	D3DXVECTOR3 move = GetData().move;	// 移動量
 
-										// 状態を判定
+	// 状態を判定
 	if (m_stateTypeNew == STATE_TYPE_NEUTRAL ||
 		m_stateTypeNew == STATE_TYPE_MOVE)
 	{

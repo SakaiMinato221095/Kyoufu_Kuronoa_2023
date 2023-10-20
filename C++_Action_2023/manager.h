@@ -37,6 +37,8 @@ class CLight;
 
 class CMgrColl;
 
+class CCsvStage;
+
 //-======================================
 //-	クラス定義
 //-======================================
@@ -106,6 +108,8 @@ public:
 
 	CMgrColl *GetMgrColl(void);
 
+	CCsvStage *GetCsvStage(void);
+
 	static CManager *GetInstance();
 private:
 
@@ -128,7 +132,9 @@ private:
 
 	CMgrColl *m_pMgrColl;				// 当たり判定管理のポインタ
 
-	static CManager *m_pManager;				// 自身のポインタ
+	CCsvStage *m_pCsvStage;				// ステージのCSVのポインタ
+
+	static CManager *m_pManager;		// 自身のポインタ
 };
 
 #endif	// 二重インクルード防止の終了

@@ -20,6 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bg.cpp" />
+    <ClCompile Include="edit_map.cpp" />
+    <ClCompile Include="csv_stage.cpp" />
+    <ClCompile Include="goal.cpp" />
+    <ClCompile Include="number.cpp" />
     <ClCompile Include="obj_block.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="coll.cpp" />
@@ -56,11 +60,16 @@
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="timer.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bg.h" />
+    <ClInclude Include="edit_map.h" />
+    <ClInclude Include="csv_stage.h" />
+    <ClInclude Include="goal.h" />
+    <ClInclude Include="number.h" />
     <ClInclude Include="obj_block.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="coll.h" />
@@ -94,6 +103,7 @@
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="timer.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="xinput.h" />
   </ItemGroup>

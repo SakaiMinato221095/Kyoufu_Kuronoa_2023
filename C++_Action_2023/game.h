@@ -29,6 +29,8 @@
 
 class CPlayer;
 
+class CTimer;
+
 //-======================================
 //-	クラス定義
 //-======================================
@@ -57,6 +59,7 @@ public:
 private:
 
 	static CPlayer *m_pPlayer;				// プレイヤー
+	static CTimer *m_pTimer;				// タイマー
 
 	GAME m_game;							// ゲーム状態
 };

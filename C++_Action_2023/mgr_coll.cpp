@@ -123,17 +123,6 @@ void CMgrColl::Update(void)
 							{
 								// 接触
 								bIsHit = true;
-								
-								// 変数宣言（自身の当たり判定の情報取得）
-								CColl::Data data = pCollMy->GetData();
-
-								// X軸の当たり判定
-								data.abHitSxis[CColl::TYPE_SXIS_X] = hitRectangleSide(posMy.x, sizeMy.x, posPair.x, sizePair.x);
-								data.abHitSxis[CColl::TYPE_SXIS_Y] = hitRectangleSide(posMy.y, sizeMy.y, posPair.y, sizePair.y);
-								data.abHitSxis[CColl::TYPE_SXIS_Z] = hitRectangleSide(posMy.z, sizeMy.z, posPair.z, sizePair.z);
-
-								// 情報更新（自身の当たり判定）
-								pCollMy->SetData(data);
 							}
 
 							break;
@@ -236,14 +225,18 @@ bool CMgrColl::Hit(int nNldxColl, CMgrColl::TAG hitTag, STATE_HIT stateHit)
 					CColl::Data data = pCollMy->GetData();
 
 					// X軸の当たり判定
-					if (hitRectangleSide(posOldMy.y, sizeMy.y, posPair.y, sizePair.y))
+					if (hitRectangleSide(posMy.x, sizeMy.x, posPair.x, sizePair.x) == true)
 					{
-						data.abHitSxis[CColl::TYPE_SXIS_X] = hitRectangleSide(posMy.x, sizeMy.x, posPair.x, sizePair.x);
+						data.abHitSxis[CColl::TYPE_SXIS_X] = hitRectangleSide(posOldMy.y, sizeMy.y, posPair.y, sizePair.y);
+
+						posMy.x = posOldMy.x;
 					}
 
-					if (hitRectangleSide(posOldMy.x, sizeMy.x, posPair.x, sizePair.x))
+					if (hitRectangleSide(posMy.y, sizeMy.y, posPair.y, sizePair.y) == true)
 					{
-						data.abHitSxis[CColl::TYPE_SXIS_Y] = hitRectangleSide(posMy.y , sizeMy.y, posPair.y, sizePair.y);
+						data.abHitSxis[CColl::TYPE_SXIS_Y] = hitRectangleSide(posOldMy.x, sizeMy.x, posPair.x, sizePair.x);
+
+						posMy.y = posOldMy.y;
 					}
 
 					data.abHitSxis[CColl::TYPE_SXIS_Z] = hitRectangleSide(posMy.z, sizeMy.z, posPair.z, sizePair.z);

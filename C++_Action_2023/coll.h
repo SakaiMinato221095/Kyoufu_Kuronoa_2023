@@ -65,6 +65,7 @@ public:
 		D3DXVECTOR3 pos;							// 位置
 		D3DXVECTOR3 posOld;							// 前回の位置
 		D3DXVECTOR3 size;							// 大きさ
+		D3DXVECTOR2 collVec;						// 接触方向ベクトル
 
 		HitData hitData[COLLSION_NUM_MAX];			// 接触相手の当たり判定情報
 		int nHitNldxMax;							// 接触相手の番号の最大数

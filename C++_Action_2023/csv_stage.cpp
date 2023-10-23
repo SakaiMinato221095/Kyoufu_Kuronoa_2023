@@ -21,8 +21,8 @@
 //=	マクロ定義
 //=======================================
 
-#define SIZE_TILE_CRITERIA_X	(200.0f)		// 一マスの基準（X軸）
-#define SIZE_TILE_CRITERIA_Y	(200.0f)		// 一マスの基準（Y軸）
+#define SIZE_TILE_CRITERIA_X	(150.0f)		// 一マスの基準（X軸）
+#define SIZE_TILE_CRITERIA_Y	(150.0f)		// 一マスの基準（Y軸）
 
 //=======================================
 //= コンスト定義

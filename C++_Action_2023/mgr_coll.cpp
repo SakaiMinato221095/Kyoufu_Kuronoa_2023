@@ -118,13 +118,9 @@ void CMgrColl::Update(void)
 
 						case TYPE_RECTANGLE_SIDE:
 
-							// 矩形の当たり判定
-							if (hitRectangle(posMy, sizeMy, posPair, sizePair) == true)
-							{
-								// 接触
-								bIsHit = true;
-							}
-
+							// 接触
+							bIsHit = true;
+							
 							break;
 						}
 
@@ -215,35 +211,45 @@ bool CMgrColl::Hit(int nNldxColl, CMgrColl::TAG hitTag, STATE_HIT stateHit)
 				D3DXVECTOR3 posPair = pCollPair->GetData().pos;		// 相手の位置
 				D3DXVECTOR3 sizePair = pCollPair->GetData().size;	// 相手の大きさ
 
-				// 矩形の当たり判定
-				if (hitRectangle(posMy, sizeMy, posPair, sizePair) == true)
+				// 変数宣言（自身の当たり判定の情報取得）
+				CColl::Data data = pCollMy->GetData();
+
+				// X軸の当たり判定
+				if (hitRectangleSide(posMy.x, sizeMy.x, posPair.x, sizePair.x) == true &&
+					hitRectangleSide(posOldMy.x, sizeMy.x, posPair.x, sizePair.x) == false)
 				{
-					// 接触
-					bHitTgt = true;
+					data.abHitSxis[CColl::TYPE_SXIS_X] = hitRectangleSide(posOldMy.y, sizeMy.y, posPair.y, sizePair.y);
 
-					// 変数宣言（自身の当たり判定の情報取得）
-					CColl::Data data = pCollMy->GetData();
-
-					// X軸の当たり判定
-					if (hitRectangleSide(posMy.x, sizeMy.x, posPair.x, sizePair.x) == true)
+					if (data.abHitSxis[CColl::TYPE_SXIS_X] == true)
 					{
-						data.abHitSxis[CColl::TYPE_SXIS_X] = hitRectangleSide(posOldMy.y, sizeMy.y, posPair.y, sizePair.y);
+						// 自身の前回の位置
+						data.pos.x = posOldMy.x;
 
-						posMy.x = posOldMy.x;
+						// 接触
+						bHitTgt = true;
 					}
-
-					if (hitRectangleSide(posMy.y, sizeMy.y, posPair.y, sizePair.y) == true)
-					{
-						data.abHitSxis[CColl::TYPE_SXIS_Y] = hitRectangleSide(posOldMy.x, sizeMy.x, posPair.x, sizePair.x);
-
-						posMy.y = posOldMy.y;
-					}
-
-					data.abHitSxis[CColl::TYPE_SXIS_Z] = hitRectangleSide(posMy.z, sizeMy.z, posPair.z, sizePair.z);
-
-					// 情報更新（自身の当たり判定）
-					pCollMy->SetData(data);
 				}
+
+				if (hitRectangleSide(posMy.y, sizeMy.y, posPair.y, sizePair.y) == true &&
+					hitRectangleSide(posOldMy.y, sizeMy.y, posPair.y, sizePair.y) == false)
+				{
+					data.abHitSxis[CColl::TYPE_SXIS_Y] = hitRectangleSide(posMy.x, sizeMy.x, posPair.x, sizePair.x);
+
+					if (data.abHitSxis[CColl::TYPE_SXIS_Y] == true)
+					{
+						// 自身の前回の位置
+						data.pos.y = posOldMy.y;
+
+						// 接触
+						bHitTgt = true;
+					}
+
+				}
+
+				data.abHitSxis[CColl::TYPE_SXIS_Z] = hitRectangleSide(posMy.z, sizeMy.z, posPair.z, sizePair.z);
+
+				// 情報更新（自身の当たり判定）
+				pCollMy->SetData(data);
 			}
 			else
 			{
@@ -257,10 +263,14 @@ bool CMgrColl::Hit(int nNldxColl, CMgrColl::TAG hitTag, STATE_HIT stateHit)
 				m_apColl[hitNldx]->SetData(dataPair);
 			}
 		}
+
 	}
 
 	return bHitTgt;
+
 }
+
+//}
 
 //-------------------------------------
 //- 当たり判定管理の設定処理
@@ -297,40 +307,6 @@ bool CMgrColl::hitRectangle(D3DXVECTOR3 posMy, D3DXVECTOR3 sizeMy, D3DXVECTOR3 p
 		posMy.x - sizeMy.x <= posPair.x + sizePair.x &&
 		posMy.y + sizeMy.y >= posPair.y - sizePair.y &&
 		posMy.y - sizeMy.y <= posPair.y + sizePair.y &&
-		posMy.z + sizeMy.z >= posPair.z - sizePair.z &&
-		posMy.z - sizeMy.z <= posPair.z + sizePair.z)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-//-------------------------------------
-//- 当たり判定管理の回転矩形の当たり判定
-//-------------------------------------
-bool CMgrColl::hitRectangleRot(D3DXVECTOR3 posMy, D3DXVECTOR3 sizeMy, D3DXVECTOR3 rot, D3DXVECTOR3 posPair, D3DXVECTOR3 sizePair, D3DXVECTOR3 rotPair)
-{
-	if (rot.y >= 0.0f &&
-		rot.y >= (D3DX_PI * 0.25f) &&
-		rot.y <= (D3DX_PI * 0.75f))
-	{
-		float tenpSizeX = sizeMy.x;
-		sizeMy.x = sizeMy.z;
-		sizeMy.z = tenpSizeX;
-	}
-	else if (
-		rot.y <= 0.0f &&
-		rot.y <= (-D3DX_PI * 0.25f) &&
-		rot.y >= (-D3DX_PI * 0.75f))
-	{
-		float tenpSizeX = sizeMy.x;
-		sizeMy.x = sizeMy.z;
-		sizeMy.z = tenpSizeX;
-	}
-
-	if (posMy.x + sizeMy.x >= posPair.x - sizePair.x &&
-		posMy.x - sizeMy.x <= posPair.x + sizePair.x &&
 		posMy.z + sizeMy.z >= posPair.z - sizePair.z &&
 		posMy.z - sizeMy.z <= posPair.z + sizePair.z)
 	{

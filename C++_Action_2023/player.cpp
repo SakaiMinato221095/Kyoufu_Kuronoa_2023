@@ -32,7 +32,9 @@
 //-	マクロ定義
 //-======================================
 
-#define PLAYER_SPEED	(4.0f)	//プレイヤーの速度
+#define PLAYER_SPEED		(4.0f)	// プレイヤーの速度
+#define PLAYER_JUMP			(30.0f)	// プレイヤーのジャンプ力
+#define PLAYER_DOUBLE_JUMP	(35.0f)	// プレイヤーの二段ジャンプ力
 
 //-======================================
 //-	静的変数宣言
@@ -216,30 +218,33 @@ void CPlayer::Update(void)
 		m_data.posOld,
 		m_data.size);
 
-	//// プレイヤーの当たり判定
-	//if (m_pColl->Hit(CMgrColl::TAG_BLOCK, CMgrColl::STATE_HIT_NONE) == true)
-	//{
-	//	bool bHitSxisX = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_X];
-	//	bool bHitSxisY = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_Y];
+	// プレイヤーの当たり判定
+	if (m_pColl->Hit(CMgrColl::TAG_BLOCK, CMgrColl::STATE_HIT_NONE) == true)
+	{
+		bool bHitSxisX = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_X];
+		bool bHitSxisY = m_pColl->GetData().abHitSxis[CColl::TYPE_SXIS_Y];
 
-	//	if (bHitSxisX == true)
-	//	{
-	//		// 移動量をなくす
-	//		m_data.move.x = 0.0f;
+		if (bHitSxisX == true)
+		{
+			// 移動量をなくす
+			m_data.move.x = 0.0f;
 
-	//		// プレイヤーのX座標移動を停止
-	//		m_data.pos.x = m_data.posOld.x;
-	//	}
+			// プレイヤーのX座標移動を停止
+			m_data.pos.x = m_pColl->GetData().pos.x;
+		}
 
-	//	if (bHitSxisY == true)
-	//	{
-	//		// 移動量をなくす
-	//		m_data.move.y = 0.0f;
+		if (bHitSxisY == true)
+		{
+			// 移動量をなくす
+			m_data.move.y = 0.0f;
 
-	//		// プレイヤーのY座標移動を停止
-	//		m_data.pos.y = m_data.posOld.y;
-	//	}
-	//}
+			// プレイヤーのY座標移動を停止
+			m_data.pos.y = m_pColl->GetData().pos.y;
+
+			// ジャンプを使用可
+			m_bJump = false;
+		}
+	}
 
 	// デバック表示
 	DebugPlayer();
@@ -727,7 +732,7 @@ void CPlayer::InputNormalJump(void)
 		m_bJump = true;
 
 		// ジャンプ量を設定
-		move.y = 20.0f;
+		move.y = PLAYER_JUMP;
 	}
 
 	// 情報更新
@@ -778,7 +783,7 @@ void CPlayer::InputDoubleJump(void)
 		}
 
 		// ジャンプ量を設定
-		move.y = 30.0f;
+		move.y = PLAYER_DOUBLE_JUMP;
 	}
 
 	// 情報更新

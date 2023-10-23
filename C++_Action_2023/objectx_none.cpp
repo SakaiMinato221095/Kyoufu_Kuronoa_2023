@@ -100,7 +100,7 @@ HRESULT CObjectXNone::Load(void)
 		m_nModelNldx[nCount] = nModelNldx;
 	}
 
-	m_modelData[MODEL_BLOCK_000].size = D3DXVECTOR3(50.0f, 50.0f, 50.0f);
+	m_modelData[MODEL_BLOCK_000].size = D3DXVECTOR3(75.0f, 75.0f, 75.0f);
 
 	// ê¨å˜Çï‘Ç∑
 	return S_OK;

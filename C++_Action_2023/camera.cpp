@@ -68,7 +68,7 @@ HRESULT CCamera::Init(void)
 		posR = D3DXVECTOR3(0.0f, 300.0f, 0.0f);		// 注視点
 		vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);		// 上方向のベクトル
 		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向き
-		fLength = 1500.0f;							// カメラとの長さ
+		fLength = 2000.0f;							// カメラとの長さ
 
 		// 情報更新
 		m_data.posV = posV;			// 視点
@@ -313,10 +313,12 @@ void CCamera::UpdateFollowing(void)
 	//視点の補正
 	posV.x += (posVDest.x - posV.x) * 0.1f;
 	posV.z += (posVDest.z - posV.z) * 0.1f;
+	posV.y = playerPos.y + 200.0f;
 
 	//注視点の補正
 	posR.x += (posRDest.x - posR.x) * 0.1f;
 	posR.z += (posRDest.z - posR.z) * 0.1f;
+	posR.y = playerPos.y + 200.0f;
 
 	// 情報更新
 	m_data.posV = posV;				// 視点

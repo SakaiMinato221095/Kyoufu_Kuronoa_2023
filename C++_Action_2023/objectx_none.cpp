@@ -28,7 +28,7 @@
 // 効果なしオブジェクトのモデルのコンスト定義
 const char *pModelObjectXNone[] =
 {
-	"data\\MODEL\\None\\Block_000.x",			// ブロック
+	"data\\MODEL\\NoneObj\\Block_000.x",			// ブロック
 };
 
 //-======================================

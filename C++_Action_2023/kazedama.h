@@ -43,6 +43,7 @@ public:
 	typedef enum
 	{
 		TEX_NULL = 0,	// ‚È‚µ
+		TEX_KAZEDAMA,	// •—‚¾‚Ü
 		TEX_MAX
 	}TEX;
 

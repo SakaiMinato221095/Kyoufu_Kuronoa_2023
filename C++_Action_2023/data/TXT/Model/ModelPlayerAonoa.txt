@@ -1,0 +1,137 @@
+#====================================================================
+#
+# モデルスクリプトファイル[ModelPlayerAonoa.txt]
+# Author：Momoya Takayama
+#
+#====================================================================
+SCRIPT
+
+#====================================================================
+# モデル数
+#====================================================================
+NUM_MODEL = 15
+
+#====================================================================
+# モデルファイル名
+#====================================================================
+
+MODEL_FILENAME = data/MODEL/PlayerAonoa/body.x
+MODEL_FILENAME = data/MODEL/PlayerAonoa/waist.x
+
+MODEL_FILENAME = data/MODEL/PlayerAonoa/head.x
+
+MODEL_FILENAME = data/MODEL/PlayerAonoa/afterarm_l.x
+MODEL_FILENAME = data/MODEL/PlayerAonoa/forearm_l.x
+MODEL_FILENAME = data/MODEL/PlayerAonoa/hand_l.x
+
+MODEL_FILENAME = data/MODEL/PlayerAonoa/afterarm_r.x
+MODEL_FILENAME = data/MODEL/PlayerAonoa/forearm_r.x
+MODEL_FILENAME = data/MODEL/PlayerAonoa/hand_r.x
+
+MODEL_FILENAME = data/MODEL/PlayerAonoa/afterfoot.x
+MODEL_FILENAME = data/MODEL/PlayerAonoa/forefoot.x
+MODEL_FILENAME = data/MODEL/PlayerAonoa/shoes.x
+
+MODEL_FILENAME = data/MODEL/PlayerAonoa/afterfoot.x
+MODEL_FILENAME = data/MODEL/PlayerAonoa/forefoot.x
+MODEL_FILENAME = data/MODEL/PlayerAonoa/shoes.x
+
+#====================================================================
+# キャラクター情報
+#====================================================================
+CHARACTERSET
+    NUM_PARTS = 15
+
+    PARTSSET
+        INDEX = 0
+        PARENT = -1
+        POS = 0.0 92.9 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 1
+        PARENT = 0
+        POS = 0.0 -18.5 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 2
+        PARENT = 0
+        POS = 0.0 20.0 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 3
+        PARENT = 0
+        POS = 17.5 10.2 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 4
+        PARENT = 3
+        POS = 16.0 0.0 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 5
+        PARENT = 4
+        POS = 34.5 0.0 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 6
+        PARENT = 0
+        POS = -20.5 10.2 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 7
+        PARENT = 6
+        POS = -15.2 0.0 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 8
+        PARENT = 7
+        POS = -32.5 0.0 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 9
+        PARENT = 1
+        POS = -8.5 -18.1 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 10
+        PARENT = 9
+        POS = 0.0 -16.5 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 11
+        PARENT = 10
+        POS = 0.0 -18.0 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 12
+        PARENT = 1
+        POS = 8.5 -18.5 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 13
+        PARENT = 12
+        POS = 0.0 -15.5 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+    PARTSSET
+        INDEX = 14
+        PARENT = 13
+        POS = 0.0 -19.0 0.0
+        ROT = 0.0 0.0 0.0
+    END_PARTSSET
+END_CHARACTERSET
+
+END_SCRIPT

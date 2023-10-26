@@ -35,6 +35,7 @@
 const char *pTextureKazedama[] =
 {
 	NULL,
+	"data\\TEXTURE\\Kazedama\\Kazedama.png",			// •—‚¾‚Ü
 };
 
 //-======================================
@@ -336,7 +337,7 @@ void CKazedama::UpdateMove(void)
 void CKazedama::Active(void)
 {
 	// “G‚Æ‚Ì“–‚½‚è”»’è
-	if (m_pColl->Hit(CMgrColl::TAG_ENEMY,CMgrColl::STATE_HIT_DEAD) == true)
+	if (m_pColl->Hit(CMgrColl::TAG_ENEMY,CMgrColl::STATE_HIT_NORMAL) == true)
 	{
 		// Šl“¾Žž‚Ìˆ—
 		Obtain();

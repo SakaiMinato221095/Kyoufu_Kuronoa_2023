@@ -65,8 +65,8 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pPlayer = CPlayer::Create(
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),				// 位置
 		D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f),	// 向き
-		CModel::MODEL_TYPE_PLAYER,					// モデル
-		CMotion::MOTION_TYPE_PLAYER);				// モーション
+		CModel::MODEL_TYPE_PLAYER_AONOA,			// モデル
+		CMotion::MOTION_TYPE_PLAYER_AONOA);			// モーション
 
 	// 戦闘ステータスの初期化処理
 	if (m_pPlayer == NULL)
@@ -94,7 +94,6 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		D3DXVECTOR3(30.0f, 40.0f, 0.0f),
 		D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
 
-	// 
 	CCsvStage *pCsvStage = CManager::GetInstance()->GetCsvStage();
 
 	if (pCsvStage != NULL)
@@ -121,10 +120,12 @@ void CGame::Uninit(void)
 
 	if (m_pTimer != NULL)
 	{
+		// 時間管理の終了処理
 		m_pTimer->Uninit();
-		m_pTimer = NULL;
 
+		// 時間管理の開放処理
 		delete m_pTimer;
+		m_pTimer = NULL;
 	}
 
 	// オブジェクトの全開放処理
@@ -157,8 +158,12 @@ void CGame::Update(void)
 		return;
 	}
 
-	// 時間の更新処理
-	m_pTimer->Update();
+	if (m_pTimer != NULL)
+	{
+		// 時間の更新処理
+		m_pTimer->Update();
+	}
+
 
 	// 遷移ボタン（えんたー）
 	if (pInputKeyboard->GetTrigger(DIK_RETURN) != NULL ||

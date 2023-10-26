@@ -183,9 +183,6 @@ void CCsvStage::Divide(void)
 	{
 		for (int nCntColu = 0; nCntColu < LINE_MAX; nCntColu++)
 		{
-			// CSVカウントの加算
-			nCntCsv++;
-
 			for (int nCntType = 0; nCntType < TYPE_TEXT_MAX; nCntType++)
 			{
 				// 文字数分読み込み
@@ -211,6 +208,9 @@ void CCsvStage::Divide(void)
 
 			// X軸を
 			stagePos.x += SIZE_TILE_CRITERIA_X;
+
+			// CSVカウントの加算
+			nCntCsv++;
 		}
 
 		stagePos.x = 0.0f;

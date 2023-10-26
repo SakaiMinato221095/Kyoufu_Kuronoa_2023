@@ -26,7 +26,7 @@
 // モデルテキストのコンスト定義
 const char *pMotionText[] =
 {
-	"data\\TXT\\Motion\\Player.txt",	// プレイヤーのモーションファイル
+	"data\\TXT\\Motion\\MotionPlayerAonoa.txt",	// プレイヤー（アオノア）のモーションファイル
 };
 
 //-======================================

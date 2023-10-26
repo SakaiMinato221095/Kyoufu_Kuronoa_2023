@@ -55,7 +55,15 @@ public:
 	{
 		STATE_TYPE_NEUTRAL = 0,		// 待機
 		STATE_TYPE_MOVE,			// 移動
-		STATE_TYPE_HAVING,			// 所持状態
+		STATE_TYPE_JUMP,			// ジャンプ
+		STATE_TYPE_LANDING,			// 着地
+		STATE_TYPE_KAZEDAMA,		// 風だまアクション
+		STATE_TYPE_HAVE_NEUTRAL,	// 敵保持待機
+		STATE_TYPE_HAVE_MOVE,		// 敵保持移動
+		STATE_TYPE_HAVE_JUMP,		// 敵保持ジャンプ
+		STATE_TYPE_HAVE_LANDING,	// 敵保持着地
+		STATE_TYPE_THROW,			// 敵投げアクション
+		STATE_TYPE_DOUBLEJUMP,		// 敵投げジャンプアクション
 		STATE_TYPE_MAX
 	}STATE_TYPE;
 
@@ -111,7 +119,8 @@ private:
 	void UpdatePos(void);
 	void UpdateRot(void);
 	void UpdatePlusData(void);
-	void UpdateMotion(void);
+	void UpdateMotionNone(void);
+	void UpdateMotionHave(void);
 
 	void UpdateKazedama(void);
 	void UpdateEnemyHave(void);
@@ -130,6 +139,7 @@ private:
 
 	Data m_data;								// 値を格納
 	bool m_bJump;								// ジャンプ状態の有無
+	bool m_bLanding;							// 着地の有無
 	bool m_bHave;								// 所持状態の有無
 
 	CColl *m_pColl;								// 当たり判定情報

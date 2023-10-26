@@ -49,6 +49,7 @@ CPlayer::CPlayer()
 	ZeroMemory(&m_data, sizeof(m_data));
 
 	m_bJump = false;
+	m_bLanding = false;
 	m_bHave = false;
 
 	m_pKazedama = NULL;
@@ -195,8 +196,16 @@ void CPlayer::Update(void)
 	// 追加情報の更新処理
 	UpdatePlusData();
 
-	// モーションの更新処理
-	UpdateMotion();
+	if (m_bHave == false)
+	{
+		// 通常モーションの更新処理
+		UpdateMotionNone();
+	}
+	else
+	{
+		// 敵保持モーションの更新処理
+		UpdateMotionHave();
+	}
 
 	// 風だまの更新処理
 	UpdateKazedama();
@@ -208,6 +217,12 @@ void CPlayer::Update(void)
 	if (m_data.pos.y <= 0.0f)
 	{
 		m_bJump = false;
+
+		if (m_bLanding == false)
+		{
+			m_bLanding = true;
+		}
+		 
 		m_data.pos.y = 0.0f;
 		m_data.move.y = 0.0f;
 	}
@@ -243,6 +258,11 @@ void CPlayer::Update(void)
 
 			// ジャンプを使用可
 			m_bJump = false;
+
+			if (m_bLanding == false)
+			{
+				m_bLanding = true;
+			}
 		}
 	}
 
@@ -480,9 +500,9 @@ void CPlayer::UpdatePlusData(void)
 }
 
 //-------------------------------------
-//- プレイヤーのモーション更新処理
+//- 通常状態プレイヤーのモーション更新処理
 //-------------------------------------
-void CPlayer::UpdateMotion(void)
+void CPlayer::UpdateMotionNone(void)
 {
 	// 変数宣言（情報取得）
 	CMotion *pMotion = GetMotion();		// モーション
@@ -490,7 +510,7 @@ void CPlayer::UpdateMotion(void)
 
 	// 状態を判定
 	if (m_stateTypeNew == STATE_TYPE_NEUTRAL ||
-		m_stateTypeNew == STATE_TYPE_MOVE)
+		m_stateTypeNew == STATE_TYPE_MOVE )
 	{
 		// 移動量で状態を変更
 		if (move.x >= 0.3f ||
@@ -505,6 +525,15 @@ void CPlayer::UpdateMotion(void)
 		{
 			// 待機状態の変更
 			m_stateTypeNew = STATE_TYPE_NEUTRAL;
+		}
+	}
+
+	if (m_stateTypeNew == STATE_TYPE_JUMP || 
+		m_stateTypeNew == STATE_TYPE_DOUBLEJUMP)
+	{
+		if (m_data.move.y <= 0.0f)
+		{
+			m_stateTypeNew = STATE_TYPE_LANDING;
 		}
 	}
 
@@ -523,20 +552,63 @@ void CPlayer::UpdateMotion(void)
 	// モーションの設定処理
 	if (m_stateType != m_stateTypeNew)
 	{
+		// 現在のモーションの設定
+		pMotion->Set(m_stateTypeNew);
+
 		// 状態の更新
 		m_stateType = m_stateTypeNew;
+	}
+}
 
-		// 状態の判定
-		if (m_stateType == STATE_TYPE_NEUTRAL)
+//-------------------------------------
+//- 敵保持状態プレイヤーのモーション更新処理
+//-------------------------------------
+void CPlayer::UpdateMotionHave(void)
+{
+	// 変数宣言（情報取得）
+	CMotion *pMotion = GetMotion();		// モーション
+	D3DXVECTOR3 move = GetData().move;	// 移動量
+
+	// 状態を判定
+	if (m_stateTypeNew == STATE_TYPE_HAVE_NEUTRAL ||
+		m_stateTypeNew == STATE_TYPE_HAVE_MOVE)
+	{
+		// 移動量で状態を変更
+		if (move.x >= 0.3f ||
+			move.x <= -0.3f ||
+			move.z >= 0.3f ||
+			move.z <= -0.3f)
 		{
-			// 待機モーションの設定
-			pMotion->Set(STATE_TYPE_NEUTRAL);
+			// 移動状態に変更
+			m_stateTypeNew = STATE_TYPE_HAVE_MOVE;
 		}
-		else if (m_stateType == STATE_TYPE_MOVE)
+		else
 		{
-			// 移動モーションの設定
-			pMotion->Set(STATE_TYPE_MOVE);
+			// 待機状態の変更
+			m_stateTypeNew = STATE_TYPE_HAVE_NEUTRAL;
 		}
+	}
+
+	// モーションの終了状況を判定
+	if (pMotion->IsFinsih() == true)
+	{
+		// モーションの更新
+		pMotion->Update();
+	}
+	else
+	{
+		// 待機状態を設定
+		m_stateTypeNew = STATE_TYPE_HAVE_NEUTRAL;
+	}
+
+	// モーションの設定処理
+	if (m_stateType != m_stateTypeNew)
+	{
+		// 現在のモーションの設定
+		pMotion->Set(m_stateTypeNew);
+
+		// 状態の更新
+		m_stateType = m_stateTypeNew;
 	}
 }
 
@@ -579,6 +651,9 @@ void CPlayer::UpdateKazedama(void)
 
 			// 所持状況を更新
 			m_bHave = true;
+
+			// 状態を保持状態に変更
+			m_stateTypeNew = STATE_TYPE_HAVE_NEUTRAL;
 
 			if (m_pEnemyHave == NULL)
 			{
@@ -733,6 +808,17 @@ void CPlayer::InputNormalJump(void)
 
 		// ジャンプ量を設定
 		move.y = PLAYER_JUMP;
+
+		if (m_bHave == false)
+		{
+			// 状態をジャンプに変更
+			m_stateTypeNew = STATE_TYPE_JUMP;
+		}
+		else
+		{
+			// 状態をジャンプに変更
+			m_stateTypeNew = STATE_TYPE_HAVE_JUMP;
+		}
 	}
 
 	// 情報更新
@@ -773,6 +859,9 @@ void CPlayer::InputDoubleJump(void)
 	{
 		// 保持状態を解除
 		m_bHave = false;
+
+		// 状態を敵投げ状態に変更
+		m_stateTypeNew = STATE_TYPE_DOUBLEJUMP;
 
 		// 保持敵の有無を判定
 		if (m_pEnemyHave != NULL)
@@ -840,6 +929,9 @@ void CPlayer::InputKazedama(void)
 		if (pInputKeyboard->GetTrigger(DIK_J) != NULL ||
 			pXInput->GetTrigger(XINPUT_GAMEPAD_B, CXInput::TYPE_INPUT_BUTTON))
 		{
+			// 状態を風だまに変更
+			m_stateTypeNew = STATE_TYPE_KAZEDAMA;
+
 			// 情報取得
 			D3DXVECTOR3 pos = m_data.pos;
 			D3DXVECTOR3 rot = m_data.rot;
@@ -856,7 +948,7 @@ void CPlayer::InputKazedama(void)
 			{
 				// 風だまの生成処理
 				m_pKazedama = CKazedama::Create(
-					CKazedama::TEX_NULL,
+					CKazedama::TEX_KAZEDAMA,
 					posBody,
 					D3DXVECTOR3(50.0f, 50.0f, 50.0f),
 					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
@@ -868,7 +960,7 @@ void CPlayer::InputKazedama(void)
 			{
 				// 風だまの生成処理
 				m_pKazedama = CKazedama::Create(
-					CKazedama::TEX_NULL,
+					CKazedama::TEX_KAZEDAMA,
 					posBody,
 					D3DXVECTOR3(50.0f, 50.0f, 50.0f),
 					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
@@ -914,6 +1006,9 @@ void CPlayer::InputShot(void)
 		{
 			// 保持状態を解除
 			m_bHave = false;
+
+			// 状態を敵投げ状態に変更
+			m_stateTypeNew = STATE_TYPE_THROW;
 
 			// 情報取得
 			D3DXVECTOR3 pos = m_data.pos;

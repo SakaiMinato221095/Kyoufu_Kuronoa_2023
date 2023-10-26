@@ -177,7 +177,6 @@ void CTimer::NumberTex(void)
 	aTexU[3] = (nSeconds % 10);
 
 	aTexU[4] = ((nMillSeco % 100) / 10);
-	//aTexU[5] = (nMillSeco % 10);
 
 	for (int nCount = 0; nCount < DIG_NUM_MAX; nCount++)
 	{

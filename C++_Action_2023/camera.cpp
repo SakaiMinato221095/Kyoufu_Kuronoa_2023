@@ -68,7 +68,7 @@ HRESULT CCamera::Init(void)
 		posR = D3DXVECTOR3(0.0f, 300.0f, 0.0f);		// 注視点
 		vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);		// 上方向のベクトル
 		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向き
-		fLength = 2000.0f;							// カメラとの長さ
+		fLength = 1500.0f;							// カメラとの長さ
 
 		// 情報更新
 		m_data.posV = posV;			// 視点

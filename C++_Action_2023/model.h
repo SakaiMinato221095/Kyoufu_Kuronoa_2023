@@ -36,7 +36,7 @@ public:
 	// モデルの種類
 	typedef enum
 	{
-		MODEL_TYPE_PLAYER = 0,	// プレイヤー
+		MODEL_TYPE_PLAYER_AONOA = 0,	// プレイヤー（アオノア）
 		MODEL_TYPE_MAX
 	}MODEL_TYPE;
 

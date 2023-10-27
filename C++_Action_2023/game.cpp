@@ -25,7 +25,12 @@
 #include "player.h"
 
 #include "obj_3d_field.h"
+#include "obj_3d_wall.h"
 #include "objectx_none.h"
+
+#include "obj_block.h"
+
+#include "skybox.h"
 
 #include "csv_stage.h"
 
@@ -89,11 +94,37 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		pCamera->SetMode(CCamera::MODE_FOLLOWING);
 	}
 
-	CObj3dField *pObj3dField = CObj3dField::Create(CObj3dField::TEX_ROAD_000);
+	for (int nCutColu = 0; nCutColu < 16; nCutColu++)
+	{
+		for (int nCutLine = 0; nCutLine < 64; nCutLine++)
+		{
+			// フィールドの生成
+			CObj3dField::Create(
+				CObj3dField::TEX_GLASS_000,
+				D3DXVECTOR3(-15000.0f + (1000.0f * nCutLine), 0.0f, 10000.0f - (1000.0f * nCutColu)),
+				D3DXVECTOR3(500.0f, 0.0f, 500.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		}
+	}
 
-	pObj3dField->Set(
+	for (int nCount = 0; nCount < 32; nCount++)
+	{
+		CObjBlock::Create(
+			CObjBlock::MODEL_BLOCK_000,
+			D3DXVECTOR3(-1000.0f, 100.0f * nCount, 0.0f),
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+		CObjBlock::Create(
+			CObjBlock::MODEL_BLOCK_000,
+			D3DXVECTOR3(9400.0f, 100.0f * nCount, 0.0f),
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	}
+
+	// スカイボックスの生成
+	CSkybox::Create(
+		CSkybox::MODEL_SKYBOX_000,
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(5000.0f, 0.0f, 5000.0f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// 時間の生成

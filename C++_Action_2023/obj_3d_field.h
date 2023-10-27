@@ -49,16 +49,13 @@ public:
 
 	static HRESULT Load(void);
 	static void Unload(void);
-	HRESULT Init(TEX tex);
+
+	HRESULT Init(TEX tex ,D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	static CObj3dField * Create(TEX tex);
-
-	void Set(
-		D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot,
-		D3DXCOLOR color = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
+	static CObj3dField * Create(TEX tex ,D3DXVECTOR3 pos,D3DXVECTOR3 size ,D3DXVECTOR3 rot, D3DXCOLOR color);
 
 private:
 

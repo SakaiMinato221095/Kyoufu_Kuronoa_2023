@@ -45,7 +45,7 @@ CObject3d::~CObject3d()
 //-------------------------------------
 //-	3Dオブジェクトの初期化
 //-------------------------------------
-HRESULT CObject3d::Init(TYPE_CREATE type)
+HRESULT CObject3d::Init(TYPE_CREATE type, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color)
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -76,6 +76,9 @@ HRESULT CObject3d::Init(TYPE_CREATE type)
 
 	// 生成種類を設定
 	m_typeCreate = type;
+
+	// 初期設定
+	InitSet(pos,size,rot,color);
 
 	// 頂点バッファ設定
 	SetVtx();
@@ -185,7 +188,7 @@ void CObject3d::Draw(void)
 //-------------------------------------
 //-	3Dオブジェクトの生成処理
 //-------------------------------------
-CObject3d * CObject3d::Create(TYPE_CREATE type)
+CObject3d * CObject3d::Create(TYPE_CREATE type, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color)
 {
 	// 3Dオブジェクトの生成
 	CObject3d *pObject3d = new CObject3d;
@@ -194,7 +197,7 @@ CObject3d * CObject3d::Create(TYPE_CREATE type)
 	if (pObject3d != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pObject3d->Init(type)))
+		if (FAILED(pObject3d->Init(type,pos,size,rot,color)))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -210,17 +213,6 @@ CObject3d * CObject3d::Create(TYPE_CREATE type)
 
 	// 3Dオブジェクトのポインタを返す
 	return pObject3d;
-}
-
-//-------------------------------------
-//-	3Dオブジェクトの設定処理
-//-------------------------------------
-void CObject3d::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot,D3DXCOLOR color)
-{
-	m_vtxData.pos = pos;
-	m_vtxData.size = size;
-	m_vtxData.rot = rot;
-	m_vtxData.color = color;
 }
 
 //-------------------------------------
@@ -327,4 +319,15 @@ void CObject3d::SetVtx(void)
 
 	//頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();
+}
+
+//-------------------------------------
+//-	3Dオブジェクトの設定処理
+//-------------------------------------
+void CObject3d::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color)
+{
+	m_vtxData.pos = pos;
+	m_vtxData.size = size;
+	m_vtxData.rot = rot;
+	m_vtxData.color = color;
 }

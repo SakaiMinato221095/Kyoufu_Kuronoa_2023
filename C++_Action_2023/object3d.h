@@ -50,18 +50,12 @@ public:
 	CObject3d(int nPriority = 3);;
 	~CObject3d();
 
-	HRESULT Init(TYPE_CREATE type);
+	HRESULT Init(TYPE_CREATE type,D3DXVECTOR3 pos,D3DXVECTOR3 size ,D3DXVECTOR3 rot ,D3DXCOLOR color);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	static CObject3d *Create(TYPE_CREATE type);
-
-	void Set(
-		D3DXVECTOR3 pos, 
-		D3DXVECTOR3 size, 
-		D3DXVECTOR3 rot, 
-		D3DXCOLOR color = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
+	static CObject3d *Create(TYPE_CREATE type, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color);
 
 	void BindTexture(int nTextureNldx);
 
@@ -71,6 +65,8 @@ public:
 	virtual void SetVtx(void);
 
 private:
+
+	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color);
 
 	VtxData m_vtxData;					// í∏ì_ílèÓïÒ
 

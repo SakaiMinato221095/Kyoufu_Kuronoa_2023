@@ -111,13 +111,13 @@ void CObj3dField::Unload(void)
 //-------------------------------------
 //- 3D地面の初期化処理（3Dオブジェクト設定）
 //-------------------------------------
-HRESULT CObj3dField::Init(TEX tex)
+HRESULT CObj3dField::Init(TEX tex ,D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color)
 {
 	// テクスチャ割当
 	BindTexture(m_nTextureNldx[tex]);
 
 	// 3Dオブジェクトの初期化
-	CObject3d::Init(CObject3d::TYPE_CREATE_FIELD);
+	CObject3d::Init(CObject3d::TYPE_CREATE_FIELD,pos,size,rot,color);
 
 	// 成功を返す
 	return S_OK;
@@ -150,10 +150,11 @@ void CObj3dField::Draw(void)
 	CObject3d::Draw();
 }
 
+
 //-------------------------------------
 //- 3D地面の生成処理
 //-------------------------------------
-CObj3dField *CObj3dField::Create(TEX tex)
+CObj3dField *CObj3dField::Create(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, D3DXCOLOR color)
 {
 	// フィールドのポインタを宣言
 	CObj3dField *pCObj3dField = new CObj3dField(2);
@@ -162,7 +163,7 @@ CObj3dField *CObj3dField::Create(TEX tex)
 	if (pCObj3dField != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pCObj3dField->Init(tex)))
+		if (FAILED(pCObj3dField->Init(tex,pos,size,rot,color)))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -178,25 +179,4 @@ CObj3dField *CObj3dField::Create(TEX tex)
 
 	// フィールドのポインタを返す
 	return pCObj3dField;
-}
-
-//-------------------------------------
-//- 3D地面の設定処理
-//-------------------------------------
-void CObj3dField::Set(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot,D3DXCOLOR color)
-{
-	// 情報取得（3Dオブジェクト）
-	CObject3d::VtxData vtxData = GetVtxData();	// 頂点値情報
-
-	// 情報更新
-	vtxData.pos = pos;		// 位置
-	vtxData.size = size;	// 大きさ
-	vtxData.rot = rot;		// 向き
-	vtxData.color = color;	// 色
-
-	// 情報更新（3Dオブジェクト）
-	SetVtxData(vtxData);	// 頂点値情報
-
-	// 頂点情報の設定処理
-	SetVtx();
 }

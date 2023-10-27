@@ -26,6 +26,13 @@
 //=	マクロ定義
 //=======================================
 
+#define POS_V_FOLL		(D3DXVECTOR3(0.0f,	0.0f, 0.0f))
+#define POS_R_FOLL		(D3DXVECTOR3(0.0f,	0.0f, 0.0f))
+#define LENGTH_FOLL		(1500.0f)
+#define FOLL_Y			(100.0f)
+
+#define FOOL_POS_DEST	(0.3f)
+
 //-======================================
 //-	静的変数宣言
 //-======================================
@@ -64,11 +71,11 @@ HRESULT CCamera::Init(void)
 	// グローバル変数の初期化
 	{
 		// 情報設定
-		posV = D3DXVECTOR3(0.0f, 400.0f, 1500.0f);	// 視点
-		posR = D3DXVECTOR3(0.0f, 300.0f, 0.0f);		// 注視点
-		vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);		// 上方向のベクトル
-		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向き
-		fLength = 1500.0f;							// カメラとの長さ
+		posV = POS_V_FOLL;						// 視点
+		posR = POS_R_FOLL;						// 注視点
+		vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);	// 上方向のベクトル
+		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 向き
+		fLength = LENGTH_FOLL;					// カメラとの長さ
 
 		// 情報更新
 		m_data.posV = posV;			// 視点
@@ -294,9 +301,9 @@ void CCamera::UpdateFollowing(void)
 
 	//注視点とプレイヤーの距離
 	D3DXVECTOR3 cameraPlayer = D3DXVECTOR3(
-		sinf(playerRot.y) * -50.0f,
+		sinf(playerRot.y),
 		0.0f,
-		cosf(playerRot.y) * -50.0f);
+		cosf(playerRot.y));
 
 	//視点の位置を更新
 	posV.x = posR.x + sinf(rot.y) * -fLength;
@@ -311,14 +318,14 @@ void CCamera::UpdateFollowing(void)
 	posRDest.z = playerPos.z + cameraPlayer.z;
 
 	//視点の補正
-	posV.x += (posVDest.x - posV.x) * 0.1f;
-	posV.z += (posVDest.z - posV.z) * 0.1f;
-	posV.y = playerPos.y + 200.0f;
+	posV.x += (posVDest.x - posV.x) * FOOL_POS_DEST;
+	posV.z += (posVDest.z - posV.z) * FOOL_POS_DEST;
+	posV.y = playerPos.y + FOLL_Y;
 
 	//注視点の補正
-	posR.x += (posRDest.x - posR.x) * 0.1f;
-	posR.z += (posRDest.z - posR.z) * 0.1f;
-	posR.y = playerPos.y + 200.0f;
+	posR.x += (posRDest.x - posR.x) * FOOL_POS_DEST;
+	posR.z += (posRDest.z - posR.z) * FOOL_POS_DEST;
+	posR.y = playerPos.y + FOLL_Y;
 
 	// 情報更新
 	m_data.posV = posV;				// 視点
@@ -552,11 +559,11 @@ void CCamera::SetMode(CCamera::MODE mode)
 	case MODE_FOLLOWING:
 
 		// 情報設定
-		posV = D3DXVECTOR3(0.0f, 500.0f, 1500.0f);	// 視点
-		posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 注視点
-		vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);		// 上方向のベクトル
-		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向き
-		fLength = 1500.0f;							// カメラとの長さ
+		posV = POS_V_FOLL;						// 視点
+		posR = POS_R_FOLL;						// 注視点
+		vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);	// 上方向のベクトル
+		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 向き
+		fLength = LENGTH_FOLL;					// カメラとの長さ
 
 		break;
 

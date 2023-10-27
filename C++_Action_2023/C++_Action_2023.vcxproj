@@ -24,6 +24,7 @@
     <ClCompile Include="csv_stage.cpp" />
     <ClCompile Include="goal.cpp" />
     <ClCompile Include="number.cpp" />
+    <ClCompile Include="obj_3d_wall.cpp" />
     <ClCompile Include="obj_block.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="coll.cpp" />
@@ -59,6 +60,7 @@
     </ClCompile>
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
+    <ClCompile Include="skybox.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="title.cpp" />
@@ -70,6 +72,7 @@
     <ClInclude Include="csv_stage.h" />
     <ClInclude Include="goal.h" />
     <ClInclude Include="number.h" />
+    <ClInclude Include="obj_3d_wall.h" />
     <ClInclude Include="obj_block.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="coll.h" />
@@ -102,6 +105,7 @@
     <ClInclude Include="precompile.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
+    <ClInclude Include="skybox.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="title.h" />

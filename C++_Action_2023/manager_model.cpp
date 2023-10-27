@@ -24,6 +24,7 @@
 #include "enemy_have.h"
 #include "gimmick.h"
 #include "goal.h"
+#include "skybox.h"
 
 //-------------------------------------
 //-	モデル管理のコンストラクタ
@@ -107,6 +108,17 @@ HRESULT CManagerModel::Load(HWND hWnd)
 
 		// 失敗メッセージ
 		MessageBox(hWnd, "ゴールのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
+
+	// スカイボックス
+	if (FAILED(CSkybox::Load()))
+	{// 失敗時
+
+		// 失敗メッセージ
+		MessageBox(hWnd, "スカイボックスのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
 
 		// データ読み込みを抜ける
 		return E_FAIL;

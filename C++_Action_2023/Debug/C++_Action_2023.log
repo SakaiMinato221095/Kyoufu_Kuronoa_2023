@@ -1,14 +1,4 @@
-﻿  skybox.cpp
-  obj_3d_field.cpp
-  objectx_none.cpp
-  object3d.cpp
-  manager_model.cpp
-  game.cpp
-  camera.cpp
-  obj_3d_wall.cpp
-  コードを生成中...
-  コンパイル中...
-  manager_texture.cpp
-  コードを生成中...
+﻿  obj_teach.cpp
+cl : コマンド ライン warning D9028: 簡易リビルド時のエラーです、通常のビルドに戻します
   C++_Action_2023.vcxproj -> C:\Users\student\Desktop\強風のクロノア\Kyoufu_Kuronoa_2023\C++_Action_2023\Debug\C++_Action_2023.exe
   C++_Action_2023.vcxproj -> C:\Users\student\Desktop\強風のクロノア\Kyoufu_Kuronoa_2023\C++_Action_2023\Debug\C++_Action_2023.pdb (Full PDB)

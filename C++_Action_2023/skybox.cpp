@@ -179,7 +179,7 @@ void CSkybox::Draw(void)
 CSkybox * CSkybox::Create(MODEL model, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	// スカイボックスオブジェクトのポインタを宣言
-	CSkybox *pCSkybox = DBG_NEW CSkybox(4);
+	CSkybox *pCSkybox = DBG_NEW CSkybox(1);
 
 	// 生成の成功の有無を判定
 	if (pCSkybox != NULL)

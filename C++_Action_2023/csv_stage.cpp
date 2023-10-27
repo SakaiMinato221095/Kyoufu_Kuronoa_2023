@@ -16,6 +16,7 @@
 #include "goal.h"
 #include "enemy.h"
 #include "gimmick_jewel.h"
+#include "obj_teach.h"
 
 //=======================================
 //=	É}ÉNÉçíËã`
@@ -266,6 +267,7 @@ void CCsvStage::SetObj(void)
 				break;
 
 			case TYPE_TEXT_TUTORIAL_000:
+
 
 
 				break;

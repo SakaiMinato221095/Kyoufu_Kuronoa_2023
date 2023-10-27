@@ -36,6 +36,8 @@
 
 #include "timer.h"
 
+#include "obj_teach.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -134,6 +136,13 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		D3DXVECTOR3(40.0f, 0.0f, 0.0f),
 		D3DXVECTOR3(30.0f, 40.0f, 0.0f),
 		D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
+
+	// 教えるオブジェクトの生成処理
+	CObjTeach::Create(
+		CObjTeach::TEX_TEACH_MOVE,
+		D3DXVECTOR3(200.0f, 600.0f, 500.0f),
+		D3DXVECTOR3(400.0f, 200.0f, 50.0f),
+		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 	CCsvStage *pCsvStage = CManager::GetInstance()->GetCsvStage();
 

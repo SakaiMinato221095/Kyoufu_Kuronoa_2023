@@ -16,6 +16,7 @@
 #include "manager.h"
 
 #include "manager_model.h"
+#include "obj_teach.h"
 
 //-======================================
 //-	マクロ定義
@@ -175,6 +176,7 @@ void CObjectXNone::Draw(void)
 	// Xファイルオブジェクトの描画処理
 	CObjectX::Draw();
 }
+
 
 //-------------------------------------
 //- 効果なしオブジェクトの生成処理（Xファイルオブジェクト設定）

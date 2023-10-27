@@ -21,6 +21,7 @@
 #include "number.h"
 
 #include "kazedama.h"
+#include "obj_teach.h"
 
 //-------------------------------------
 //-	テクスチャのコンストラクタ
@@ -82,6 +83,17 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 
 		// 失敗メッセージ
 		MessageBox(hWnd, "風だまのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
+
+	// 教えるオブジェクト
+	if (FAILED(CObjTeach::Load()))
+	{// 失敗時
+
+	 // 失敗メッセージ
+		MessageBox(hWnd, "教えるオブジェクトのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
 
 		// データ読み込みを抜ける
 		return E_FAIL;

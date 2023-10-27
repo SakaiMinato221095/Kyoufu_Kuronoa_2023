@@ -394,7 +394,10 @@ void CPlayer::SetPlus(float fRate,int nTime)
 void CPlayer::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	m_data.pos = pos;
+	m_data.posOld = pos;
 	m_data.rot = rot;
+	m_data.rotDest = rot;
+
 	m_data.size = D3DXVECTOR3(50.0f, 100.0f, 50.0f);
 
 	// 当たり判定設定
@@ -927,7 +930,7 @@ void CPlayer::InputKazedama(void)
 	{
 		// 入力処理（Jキー / Bボタン）
 		if (pInputKeyboard->GetTrigger(DIK_J) != NULL ||
-			pXInput->GetTrigger(XINPUT_GAMEPAD_B, CXInput::TYPE_INPUT_BUTTON))
+			pXInput->GetTrigger(XINPUT_GAMEPAD_X, CXInput::TYPE_INPUT_BUTTON))
 		{
 			// 状態を風だまに変更
 			m_stateTypeNew = STATE_TYPE_KAZEDAMA;
@@ -1002,7 +1005,7 @@ void CPlayer::InputShot(void)
 	{
 		// 入力処理（Jキー / Bボタン）
 		if (pInputKeyboard->GetTrigger(DIK_J) != NULL ||
-			pXInput->GetTrigger(XINPUT_GAMEPAD_B, CXInput::TYPE_INPUT_BUTTON))
+			pXInput->GetTrigger(XINPUT_GAMEPAD_X, CXInput::TYPE_INPUT_BUTTON))
 		{
 			// 保持状態を解除
 			m_bHave = false;

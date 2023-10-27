@@ -308,7 +308,8 @@ bool CEnemyHave::UpdateShot(void)
 	SetVtxData(vtxData);
 
 	// 宝石との当たり判定
-	if (m_pColl->Hit(CMgrColl::TAG_GIMMICK_JEWEL, CMgrColl::STATE_HIT_DEAD) == true)
+	if (m_pColl->Hit(CMgrColl::TAG_GIMMICK_JEWEL, CMgrColl::STATE_HIT_DEAD) == true ||
+		m_pColl->Hit(CMgrColl::TAG_BLOCK, CMgrColl::STATE_HIT_DEAD) == true)
 	{
 		// 終了処理
 		Uninit();
@@ -353,6 +354,9 @@ void CEnemyHave::SetShot(D3DXVECTOR3 pos,D3DXVECTOR3 move, int nLife, TYPE_ROT t
 
 	// 相手タグの設定処理
 	m_pColl->SetTagTgt(CMgrColl::TAG_GIMMICK_JEWEL, CMgrColl::TYPE_RECTANGLE, true);
+
+	// 相手タグの設定処理
+	m_pColl->SetTagTgt(CMgrColl::TAG_BLOCK, CMgrColl::TYPE_RECTANGLE, true);
 }
 
 //-------------------------------------

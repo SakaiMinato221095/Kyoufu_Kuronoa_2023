@@ -20,6 +20,8 @@
 #include "xinput.h"
 #include "sound.h"
 
+#include "camera.h"
+
 #include "player.h"
 
 #include "obj_3d_field.h"
@@ -60,23 +62,31 @@ CGame::~CGame()
 //- ゲーム画面の初期化処理
 //-------------------------------------
 HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
-{
-	// 戦闘ステータスの生成
+{		
+	// プレイヤーの生成
 	m_pPlayer = CPlayer::Create(
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),				// 位置
-		D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f),	// 向き
+		D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f),	// 向き
 		CModel::MODEL_TYPE_PLAYER_AONOA,			// モデル
 		CMotion::MOTION_TYPE_PLAYER_AONOA);			// モーション
 
-	// 戦闘ステータスの初期化処理
+	// プレイヤーの初期化処理
 	if (m_pPlayer == NULL)
 	{// 失敗時
 
 		// 失敗メッセージ
-		MessageBox(hWnd, "戦闘プレイヤーの初期化", "初期処理失敗！", MB_ICONWARNING);
+		MessageBox(hWnd, "プレイヤーの初期化", "初期処理失敗！", MB_ICONWARNING);
 
 		// 初期化を抜ける
 		return E_FAIL;
+	}
+
+	// カメラ位置の設定処理
+	CCamera *pCamera = CManager::GetInstance()->GetCamera();
+
+	if (pCamera != NULL)
+	{
+		pCamera->SetMode(CCamera::MODE_FOLLOWING);
 	}
 
 	CObj3dField *pObj3dField = CObj3dField::Create(CObj3dField::TEX_ROAD_000);
@@ -164,10 +174,8 @@ void CGame::Update(void)
 		m_pTimer->Update();
 	}
 
-
 	// 遷移ボタン（えんたー）
-	if (pInputKeyboard->GetTrigger(DIK_RETURN) != NULL ||
-		pXInput->GetTrigger(XINPUT_GAMEPAD_A, CXInput::TYPE_INPUT_BUTTON))
+	if (pInputKeyboard->GetTrigger(DIK_RETURN) != NULL )
 	{
 		// ゲームモード
 		CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RESULT);

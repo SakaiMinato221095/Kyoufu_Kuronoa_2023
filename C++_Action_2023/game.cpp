@@ -257,6 +257,7 @@ void CGame::Update(void)
 				m_pTimer->Update();
 			}
 
+#if _DEBUG
 			if (pInputKeyboard->GetTrigger(DIK_F1) == true)
 			{
 				// エディットモードの生成処理
@@ -268,6 +269,7 @@ void CGame::Update(void)
 					m_pPlayer->IsUpdateStop(false);
 				}
 			}
+#endif
 		}
 		else
 		{

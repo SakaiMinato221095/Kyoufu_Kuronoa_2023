@@ -1,46 +1,9 @@
-﻿  bg.cpp
-  camera.cpp
-  coll.cpp
-  csv_stage.cpp
-  debugproc.cpp
-  edit_map.cpp
-  enemy.cpp
-  enemy_have.cpp
-  fade.cpp
-  file_map.cpp
+﻿  debugproc.cpp
   game.cpp
-  gimmick.cpp
-  gimmick_jewel.cpp
-  goal.cpp
-  kazedama.cpp
-  manager.cpp
-  manager_model.cpp
-  manager_texture.cpp
-  mgr_coll.cpp
-  number.cpp
-  コンパイル中...
-  obj_2d_none.cpp
-  obj_3d_field.cpp
-  obj_3d_wall.cpp
-  obj_block.cpp
-  obj_teach.cpp
-  object.cpp
-  object2d.cpp
-  object3d.cpp
-  object_billboard.cpp
-  object_x.cpp
-  objectx_none.cpp
-  pause.cpp
-  player.cpp
-  renderer.cpp
-  result.cpp
-  skybox.cpp
-  timer.cpp
-  title.cpp
   コード生成しています。
-  13 of 584 functions ( 2.2%) were compiled, the rest were copied from previous compilation.
-    3 functions were new in current compilation
-    4 functions had inline decision re-evaluated but remain unchanged
+  4 of 581 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    12 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   C++_Action_2023.vcxproj -> C:\Users\student\Desktop\強風のクロノア\Kyoufu_Kuronoa_2023\C++_Action_2023\C++_Action_2023.exe
   C++_Action_2023.vcxproj -> C:\Users\student\Desktop\強風のクロノア\Kyoufu_Kuronoa_2023\C++_Action_2023\C++_Action_2023.pdb (Full PDB)

@@ -76,6 +76,8 @@ public:
 	static void UpdateAll(void);
 	static void DrawAll(void);
 
+	void IsUpdateStop(bool bIsUpdate);
+
 	static CObject *GetObject(int nPriority,int nldx);
 
 	virtual CObject2d *GetObject2d(void);
@@ -89,12 +91,15 @@ private:
 
 	static void Debug(void);
 
+
 	static CObject *m_apObject[OBJECT_PRIORITY_MAX][OBJECT_NUM_MAX];	// オブジェクトのポインタ
 
 	static int m_nNumAll;		// オブジェクトの総数
 
 	int m_nID;					// 自分自身のポインタの番号
 	int m_nPriority;			// 自分自身の優先順位の番号
+
+	bool m_bIsUpdate;			// 更新の有無
 };
 
 #endif	// 二重インクルード防止の終了

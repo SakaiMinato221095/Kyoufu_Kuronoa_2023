@@ -92,7 +92,7 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 	if (FAILED(CObjTeach::Load()))
 	{// 失敗時
 
-	 // 失敗メッセージ
+		// 失敗メッセージ
 		MessageBox(hWnd, "教えるオブジェクトのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
 
 		// データ読み込みを抜ける

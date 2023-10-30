@@ -36,7 +36,8 @@
 
 #include "timer.h"
 
-#include "obj_teach.h"
+#include "edit_map.h"
+#include "file_map.h"
 
 //=======================================
 //=	マクロ定義
@@ -48,6 +49,7 @@
 
 CPlayer *CGame::m_pPlayer = NULL;
 CTimer *CGame::m_pTimer = NULL;
+CEditMap *CGame::m_pEditMap = NULL;
 
 //-------------------------------------
 //-	ゲーム画面のコンストラクタ
@@ -70,31 +72,32 @@ CGame::~CGame()
 //-------------------------------------
 HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {		
-	// プレイヤーの生成
-	m_pPlayer = CPlayer::Create(
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),				// 位置
-		D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f),	// 向き
-		CModel::MODEL_TYPE_PLAYER_AONOA,			// モデル
-		CMotion::MOTION_TYPE_PLAYER_AONOA);			// モーション
-
-	// プレイヤーの初期化処理
-	if (m_pPlayer == NULL)
-	{// 失敗時
-
-		// 失敗メッセージ
-		MessageBox(hWnd, "プレイヤーの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-		// 初期化を抜ける
-		return E_FAIL;
-	}
-
 	// カメラ位置の設定処理
 	CCamera *pCamera = CManager::GetInstance()->GetCamera();
 
-	if (pCamera != NULL)
+	if (pCamera == NULL)
 	{
-		pCamera->SetMode(CCamera::MODE_FOLLOWING);
+		return E_FAIL;
 	}
+
+	CFileMap *pFileMap = CManager::GetInstance()->GetFileMap();
+
+	if (pFileMap == NULL)
+	{
+		return E_FAIL;
+	}
+
+	// カメラの設定処理
+	pCamera->SetMode(CCamera::MODE_FOLLOWING);
+
+	// マップのロード処理
+	pFileMap->Load();
+
+	// スカイボックスの生成
+	CSkybox::Create(
+		CSkybox::MODEL_SKYBOX_000,
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	for (int nCutColu = 0; nCutColu < 16; nCutColu++)
 	{
@@ -110,48 +113,26 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		}
 	}
 
-	for (int nCount = 0; nCount < 32; nCount++)
+	if (m_pTimer == NULL)
 	{
-		CObjBlock::Create(
-			CObjBlock::MODEL_BLOCK_000,
-			D3DXVECTOR3(-1000.0f, 100.0f * nCount, 0.0f),
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-		CObjBlock::Create(
-			CObjBlock::MODEL_BLOCK_000,
-			D3DXVECTOR3(9400.0f, 100.0f * nCount, 0.0f),
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		// 時間の生成
+		m_pTimer = CTimer::Create(
+			D3DXVECTOR3(SCREEN_WIDTH * 0.04f, SCREEN_HEIGHT * 0.075f, 0.0f),
+			D3DXVECTOR3(60.0f, 0.0f, 0.0f),
+			D3DXVECTOR3(40.0f, 0.0f, 0.0f),
+			D3DXVECTOR3(30.0f, 40.0f, 0.0f),
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 
-	// スカイボックスの生成
-	CSkybox::Create(
-		CSkybox::MODEL_SKYBOX_000,
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-	// 時間の生成
-	m_pTimer = CTimer::Create(
-		D3DXVECTOR3(SCREEN_WIDTH * 0.04f, SCREEN_HEIGHT * 0.075f, 0.0f),
-		D3DXVECTOR3(60.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(40.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(30.0f, 40.0f, 0.0f),
-		D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
-
-	// 教えるオブジェクトの生成処理
-	CObjTeach::Create(
-		CObjTeach::TEX_TEACH_MOVE,
-		D3DXVECTOR3(200.0f, 600.0f, 500.0f),
-		D3DXVECTOR3(400.0f, 200.0f, 50.0f),
-		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-	CCsvStage *pCsvStage = CManager::GetInstance()->GetCsvStage();
-
-	if (pCsvStage != NULL)
+	if (m_pPlayer == NULL)
 	{
-		// CSVステージの設置
-		pCsvStage->SetObj();
+		// プレイヤーの生成
+		m_pPlayer = CPlayer::Create(
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),				// 位置
+			D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f),	// 向き
+			CModel::MODEL_TYPE_PLAYER_AONOA,			// モデル
+			CMotion::MOTION_TYPE_PLAYER_AONOA);			// モーション
 	}
-
 
 	// 成功を返す
 	return S_OK;
@@ -176,6 +157,16 @@ void CGame::Uninit(void)
 		// 時間管理の開放処理
 		delete m_pTimer;
 		m_pTimer = NULL;
+	}
+
+	if (m_pEditMap != NULL)
+	{
+		// マップエディタの終了処理
+		m_pEditMap->Uninit();
+
+		// マップエディタの開放処理
+		delete m_pEditMap;
+		m_pEditMap = NULL;
 	}
 
 	// オブジェクトの全開放処理
@@ -208,17 +199,55 @@ void CGame::Update(void)
 		return;
 	}
 
-	if (m_pTimer != NULL)
+	if (m_pEditMap == NULL)
 	{
-		// 時間の更新処理
-		m_pTimer->Update();
-	}
+		if (m_pTimer != NULL)
+		{
+			// 時間の更新処理
+			m_pTimer->Update();
+		}
 
-	// 遷移ボタン（えんたー）
-	if (pInputKeyboard->GetTrigger(DIK_RETURN) != NULL )
+		// 遷移ボタン（えんたー）
+		if (pInputKeyboard->GetTrigger(DIK_RETURN) == true)
+		{
+			// ゲームモード
+			CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RESULT);
+
+			return;
+		}
+
+		if (pInputKeyboard->GetTrigger(DIK_F1) == true)
+		{
+			// エディットモードの生成処理
+			m_pEditMap = CEditMap::Create();
+
+			if (m_pPlayer != NULL)
+			{
+				// プレイヤーの更新停止
+				m_pPlayer->IsUpdateStop(false);
+			}
+		}
+	}
+	else
 	{
-		// ゲームモード
-		CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RESULT);
+		// 更新処理
+		m_pEditMap->Update();
+
+		if (pInputKeyboard->GetTrigger(DIK_F1) == true)
+		{
+			// 終了処理
+			m_pEditMap->Uninit();
+
+			// 開放処理
+			delete m_pEditMap;
+			m_pEditMap = NULL;
+
+			if (m_pPlayer != NULL)
+			{
+				// プレイヤーの更新停止
+				m_pPlayer->IsUpdateStop(true);
+			}
+		}
 	}
 }
 

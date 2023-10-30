@@ -22,6 +22,7 @@
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="edit_map.cpp" />
     <ClCompile Include="csv_stage.cpp" />
+    <ClCompile Include="file_map.cpp" />
     <ClCompile Include="goal.cpp" />
     <ClCompile Include="number.cpp" />
     <ClCompile Include="obj_3d_wall.cpp" />
@@ -71,6 +72,7 @@
     <ClInclude Include="bg.h" />
     <ClInclude Include="edit_map.h" />
     <ClInclude Include="csv_stage.h" />
+    <ClInclude Include="file_map.h" />
     <ClInclude Include="goal.h" />
     <ClInclude Include="number.h" />
     <ClInclude Include="obj_3d_wall.h" />

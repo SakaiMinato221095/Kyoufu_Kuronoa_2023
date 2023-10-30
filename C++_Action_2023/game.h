@@ -31,6 +31,8 @@ class CPlayer;
 
 class CTimer;
 
+class CEditMap;
+
 //-======================================
 //-	クラス定義
 //-======================================
@@ -60,6 +62,8 @@ private:
 
 	static CPlayer *m_pPlayer;				// プレイヤー
 	static CTimer *m_pTimer;				// タイマー
+
+	static CEditMap *m_pEditMap;			// マップエディット
 
 	GAME m_game;							// ゲーム状態
 };

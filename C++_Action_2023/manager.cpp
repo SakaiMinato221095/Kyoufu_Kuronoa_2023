@@ -33,6 +33,7 @@
 #include "mgr_coll.h"
 
 #include "csv_stage.h"
+#include "file_map.h"
 
 //=======================================
 //=	マクロ定義
@@ -198,6 +199,7 @@ CManager::CManager()
 	m_pMgrColl = NULL;
 
 	m_pCsvStage = NULL;
+	m_pFileMap = NULL;
 }
 
 //-------------------------------------
@@ -545,15 +547,15 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	}
 
 
-	// シーン
+	// CSVステージ
 	{
-		// シーンの有無を判定
+		// CSVステージの有無を判定
 		if (m_pCsvStage == NULL)
 		{
-			// シーンの生成
+			// CSVステージの生成
 			m_pCsvStage = CCsvStage::Create();
 
-			// シーンの有無を判定
+			// CSVステージの有無を判定
 			if (m_pCsvStage == NULL)
 			{
 				// 失敗メッセージ
@@ -580,7 +582,36 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		// CSVステージのロード処理
 		m_pCsvStage->Load(CCsvStage::CSV_STAGE_000);
 	}
-	
+
+	// マップファイル
+	{
+		// マップファイルの有無を判定
+		if (m_pFileMap == NULL)
+		{
+			// マップファイルの生成
+			m_pFileMap = CFileMap::Create();
+
+			// マップファイルの有無を判定
+			if (m_pFileMap == NULL)
+			{
+				// 失敗メッセージ
+				MessageBox(hWnd, "マップファイルの初期化", "初期処理失敗！", MB_ICONWARNING);
+
+				// 初期化を抜ける
+				return E_FAIL;
+			}
+		}
+		else
+		{// ゴミが入っているとき
+
+			// 失敗メッセージ
+			MessageBox(hWnd, "マップファイルの初期化", "初期処理失敗！", MB_ICONWARNING);
+
+			// 初期化を抜ける
+			return E_FAIL;
+		}
+	}
+
 	// 音の設定
 	if (m_pSound != NULL)
 	{
@@ -705,6 +736,17 @@ void CManager::Uninit(void)
 		// CSVステージの開放処理
 		delete m_pCsvStage;
 		m_pCsvStage = NULL;
+	}
+
+	// マップファイルの破棄
+	if (m_pFileMap != NULL)
+	{
+		// マップファイルの終了処理
+		m_pFileMap->Uninit();
+
+		// マップファイルの開放処理
+		delete m_pFileMap;
+		m_pFileMap = NULL;
 	}
 
 	// シーンの破棄
@@ -984,6 +1026,14 @@ CMgrColl * CManager::GetMgrColl(void)
 CCsvStage * CManager::GetCsvStage(void)
 {
 	return m_pCsvStage;
+}
+
+//-------------------------------------
+//- 管理のマップファイルを取得処理
+//-------------------------------------
+CFileMap * CManager::GetFileMap(void)
+{
+	return m_pFileMap;
 }
 
 //-------------------------------------

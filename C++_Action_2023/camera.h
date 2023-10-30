@@ -50,6 +50,7 @@ public:
 	{
 		MODE_NORMAL = 0,	// 通常
 		MODE_FOLLOWING,		// 追尾
+		MODE_EDIT,			// エディットモード
 		MODE_TITLE,			// タイトル
 		MODE_MAX
 	}MODE;
@@ -63,6 +64,7 @@ public:
 
 	void UpdateOperation(void);
 	void UpdateFollowing(void);
+	void UpdateEdit(void);
 	void UpdateRot(void);
 	void UpdateTitle(void);
 

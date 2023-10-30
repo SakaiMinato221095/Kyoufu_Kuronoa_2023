@@ -29,9 +29,13 @@
 #define POS_V_FOLL		(D3DXVECTOR3(0.0f,	0.0f, 0.0f))
 #define POS_R_FOLL		(D3DXVECTOR3(0.0f,	0.0f, 0.0f))
 #define LENGTH_FOLL		(1500.0f)
+#define LENGTH_EDIT		(3000.0f)
 #define FOLL_Y			(100.0f)
 
 #define FOOL_POS_DEST	(0.3f)
+
+#define MOVE_X_EDIT		(25.0f)
+#define MOVE_Y_EDIT		(25.0f)
 
 //-======================================
 //-	静的変数宣言
@@ -46,7 +50,7 @@ CCamera::CCamera()
 	ZeroMemory(m_mtxProjectien, sizeof(D3DXMATRIX));
 	ZeroMemory(m_mtxView, sizeof(D3DXMATRIX));
 
-	m_mode = MODE_FOLLOWING;
+	m_mode = MODE(0);
 }
 
 //-------------------------------------
@@ -135,6 +139,13 @@ void CCamera::Update(void)
 
 			// カメラの向き追尾処理
 			UpdateRot();
+
+			break;
+
+		case MODE_EDIT:
+
+			// カメラの移動処理
+			UpdateEdit();
 
 			break;
 		}
@@ -334,6 +345,70 @@ void CCamera::UpdateFollowing(void)
 	m_data.posRDest = posRDest;		// 目的の注視点
 	m_data.rot = rot;				// 向き
 	m_data.fLength = fLength;		// カメラとの距離
+}
+
+//-------------------------------------
+//-	カメラのエディットモード時の操作処理
+//-------------------------------------
+void CCamera::UpdateEdit(void)
+{
+	// 変数宣言（情報取得）
+	D3DXVECTOR3 posV = m_data.posV;		// 視点
+	D3DXVECTOR3 posR = m_data.posR;		// 注視点
+	D3DXVECTOR3 rot = m_data.rot;		// 向き
+	float fLength = m_data.fLength;		// カメラとの距離
+
+	// キーボードのポインタを宣言
+	CInputKeyboard *pInputKeyboard = CManager::GetInstance()->GetInputKeyboard();
+
+	// キーボードの情報取得の成功を判定
+	if (pInputKeyboard == NULL)
+	{// 失敗時
+
+	 // 更新処理を抜ける
+		return;
+	}
+
+	//視点の位置を更新
+	posV.x = posR.x + sinf(rot.y) * -fLength;
+	posV.z = posR.z + cosf(rot.y) * -fLength;
+
+
+	//移動
+	if (pInputKeyboard->GetPress(DIK_LEFT) == true)
+	{//左の移動[Aキーが押されたとき]
+
+		posV.x -= MOVE_X_EDIT;
+		posR.x -= MOVE_X_EDIT;
+
+	}
+	if (pInputKeyboard->GetPress(DIK_RIGHT) == true)
+	{//右の移動[Dキーが押されたとき]
+
+		posV.x += MOVE_X_EDIT;
+		posR.x += MOVE_X_EDIT;
+
+	}
+	if (pInputKeyboard->GetPress(DIK_UP) == true)
+	{//右の移動[Wキーが押されたとき]
+
+		posV.y += MOVE_Y_EDIT;
+		posR.y += MOVE_Y_EDIT;
+
+	}
+	if (pInputKeyboard->GetPress(DIK_DOWN) == true)
+	{//右の移動[Sキーが押されたとき]
+
+		posV.y -= MOVE_Y_EDIT;
+		posR.y -= MOVE_Y_EDIT;
+
+	}
+
+	// 情報更新
+	m_data.posV = posV;			// 視点
+	m_data.posR = posR;			// 注視点
+	m_data.rot = rot;			// 向き
+	m_data.fLength = fLength;	// カメラとの距離
 }
 
 //-------------------------------------
@@ -567,6 +642,13 @@ void CCamera::SetMode(CCamera::MODE mode)
 
 		break;
 
+	case MODE_EDIT:
+
+		// 情報設定
+		fLength = LENGTH_EDIT;					// カメラとの長さ
+
+		break;
+		
 	case MODE_TITLE:
 
 		// 情報設定

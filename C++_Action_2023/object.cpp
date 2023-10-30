@@ -53,6 +53,8 @@ CObject::CObject(int nPriority)
 			break;
 		}
 	}
+
+	m_bIsUpdate = true;
 }
 
 //-------------------------------------
@@ -104,8 +106,17 @@ void CObject::UpdateAll(void)
 		{
 			if (m_apObject[nCountPrio][nCountObj] != NULL)
 			{
-				// 更新処理
-				m_apObject[nCountPrio][nCountObj]->Update();
+				if (m_apObject[nCountPrio][nCountObj]->m_bIsUpdate == true)
+				{
+					if (m_apObject[nCountPrio][nCountObj]->m_bIsUpdate == false)
+					{
+						int ndata = 0;
+						ndata = 1;
+					}
+
+					// 更新処理
+					m_apObject[nCountPrio][nCountObj]->Update();
+				}
 			}
 		}
 	}
@@ -131,6 +142,14 @@ void CObject::DrawAll(void)
 			}
 		}
 	}
+}
+
+//-------------------------------------
+//- オブジェクトの更新の有無
+//-------------------------------------
+void CObject::IsUpdateStop(bool bIsUpdate)
+{
+	m_bIsUpdate = bIsUpdate;
 }
 
 //-------------------------------------

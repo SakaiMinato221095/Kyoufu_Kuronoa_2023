@@ -183,7 +183,7 @@ void CObjTeach::Draw(void)
 CObjTeach *CObjTeach::Create(TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
 {
 	// 教えるオブジェクトの生成
-	CObjTeach *pCObjTeach = DBG_NEW CObjTeach(2);
+	CObjTeach *pCObjTeach = DBG_NEW CObjTeach(3);
 
 	// 生成の成功の有無を判定
 	if (pCObjTeach != NULL)

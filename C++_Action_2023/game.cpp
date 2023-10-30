@@ -20,6 +20,8 @@
 #include "xinput.h"
 #include "sound.h"
 
+#include "pause.h"
+
 #include "camera.h"
 
 #include "player.h"
@@ -50,6 +52,7 @@
 CPlayer *CGame::m_pPlayer = NULL;
 CTimer *CGame::m_pTimer = NULL;
 CEditMap *CGame::m_pEditMap = NULL;
+CPause *CGame::m_pPause = NULL;
 
 //-------------------------------------
 //-	ゲーム画面のコンストラクタ
@@ -84,6 +87,16 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	if (pFileMap == NULL)
 	{
+		return E_FAIL;
+	}
+
+	// サウンドのポインタを宣言
+	CSound *pSound = CManager::GetInstance()->GetSound();
+
+	// サウンドの情報取得の成功を判定
+	if (pSound == NULL)
+	{
+		// 処理を抜ける
 		return E_FAIL;
 	}
 
@@ -133,6 +146,9 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 			CModel::MODEL_TYPE_PLAYER_AONOA,			// モデル
 			CMotion::MOTION_TYPE_PLAYER_AONOA);			// モーション
 	}
+
+	// ゲームの再生
+	pSound->Play(CSound::LABEL_BGM_GAME);
 
 	// 成功を返す
 	return S_OK;
@@ -199,56 +215,127 @@ void CGame::Update(void)
 		return;
 	}
 
-	if (m_pEditMap == NULL)
+	// 情報取得（オブジェクト）
+	bool bStopAllUpdate = CObject::GetIsUpdateAll();	// 全更新停止
+
+	// 仮の遷移ボタン（えんたー）
+	if (pInputKeyboard->GetTrigger(DIK_P) != NULL)
 	{
-		if (m_pTimer != NULL)
+		if (m_game == GAME_NONE)
 		{
-			// 時間の更新処理
-			m_pTimer->Update();
+			m_pPause = CPause::Create();
+
+			// 全更新停止
+			bStopAllUpdate = false;
+
+			// ポーズ状態
+			m_game = GAME_PAUSE;
 		}
-
-		// 遷移ボタン（えんたー）
-		if (pInputKeyboard->GetTrigger(DIK_RETURN) == true)
+		else if (m_game == GAME_PAUSE)
 		{
-			// ゲームモード
-			CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_RESULT);
-
-			return;
-		}
-
-		if (pInputKeyboard->GetTrigger(DIK_F1) == true)
-		{
-			// エディットモードの生成処理
-			m_pEditMap = CEditMap::Create();
-
-			if (m_pPlayer != NULL)
+			if (m_pPause != NULL)
 			{
-				// プレイヤーの更新停止
-				m_pPlayer->IsUpdateStop(false);
+				m_pPause->Uninit();
+				m_pPause = NULL;
+			}
+
+			// 全更新停止を解除
+			bStopAllUpdate = false;
+
+			// ゲーム状態
+			m_game = GAME_NONE;
+		}
+	}
+
+	if (m_game == GAME_NONE)
+	{
+		if (m_pEditMap == NULL)
+		{
+			if (m_pTimer != NULL)
+			{
+				// 時間の更新処理
+				m_pTimer->Update();
+			}
+
+			if (pInputKeyboard->GetTrigger(DIK_F1) == true)
+			{
+				// エディットモードの生成処理
+				m_pEditMap = CEditMap::Create();
+
+				if (m_pPlayer != NULL)
+				{
+					// プレイヤーの更新停止
+					m_pPlayer->IsUpdateStop(false);
+				}
+			}
+		}
+		else
+		{
+			// 更新処理
+			m_pEditMap->Update();
+
+			if (pInputKeyboard->GetTrigger(DIK_F1) == true)
+			{
+				// 終了処理
+				m_pEditMap->Uninit();
+
+				// 開放処理
+				delete m_pEditMap;
+				m_pEditMap = NULL;
+
+				if (m_pPlayer != NULL)
+				{
+					// プレイヤーの更新停止
+					m_pPlayer->IsUpdateStop(true);
+				}
 			}
 		}
 	}
-	else
+	else if (m_game == GAME_PAUSE)
 	{
-		// 更新処理
-		m_pEditMap->Update();
-
-		if (pInputKeyboard->GetTrigger(DIK_F1) == true)
+		if (m_pPause != NULL)
 		{
-			// 終了処理
-			m_pEditMap->Uninit();
+			// ポーズの更新処理
+			m_pPause->Update();
 
-			// 開放処理
-			delete m_pEditMap;
-			m_pEditMap = NULL;
-
-			if (m_pPlayer != NULL)
+			if (m_pPause->GetOk() == true)
 			{
-				// プレイヤーの更新停止
-				m_pPlayer->IsUpdateStop(true);
+				switch (m_pPause->GetTypeSelect())
+				{
+				case CPause::TYPE_SELECT_GAME:
+
+					break;
+
+				case CPause::TYPE_SELECT_RETRY:
+
+					// ゲームモード
+					CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_GAME);
+
+					break;
+
+				case CPause::TYPE_SELECT_TITLE:
+
+					// ゲームモード
+					CManager::GetInstance()->GetFade()->SetFade(CScene::MODE_TITEL);
+
+					break;
+				}
+
+				// ポーズの開放処理
+				m_pPause->Uninit();
+				m_pPause = NULL;
+
+				// 全更新停止を解除
+				bStopAllUpdate = true;
+
+				// ゲーム状態
+				m_game = GAME_NONE;
 			}
 		}
 	}
+
+	// 情報更新
+	CObject::SetIsUpdateAll(bStopAllUpdate);	// 全更新停止
 }
 
 //-------------------------------------

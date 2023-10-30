@@ -83,6 +83,9 @@ public:
 	virtual CObject2d *GetObject2d(void);
 	virtual CBgMulti *GetBgMulti(void);
 
+	static bool GetIsUpdateAll(void);
+	static void SetIsUpdateAll(bool bIsUpdateAll);
+
 protected:
 
 	void Release(void);
@@ -95,6 +98,8 @@ private:
 	static CObject *m_apObject[OBJECT_PRIORITY_MAX][OBJECT_NUM_MAX];	// オブジェクトのポインタ
 
 	static int m_nNumAll;		// オブジェクトの総数
+
+	static bool m_bIsUpdateAll;		// 全更新の有無
 
 	int m_nID;					// 自分自身のポインタの番号
 	int m_nPriority;			// 自分自身の優先順位の番号

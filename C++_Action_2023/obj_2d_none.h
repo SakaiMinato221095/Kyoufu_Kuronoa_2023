@@ -34,11 +34,11 @@ public:
 		TEX_NULL = 0,		// なし
 		TEX_TITLE_LOGO,		// タイトルロゴ
 		TEX_TITLE_BUTTON,	// タイトルボタン
-		//TEX_PAUSE_BG,		// ポーズの背景
-		//TEX_PAUSE_GAME,		// ポーズのゲーム
-		//TEX_PAUSE_RETRY,	// ポーズのリトライ
-		//TEX_PAUSE_TITLE,	// ポーズのタイトル
-		//TEX_PAUSE_CURSOR,	// ポーズのカーソル
+		TEX_PAUSE_BG,		// ポーズの背景
+		TEX_PAUSE_GAME,		// ポーズのゲーム
+		TEX_PAUSE_RETRY,	// ポーズのリトライ
+		TEX_PAUSE_TITLE,	// ポーズのタイトル
+		TEX_PAUSE_CURSOR,	// ポーズのカーソル
 		TEX_MAX
 	}TEX;
 

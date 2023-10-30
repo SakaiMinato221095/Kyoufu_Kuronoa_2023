@@ -39,16 +39,31 @@ public:
 	// サウンドラベル
 	typedef enum
 	{
-		LABEL_BGM_TEST = 0,			// テストBGM
-		LABEL_SE_TEST,				// テストSE
+		LABEL_BGM_TITLE = 0,	// タイトルBGM
+		LABEL_BGM_GAME,			// ゲームBGM
+		LABEL_BGM_RESULT,		// リザルトBGM
+		
+		LABEL_SE_JUMP,			// ジャンプSE
+		LABEL_SE_DOUBLE_JUMP,	// 二段ジャンプSE
+		LABEL_SE_KAZEDAMA,		// 風だまSE
+		LABEL_SE_GET,			// 取得SE
+		LABEL_SE_SHOT,			// 発射SE
+		LABEL_SE_JEWEL,			// 宝石SE
 		LABEL_MAX,
 	}LABEL;
 
 	// サウンドの情報
 	SOUNDINFO g_aSoundInfo[LABEL_MAX] =
 	{
-		{ "Data/BGM/bgm000.wav",-1 },	// テストBGM
-		{ "data/SE/Shot000.wav", 0 },	// テストSE
+		{ "Data/BGM/Brave.wav",-1 },			// タイトル
+		{ "Data/BGM/LIAR_PARADOX_2.wav",-1 },	// ゲーム
+		{ "Data/BGM/MusMus-BGM-116.wav",-1 },	// リザルト
+		{ "data/SE/jump.wav", 0 },				// ジャンプ
+		{ "data/SE/double_jump.wav", 0 },		// ダブルジャンプ
+		{ "data/SE/kazedama.wav", 0 },			// 風だま
+		{ "data/SE/get.wav", 0 },				// 取得
+		{ "data/SE/shot.wav", 0 },				// 発射
+		{ "data/SE/jewel.wav", 0 },				// 宝石
 	};
 
 	CSound();

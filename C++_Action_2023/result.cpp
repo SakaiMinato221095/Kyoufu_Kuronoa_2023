@@ -17,6 +17,8 @@
 #include "Input.h"
 #include "xinput.h"
 
+#include "sound.h"
+
 #include "manager.h"
 
 #include "bg.h"
@@ -52,6 +54,16 @@ CResult::~CResult()
 //-------------------------------------
 HRESULT CResult::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
+	// サウンドのポインタを宣言
+	CSound *pSound = CManager::GetInstance()->GetSound();
+
+	// サウンドの情報取得の成功を判定
+	if (pSound == NULL)
+	{
+		// 処理を抜ける
+		return E_FAIL;
+	}
+
 	// 背景の有無を判定
 	if (m_pBg == NULL)
 	{
@@ -68,6 +80,9 @@ HRESULT CResult::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		// 背景の設定
 		m_pBg->Set();
 	}
+
+	// タイトルの再生
+	pSound->Play(CSound::LABEL_BGM_RESULT);
 
 	// 成功を返す
 	return S_OK;

@@ -76,6 +76,16 @@ HRESULT CTitle::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		return E_FAIL;
 	}
 
+	// サウンドのポインタを宣言
+	CSound *pSound = CManager::GetInstance()->GetSound();
+
+	// サウンドの情報取得の成功を判定
+	if (pSound == NULL)
+	{
+		// 処理を抜ける
+		return E_FAIL;
+	}
+
 	// カメラの設定処理
 	pCamera->SetMode(CCamera::MODE_TITLE);
 
@@ -157,6 +167,9 @@ HRESULT CTitle::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	 // 初期化を抜ける
 		return E_FAIL;
 	}
+
+	// タイトルの再生
+	pSound->Play(CSound::LABEL_BGM_TITLE);
 
 	// 成功を返す
 	return S_OK;

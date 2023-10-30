@@ -802,6 +802,16 @@ void CPlayer::InputNormalJump(void)
 		return;
 	}
 
+	// サウンドのポインタを宣言
+	CSound *pSound = CManager::GetInstance()->GetSound();
+
+	// サウンドの情報取得の成功を判定
+	if (pSound == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
 	// 変数宣言
 	D3DXVECTOR3 move = m_data.move;			// 移動量を取得
 
@@ -811,6 +821,9 @@ void CPlayer::InputNormalJump(void)
 	{
 		// ジャンプ状態に変更
 		m_bJump = true;
+
+		// ジャンプSEの再生
+		pSound->Play(CSound::LABEL_SE_JUMP);
 
 		// ジャンプ量を設定
 		move.y = PLAYER_JUMP;
@@ -857,6 +870,16 @@ void CPlayer::InputDoubleJump(void)
 		return;
 	}
 
+	// サウンドのポインタを宣言
+	CSound *pSound = CManager::GetInstance()->GetSound();
+
+	// サウンドの情報取得の成功を判定
+	if (pSound == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
 	// 変数宣言
 	D3DXVECTOR3 move = m_data.move;			// 移動量を取得
 
@@ -865,6 +888,9 @@ void CPlayer::InputDoubleJump(void)
 	{
 		// 保持状態を解除
 		m_bHave = false;
+
+		// 二段ジャンプSEの再生
+		pSound->Play(CSound::LABEL_SE_DOUBLE_JUMP);
 
 		// 状態を敵投げ状態に変更
 		m_stateTypeNew = STATE_TYPE_DOUBLEJUMP;
@@ -929,6 +955,16 @@ void CPlayer::InputKazedama(void)
 		return;
 	}
 
+	// サウンドのポインタを宣言
+	CSound *pSound = CManager::GetInstance()->GetSound();
+
+	// サウンドの情報取得の成功を判定
+	if (pSound == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
 	if (m_pKazedama == NULL)
 	{
 		// 入力処理（Jキー / Bボタン）
@@ -937,6 +973,9 @@ void CPlayer::InputKazedama(void)
 		{
 			// 状態を風だまに変更
 			m_stateTypeNew = STATE_TYPE_KAZEDAMA;
+
+			// 風だまSEの再生
+			pSound->Play(CSound::LABEL_SE_KAZEDAMA);
 
 			// 情報取得
 			D3DXVECTOR3 pos = m_data.pos;
@@ -958,7 +997,7 @@ void CPlayer::InputKazedama(void)
 					posBody,
 					D3DXVECTOR3(50.0f, 50.0f, 50.0f),
 					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
-					D3DXVECTOR3(-20.0f, 0.0f, 0.0f),
+					D3DXVECTOR3(-30.0f, 0.0f, 0.0f),
 					CKazedama::TYPE_ROT_LEFT);
 ;
 			}
@@ -970,7 +1009,7 @@ void CPlayer::InputKazedama(void)
 					posBody,
 					D3DXVECTOR3(50.0f, 50.0f, 50.0f),
 					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
-					D3DXVECTOR3(20.0f, 0.0f, 0.0f),
+					D3DXVECTOR3(30.0f, 0.0f, 0.0f),
 					CKazedama::TYPE_ROT_RIGHT);
 			}
 		}
@@ -1003,6 +1042,16 @@ void CPlayer::InputShot(void)
 		return;
 	}
 
+	// サウンドのポインタを宣言
+	CSound *pSound = CManager::GetInstance()->GetSound();
+
+	// サウンドの情報取得の成功を判定
+	if (pSound == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
 	// 風だまのポインタの有無を判定
 	if (m_pEnemyHave != NULL)
 	{
@@ -1015,6 +1064,9 @@ void CPlayer::InputShot(void)
 
 			// 状態を敵投げ状態に変更
 			m_stateTypeNew = STATE_TYPE_THROW;
+
+			// 発射SEの再生
+			pSound->Play(CSound::LABEL_SE_SHOT);
 
 			// 情報取得
 			D3DXVECTOR3 pos = m_data.pos;

@@ -33,6 +33,7 @@ class CTimer;
 
 class CEditMap;
 
+class CPause;
 //-======================================
 //-	クラス定義
 //-======================================
@@ -58,12 +59,17 @@ public:
 	void Draw(void);
 	
 	static CPlayer *GetPlayer(void);
+
+	static CPause *GetPause(void);
+
 private:
 
 	static CPlayer *m_pPlayer;				// プレイヤー
 	static CTimer *m_pTimer;				// タイマー
 
 	static CEditMap *m_pEditMap;			// マップエディット
+
+	static CPause *m_pPause;				// ポーズ
 
 	GAME m_game;							// ゲーム状態
 };

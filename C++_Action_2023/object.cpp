@@ -27,6 +27,7 @@
 
 CObject *CObject::m_apObject[OBJECT_PRIORITY_MAX][OBJECT_NUM_MAX] = {};
 int CObject::m_nNumAll = 0;
+bool CObject::m_bIsUpdateAll = true;
 
 //-------------------------------------
 //-	コンストラクタ
@@ -99,23 +100,26 @@ void CObject::UpdateAll(void)
 		return;
 	}
 
-		// 全オブジェクトポインタの情報を更新
-	for (int nCountPrio = 0; nCountPrio < OBJECT_PRIORITY_MAX; nCountPrio++)
+	// 全オブジェクトポインタの情報を更新
+	if (m_bIsUpdateAll == true)
 	{
-		for (int nCountObj = 0; nCountObj < OBJECT_NUM_MAX; nCountObj++)
+		for (int nCountPrio = 0; nCountPrio < OBJECT_PRIORITY_MAX; nCountPrio++)
 		{
-			if (m_apObject[nCountPrio][nCountObj] != NULL)
+			for (int nCountObj = 0; nCountObj < OBJECT_NUM_MAX; nCountObj++)
 			{
-				if (m_apObject[nCountPrio][nCountObj]->m_bIsUpdate == true)
+				if (m_apObject[nCountPrio][nCountObj] != NULL)
 				{
-					if (m_apObject[nCountPrio][nCountObj]->m_bIsUpdate == false)
+					if (m_apObject[nCountPrio][nCountObj]->m_bIsUpdate == true)
 					{
-						int ndata = 0;
-						ndata = 1;
-					}
+						if (m_apObject[nCountPrio][nCountObj]->m_bIsUpdate == false)
+						{
+							int ndata = 0;
+							ndata = 1;
+						}
 
-					// 更新処理
-					m_apObject[nCountPrio][nCountObj]->Update();
+						// 更新処理
+						m_apObject[nCountPrio][nCountObj]->Update();
+					}
 				}
 			}
 		}
@@ -177,6 +181,22 @@ CBgMulti *CObject::GetBgMulti(void)
 {
 	// なしを返す
 	return NULL;
+}
+
+//-------------------------------------
+//-	全更新の有無の取得処理
+//-------------------------------------
+bool CObject::GetIsUpdateAll(void)
+{
+	return m_bIsUpdateAll;
+}
+
+//-------------------------------------
+//-	全更新の有無の設定処理
+//-------------------------------------
+void CObject::SetIsUpdateAll(bool bIsUpdateAll)
+{
+	m_bIsUpdateAll = bIsUpdateAll;
 }
 
 //-------------------------------------

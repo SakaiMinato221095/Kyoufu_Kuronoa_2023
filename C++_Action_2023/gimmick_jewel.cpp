@@ -15,12 +15,15 @@
 #include "renderer.h"
 #include "manager.h"
 
+#include "sound.h"
+
 #include "manager_model.h"
 
 #include "coll.h"
 
 #include "game.h"
 #include "player.h"
+
 
 //-======================================
 //-	マクロ定義
@@ -119,6 +122,16 @@ void CGimmickJewel::Uninit(void)
 //-------------------------------------
 void CGimmickJewel::Update(void)
 {
+	// サウンドのポインタを宣言
+	CSound *pSound = CManager::GetInstance()->GetSound();
+
+	// サウンドの情報取得の成功を判定
+	if (pSound == NULL)
+	{
+		// 処理を抜ける
+		return;
+	}
+
 	// ギミックの更新処理
 	CGimmick::Update();
 
@@ -130,6 +143,9 @@ void CGimmickJewel::Update(void)
 	// 敵との当たり判定
 	if (m_pColl->GetData().stateHit == CMgrColl::STATE_HIT_DEAD)
 	{
+		// 宝石SEの再生
+		pSound->Play(CSound::LABEL_SE_JEWEL);
+
 		// プレイヤーの強化処理
 		PlayerPlus();
 
@@ -207,5 +223,5 @@ void CGimmickJewel::PlayerPlus(void)
 	}
 	
 	// 強化処理
-	pPlayer->SetPlus(1.5f,120);
+	pPlayer->SetPlus(1.5f,60);
 }

@@ -56,6 +56,7 @@
     <ClCompile Include="object_x.cpp" />
     <ClCompile Include="obj_3d_field.cpp" />
     <ClCompile Include="obj_teach.cpp" />
+    <ClCompile Include="pause.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -107,6 +108,7 @@
     <ClInclude Include="object_x.h" />
     <ClInclude Include="obj_3d_field.h" />
     <ClInclude Include="obj_teach.h" />
+    <ClInclude Include="pause.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="precompile.h" />
     <ClInclude Include="renderer.h" />

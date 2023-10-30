@@ -42,14 +42,14 @@ public:
 	CObject2d(int nPriority = 3);
 	~CObject2d();
 
-	HRESULT Init(void);
+	HRESULT Init(D3DXVECTOR3 pos,D3DXVECTOR3 size, D3DXCOLOR color);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
 	void BindTexture(int nTextureNldx);
 
-	static CObject2d *CObject2d::Create(int nPriority = 3);
+	static CObject2d *CObject2d::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color);
 
 	virtual void SetVtx(void);
 
@@ -59,6 +59,8 @@ public:
 	void SetVtxData(CObject2d::VtxData vtxData);
 
 private:
+
+	void InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color);
 
 	VtxData m_vtxData;							// í∏ì_ílèÓïÒ
 

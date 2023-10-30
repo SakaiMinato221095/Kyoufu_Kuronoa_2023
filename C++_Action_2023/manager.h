@@ -109,7 +109,6 @@ public:
 
 	CMgrColl *GetMgrColl(void);
 
-	CCsvStage *GetCsvStage(void);
 	CFileMap *GetFileMap(void);
 
 	static CManager *GetInstance();
@@ -134,7 +133,6 @@ private:
 
 	CMgrColl *m_pMgrColl;				// 当たり判定管理のポインタ
 
-	CCsvStage *m_pCsvStage;				// ステージのCSVのポインタ
 	CFileMap *m_pFileMap;				// ステージのCSVのポインタ
 
 	static CManager *m_pManager;		// 自身のポインタ

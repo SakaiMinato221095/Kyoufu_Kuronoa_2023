@@ -25,6 +25,7 @@
     <ClCompile Include="file_map.cpp" />
     <ClCompile Include="goal.cpp" />
     <ClCompile Include="number.cpp" />
+    <ClCompile Include="obj_2d_none.cpp" />
     <ClCompile Include="obj_3d_wall.cpp" />
     <ClCompile Include="obj_block.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -75,6 +76,7 @@
     <ClInclude Include="file_map.h" />
     <ClInclude Include="goal.h" />
     <ClInclude Include="number.h" />
+    <ClInclude Include="obj_2d_none.h" />
     <ClInclude Include="obj_3d_wall.h" />
     <ClInclude Include="obj_block.h" />
     <ClInclude Include="camera.h" />

@@ -17,6 +17,7 @@
 
 #include "obj_3d_field.h"
 
+#include "obj_2d_none.h"
 #include "bg.h"
 #include "number.h"
 
@@ -55,6 +56,17 @@ HRESULT CManagerTexture::Load(HWND hWnd)
 		return E_FAIL;
 	}
 	
+	// 効果なし2D
+	if (FAILED(CObj2dNone::Load()))
+	{// 失敗時
+
+	 // 失敗メッセージ
+		MessageBox(hWnd, "効果なし2Dのデータ", "データ読み込み処理失敗！", MB_ICONWARNING);
+
+		// データ読み込みを抜ける
+		return E_FAIL;
+	}
+
 	// 背景
 	if (FAILED(CBg::Load()))
 	{// 失敗時

@@ -40,7 +40,8 @@ public:
 
 	typedef enum
 	{
-		TEXT_MAP_NORMAL = 0,	// 通常マップ
+		TEXT_NORMAL = 0,	// 通常マップ
+		TEXT_TITLE,			// タイトルマップ
 	}TEXT;
 
 	CFileMap();
@@ -54,7 +55,7 @@ public:
 	static CFileMap *Create(void);
 
 	void Save(void);
-	void Load(void);
+	void Load(TEXT text);
 
 	bool SetObj(CEditMap::EditData editData);
 

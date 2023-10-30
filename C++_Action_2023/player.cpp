@@ -178,14 +178,17 @@ void CPlayer::Update(void)
 	// 前回の位置を更新
 	m_data.posOld = m_data.pos;
 
-	// 移動の入力処理
-	InputMove();
+	if (CManager::GetInstance()->GetMode() == CScene::MODE_GAME)
+	{
+		// 移動の入力処理
+		InputMove();
 
-	// ジャンプの入力処理
-	InputJump();
+		// ジャンプの入力処理
+		InputJump();
 
-	// アクションの入力処理
-	InputAction();
+		// アクションの入力処理
+		InputAction();
+	}
 
 	// 向きの更新処理
 	UpdateRot();
@@ -536,7 +539,7 @@ void CPlayer::UpdateMotionNone(void)
 	{
 		if (m_data.move.y <= 0.0f)
 		{
-			m_stateTypeNew = STATE_TYPE_LANDING;
+			//m_stateTypeNew = STATE_TYPE_LANDING;
 		}
 	}
 

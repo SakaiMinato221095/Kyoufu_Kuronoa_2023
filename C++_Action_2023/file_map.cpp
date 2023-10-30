@@ -33,7 +33,8 @@
 // マップのテキストのコンスト定義
 const char *pTextMap[] =
 {
-	"data\\TXT\\Map\\MapNormal.txt"		//	通常マップのテキスト
+	"data\\TXT\\Map\\MapNormal.txt",	//	通常マップのテキスト
+	"data\\TXT\\Map\\MapTitle.txt",		//	タイトルマップのテキスト
 };
 
 //=======================================
@@ -122,7 +123,7 @@ CFileMap * CFileMap::Create(void)
 void CFileMap::Save(void)
 {
 	// ファイルを開く（書き出し）
-	FILE *pFile = fopen(pTextMap[TEXT_MAP_NORMAL], "w");
+	FILE *pFile = fopen(pTextMap[TEXT_NORMAL], "w");
 
 	// ファイルの有無を判定
 	if (pFile != NULL)
@@ -172,10 +173,10 @@ void CFileMap::Save(void)
 //-------------------------------------
 //- マップエディタのロード処理
 //-------------------------------------
-void CFileMap::Load(void)
+void CFileMap::Load(TEXT text)
 {
 	// ファイルを開く（読み込み）
-	FILE *pFile = fopen(pTextMap[TEXT_MAP_NORMAL], "r");
+	FILE *pFile = fopen(pTextMap[text], "r");
 
 	// ファイルの有無を判定
 	if (pFile != NULL)

@@ -477,61 +477,46 @@ void CCamera::UpdateRot(void)
 //-------------------------------------
 void CCamera::UpdateTitle(void)
 {
-	//// 変数宣言（情報取得）
-	//D3DXVECTOR3 posV = m_data.posV;				// 視点
-	//D3DXVECTOR3 posVDest = m_data.posVDest;		// 目的の視点
-	//D3DXVECTOR3 posR = m_data.posR;				// 注視点
-	//D3DXVECTOR3 posRDest = m_data.posRDest;		// 目的の注視点
-	//D3DXVECTOR3 rot = m_data.rot;				// 向き
-	//D3DXVECTOR3 rotDest = m_data.rotDest;		// 目的の向き
-	//float fLength = m_data.fLength;				// カメラとの距離
+	// 変数宣言（情報取得）
+	D3DXVECTOR3 posV = m_data.posV;				// 視点
+	D3DXVECTOR3 posVDest = m_data.posVDest;		// 目的の視点
+	D3DXVECTOR3 posR = m_data.posR;				// 注視点
+	D3DXVECTOR3 posRDest = m_data.posRDest;		// 目的の注視点
+	D3DXVECTOR3 rot = m_data.rot;				// 向き
+	D3DXVECTOR3 rotDest = m_data.rotDest;		// 目的の向き
+	float fLength = m_data.fLength;				// カメラとの距離
 
-	//// カメラの回転
-	//rotDest.y += 0.002f;
+	//視点の位置を更新
+	posV.x = posR.x + sinf(rot.y) * -fLength;
+	posV.z = posR.z + cosf(rot.y) * -fLength;
 
-	////角度の修正
-	//if (rot.y > D3DX_PI)
-	//{
-	//	rot.y = -D3DX_PI;
-	//	rotDest.y = -D3DX_PI + (rotDest.y - D3DX_PI);
-	//}
-	//else if (rot.y < -D3DX_PI)
-	//{
-	//	rot.y = D3DX_PI;
-	//	rotDest.y = D3DX_PI + (rotDest.y + D3DX_PI);
-	//}
+	//目的の視点の位置
+	posVDest.x = 0.0f + (sinf(rot.y) * -fLength) + 0.0f;
+	posVDest.z = 0.0f + (cosf(rot.y) * -fLength) + 0.0f;
 
-	////視点の位置を更新
-	//posV.x = posR.x + sinf(rot.y) * -fLength;
-	//posV.z = posR.z + cosf(rot.y) * -fLength;
+	//目的の注視点の位置
+	posRDest.x = 400.0f + 0.0f;
+	posRDest.z = 0.0f + 0.0f;
 
-	////目的の視点の位置
-	//posVDest.x = 0.0f + (sinf(rot.y) * -fLength) + 0.0f;
-	//posVDest.z = 0.0f + (cosf(rot.y) * -fLength) + 0.0f;
+	//視点の補正
+	posV.x += (posVDest.x - posV.x) * 0.3f;
+	posV.z += (posVDest.z - posV.z) * 0.3f;
 
-	////目的の注視点の位置
-	//posRDest.x = 0.0f + 0.0f;
-	//posRDest.z = 0.0f + 0.0f;
+	//注視点の補正
+	posR.x += (posRDest.x - posR.x) * 0.3f;
+	posR.z += (posRDest.z - posR.z) * 0.3f;
 
-	////視点の補正
-	//posV.x += (posVDest.x - posV.x) * 0.3f;
-	//posV.z += (posVDest.z - posV.z) * 0.3f;
+	//角度の補正
+	rot.y += (rotDest.y - rot.y) * 0.3f;
 
-	////注視点の補正
-	//posR.x += (posRDest.x - posR.x) * 0.3f;
-	//posR.z += (posRDest.z - posR.z) * 0.3f;
-
-	////角度の補正
-	//rot.y += (rotDest.y - rot.y) * 0.3f;
-
-	//// 情報更新
-	//m_data.posV = posV;			// 視点
-	//m_data.posVDest = posV;		// 目的の視点
-	//m_data.posR = posR;			// 注視点
-	//m_data.posRDest = posR;		// 目的の注視点
-	//m_data.rot = rot;			// 向き
-	//m_data.rotDest = rot;		// 目的の向き
-	//m_data.fLength = fLength;	// カメラとの長さ
+	// 情報更新
+	m_data.posV = posV;			// 視点
+	m_data.posVDest = posV;		// 目的の視点
+	m_data.posR = posR;			// 注視点
+	m_data.posRDest = posR;		// 目的の注視点
+	m_data.rot = rot;			// 向き
+	m_data.rotDest = rot;		// 目的の向き
+	m_data.fLength = fLength;	// カメラとの長さ
 }
 
 //-------------------------------------
@@ -652,10 +637,10 @@ void CCamera::SetMode(CCamera::MODE mode)
 	case MODE_TITLE:
 
 		// 情報設定
-		posV = D3DXVECTOR3(0.0f, 3000.0f, -5000.0f);	// 視点
-		posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 注視点
-		fLength = 12500.0f;								// カメラとの長さ
-		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 向き
+		posV = D3DXVECTOR3(0.0f, 100.0f, 0.0f);			// 視点
+		posR = D3DXVECTOR3(400.0f, 100.0f, 0.0f);		// 注視点
+		fLength = 800.0f;								// カメラとの長さ
+		rot = D3DXVECTOR3(0.0f, 0.9f, 0.0f);			// 向き
 
 		break;
 	}

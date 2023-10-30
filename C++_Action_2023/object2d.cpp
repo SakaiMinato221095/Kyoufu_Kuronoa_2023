@@ -44,7 +44,7 @@ CObject2d::~CObject2d()
 //-------------------------------------
 //- 2Dオブジェクトの初期化処理
 //-------------------------------------
-HRESULT CObject2d::Init(void)
+HRESULT CObject2d::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetInstance()->GetRenderer()->GetDevice();
@@ -56,6 +56,9 @@ HRESULT CObject2d::Init(void)
 	 // 初期化処理を抜ける
 		return E_FAIL;
 	}
+
+	// 初期設定処理
+	InitSet(pos,size,color);
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(
@@ -169,16 +172,16 @@ void CObject2d::BindTexture(int nTextureNldx)
 //-------------------------------------
 //- 2Dオブジェクトの生成処理
 //-------------------------------------
-CObject2d *CObject2d::Create(int nPriority)
+CObject2d * CObject2d::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
 {
 	// 2Dオブジェクトの生成
-	CObject2d *pObject2d = DBG_NEW CObject2d(nPriority);
+	CObject2d *pObject2d = DBG_NEW CObject2d(3);
 
 	// 生成の成功の有無を判定
 	if (pObject2d != NULL)
 	{
 		// 初期化処理
-		if (FAILED(pObject2d->Init()))
+		if (FAILED(pObject2d->Init(pos,size,color)))
 		{// 失敗時
 
 			// 「なし」を返す
@@ -276,4 +279,14 @@ CObject2d::VtxData CObject2d::GetVtxData(void)
 void CObject2d::SetVtxData(CObject2d::VtxData vtxData)
 {
 	m_vtxData = vtxData;
+}
+
+//-------------------------------------
+//- 2Dオブジェクトの初期設定処理
+//-------------------------------------
+void CObject2d::InitSet(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXCOLOR color)
+{
+	m_vtxData.pos = pos;
+	m_vtxData.size = size;
+	m_vtxData.color = color;
 }

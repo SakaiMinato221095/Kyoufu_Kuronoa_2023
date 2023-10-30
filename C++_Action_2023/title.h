@@ -27,7 +27,9 @@
 //-	前方宣言
 //-======================================
 
-class CBg;
+class CPlayer;
+
+class CObj2dNone;
 
 //-======================================
 //-	クラス定義
@@ -53,11 +55,11 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	static CBg *GetBg(void);
-
 private:
 
-	static CBg *m_pBg;		// 背景
+	static CPlayer *m_pPlayer;
+
+	static CObj2dNone *m_apObj2dNone[TYPE_NONE_2D_MAX];
 };
 
 #endif	// 二重インクルード防止の終了

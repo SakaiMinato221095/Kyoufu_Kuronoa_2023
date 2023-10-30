@@ -91,7 +91,7 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	pCamera->SetMode(CCamera::MODE_FOLLOWING);
 
 	// マップのロード処理
-	pFileMap->Load();
+	pFileMap->Load(CFileMap::TEXT_NORMAL);
 
 	// スカイボックスの生成
 	CSkybox::Create(

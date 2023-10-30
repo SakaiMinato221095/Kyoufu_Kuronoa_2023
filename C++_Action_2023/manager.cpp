@@ -198,7 +198,6 @@ CManager::CManager()
 
 	m_pMgrColl = NULL;
 
-	m_pCsvStage = NULL;
 	m_pFileMap = NULL;
 }
 
@@ -517,6 +516,35 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		}
 	}
 
+	// マップファイル
+	{
+		// マップファイルの有無を判定
+		if (m_pFileMap == NULL)
+		{
+			// マップファイルの生成
+			m_pFileMap = CFileMap::Create();
+
+			// マップファイルの有無を判定
+			if (m_pFileMap == NULL)
+			{
+				// 失敗メッセージ
+				MessageBox(hWnd, "マップファイルの初期化", "初期処理失敗！", MB_ICONWARNING);
+
+				// 初期化を抜ける
+				return E_FAIL;
+			}
+		}
+		else
+		{// ゴミが入っているとき
+
+		 // 失敗メッセージ
+			MessageBox(hWnd, "マップファイルの初期化", "初期処理失敗！", MB_ICONWARNING);
+
+			// 初期化を抜ける
+			return E_FAIL;
+		}
+	}
+
 	// シーン
 	{
 		// シーンの有無を判定
@@ -540,72 +568,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 			// 失敗メッセージ
 			MessageBox(hWnd, "シーンの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
-		}
-	}
-
-
-	// CSVステージ
-	{
-		// CSVステージの有無を判定
-		if (m_pCsvStage == NULL)
-		{
-			// CSVステージの生成
-			m_pCsvStage = CCsvStage::Create();
-
-			// CSVステージの有無を判定
-			if (m_pCsvStage == NULL)
-			{
-				// 失敗メッセージ
-				MessageBox(hWnd, "CSVステージの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
-				return E_FAIL;
-			}
-		}
-		else
-		{// ゴミが入っているとき
-
-			// 失敗メッセージ
-			MessageBox(hWnd, "CSVステージの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-			// 初期化を抜ける
-			return E_FAIL;
-		}
-	}
-
-	// ステージCSVの処理
-	if (m_pCsvStage != NULL)
-	{
-		// CSVステージのロード処理
-		m_pCsvStage->Load(CCsvStage::CSV_STAGE_000);
-	}
-
-	// マップファイル
-	{
-		// マップファイルの有無を判定
-		if (m_pFileMap == NULL)
-		{
-			// マップファイルの生成
-			m_pFileMap = CFileMap::Create();
-
-			// マップファイルの有無を判定
-			if (m_pFileMap == NULL)
-			{
-				// 失敗メッセージ
-				MessageBox(hWnd, "マップファイルの初期化", "初期処理失敗！", MB_ICONWARNING);
-
-				// 初期化を抜ける
-				return E_FAIL;
-			}
-		}
-		else
-		{// ゴミが入っているとき
-
-			// 失敗メッセージ
-			MessageBox(hWnd, "マップファイルの初期化", "初期処理失敗！", MB_ICONWARNING);
 
 			// 初期化を抜ける
 			return E_FAIL;
@@ -725,17 +687,6 @@ void CManager::Uninit(void)
 		// 当たり判定管理の開放処理
 		delete m_pMgrColl;
 		m_pMgrColl = NULL;
-	}
-
-	// CSVステージの破棄
-	if (m_pCsvStage != NULL)
-	{
-		// CSVステージの終了処理
-		m_pCsvStage->Uninit();
-
-		// CSVステージの開放処理
-		delete m_pCsvStage;
-		m_pCsvStage = NULL;
 	}
 
 	// マップファイルの破棄
@@ -1018,14 +969,6 @@ CLight * CManager::GetLight(void)
 CMgrColl * CManager::GetMgrColl(void)
 {
 	return m_pMgrColl;
-}
-
-//-------------------------------------
-//- 管理のステージCSVを取得処理
-//-------------------------------------
-CCsvStage * CManager::GetCsvStage(void)
-{
-	return m_pCsvStage;
 }
 
 //-------------------------------------

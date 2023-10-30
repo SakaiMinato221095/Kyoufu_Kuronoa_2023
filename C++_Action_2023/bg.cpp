@@ -117,7 +117,10 @@ HRESULT CBg::Init(TEX tex)
 	BindTexture(m_nTextureNldx[tex]);
 
 	// 2Dオブジェクトの初期化
-	CObject2d::Init();
+	CObject2d::Init(
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	
 	// 頂点情報の設定処理
 	SetVtx();

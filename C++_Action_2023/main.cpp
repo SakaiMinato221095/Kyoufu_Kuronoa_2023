@@ -32,9 +32,9 @@
 //-	マクロ定義
 //-======================================
 
-#define CLASS_NAME			"Window class"			// ウィンドウクラスの名前
-#define WINDOW_NAME			"強風のクロノア（仮）"	// ウィンドウの名前
-#define ID_BUTTON_FINISH	(101)					// 終了ボタンのID
+#define CLASS_NAME			"Window class"		// ウィンドウクラスの名前
+#define WINDOW_NAME			"強風のアオノア"	// ウィンドウの名前
+#define ID_BUTTON_FINISH	(101)				// 終了ボタンのID
 
 //-======================================
 //-	プロトタイプ宣言

@@ -47,7 +47,8 @@ const char *pTextMap[] =
 CFileMap::CFileMap()
 {
 	ZeroMemory(m_aMapData, sizeof(m_aMapData));
-	m_nNumMax = 0;
+	ZeroMemory(m_abDataUse, sizeof(m_abDataUse));
+	ZeroMemory(m_anNumMax, sizeof(m_anNumMax));
 }
 
 //-------------------------------------
@@ -120,10 +121,10 @@ CFileMap * CFileMap::Create(void)
 //-------------------------------------
 //- マップエディタのセーブ処理
 //-------------------------------------
-void CFileMap::Save(void)
+void CFileMap::Save(TEXT text)
 {
 	// ファイルを開く（書き出し）
-	FILE *pFile = fopen(pTextMap[TEXT_NORMAL], "w");
+	FILE *pFile = fopen(pTextMap[text], "w");
 
 	// ファイルの有無を判定
 	if (pFile != NULL)
@@ -140,7 +141,7 @@ void CFileMap::Save(void)
 		fprintf(pFile, "#==============================================================================\n");
 		fprintf(pFile, "#= [最大モデル数] \n");
 		fprintf(pFile, "#==============================================================================\n");
-		fprintf(pFile, "%d\n", m_nNumMax);
+		fprintf(pFile, "%d\n", m_anNumMax[text]);
 		fprintf(pFile, "\n");
 
 		// 配置状況見出しの書き出し
@@ -149,13 +150,13 @@ void CFileMap::Save(void)
 		fprintf(pFile, "#==============================================================================\n");
 		fprintf(pFile, "\n");
 
-		for (int nCount = 0; nCount < m_nNumMax; nCount++)
+		for (int nCount = 0; nCount < m_anNumMax[text]; nCount++)
 		{
 			// 変数宣言（敵の情報取得）
-			int nModelType = m_aMapData[nCount].type;				// モデル種類
-			D3DXVECTOR3 pos = m_aMapData[nCount].pos;				// 位置
-			int nTileLineNum = m_aMapData[nCount].nTileLineNum;		// 行タイル番号
-			int nTileCuluNum = m_aMapData[nCount].nTileCiluNum;		// 列タイル番号
+			int nModelType = m_aMapData[text][nCount].type;				// モデル種類
+			D3DXVECTOR3 pos = m_aMapData[text][nCount].pos;				// 位置
+			int nTileLineNum = m_aMapData[text][nCount].nTileLineNum;	// 行タイル番号
+			int nTileCuluNum = m_aMapData[text][nCount].nTileCiluNum;	// 列タイル番号
 
 			// 配置モデルの情報の書き出し
 			fprintf(pFile, "MODEL_TYPE = %d\n", nModelType);
@@ -188,6 +189,7 @@ void CFileMap::Load(TEXT text)
 		// 変数宣言
 		char aFileData[ARRAY_SIZE] = { 0 };		// ファイルの文章を格納
 		CEditMap::EditData editMap = {};		// マップデータ
+		int nObjCount = 0;						// オブジェクトカウント
 
 		while (true)
 		{
@@ -278,8 +280,14 @@ void CFileMap::Load(TEXT text)
 			// モデル設定の終了
 			if (strstr(aFileData, "END_MODEL_SET") != NULL)
 			{
+				// マップ情報を代入
+				m_aMapData[text][nObjCount] = editMap;
+
 				// オブジェクトのポインタを初期化
-				SetMapObj(editMap);
+				m_abDataUse[text][nObjCount] = true;
+
+				// オブジェクトカウントを進める
+				nObjCount++;
 			}
 
 			// モデル設定の終了
@@ -297,180 +305,150 @@ void CFileMap::Load(TEXT text)
 //-------------------------------------
 //- マップエディタのオブジェクト設定処理
 //-------------------------------------
-bool CFileMap::SetObj(CEditMap::EditData editData)
+void CFileMap::SetMapObj(TEXT text)
 {
-	bool bIsUse = false;
-
-	if (editData.pObjX != NULL)
+	for (int nCount = 0; nCount < MAP_OBJ_MAX; nCount++)
 	{
-		for (int nCount = m_nNumMax; nCount < MAP_OBJ_MAX; nCount++)
+		if (m_abDataUse[text][nCount] == true)
 		{
-			if (m_aMapData[nCount].pObjX == NULL)
+			CObjectX *pObjX = NULL;
+			CObjectBillboard *pObjBill = NULL;
+
+			switch (m_aMapData[text][nCount].type)
 			{
-				m_aMapData[nCount] = editData;
+			case CEditMap::TYPE_BLOCK:
 
-				bIsUse = true;
+				// ブロックの生成
+				pObjX = CObjBlock::Create(
+					CObjBlock::MODEL_BLOCK_000,
+					m_aMapData[text][nCount].pos,
+					D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
-				m_nNumMax++;
+				break;
+
+			case CEditMap::TYPE_GOAL:
+
+				// ゴールの生成
+				pObjX = CGoal::Create(
+					CGoal::MODEL_GOAL_000,
+					m_aMapData[text][nCount].pos,
+					D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+				break;
+
+			case CEditMap::TYPE_PLAYER:
+
+				break;
+
+			case CEditMap::TYPE_ENEMY:
+
+				// 敵の生成
+				pObjX = CEnemy::Create(
+					CEnemy::MODEL_ALIEN_000,
+					m_aMapData[text][nCount].pos,
+					D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+				break;
+
+			case CEditMap::TYPE_GIMMICK_SPEED:
+
+				// 速度宝石ギミックの生成
+				pObjX = CGimmickJewel::Create(
+					CGimmickJewel::MODEL_JEWEL_000,
+					CGimmickJewel::TYPE_EFFECT_SPEED_UP,
+					m_aMapData[text][nCount].pos,
+					D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+				break;
+
+			case CEditMap::TYPE_TEACH_MOVE:
+
+				pObjBill = CObjTeach::Create(
+					CObjTeach::TEX_TEACH_MOVE,
+					D3DXVECTOR3(m_aMapData[text][nCount].pos.x, m_aMapData[text][nCount].pos.y, 100.0f),
+					D3DXVECTOR3(400.0f, 200.0f, 50.0f),
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+				break;
+
+			case CEditMap::TYPE_TEACH_JUMP:
+
+				pObjBill = CObjTeach::Create(
+					CObjTeach::TEX_TEACH_JUMP,
+					D3DXVECTOR3(m_aMapData[text][nCount].pos.x, m_aMapData[text][nCount].pos.y, 100.0f),
+					D3DXVECTOR3(400.0f, 200.0f, 50.0f),
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+				break;
+
+			case CEditMap::TYPE_TEACH_KAZEDAMA:
+
+				pObjBill = CObjTeach::Create(
+					CObjTeach::TEX_TEACH_KAZEDAMA,
+					D3DXVECTOR3(m_aMapData[text][nCount].pos.x, m_aMapData[text][nCount].pos.y, 100.0f),
+					D3DXVECTOR3(400.0f, 200.0f, 50.0f),
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+				break;
+
+			case CEditMap::TYPE_TEACH_SHOT:
+
+				pObjBill = CObjTeach::Create(
+					CObjTeach::TEX_TEACH_SHOT,
+					D3DXVECTOR3(m_aMapData[text][nCount].pos.x, m_aMapData[text][nCount].pos.y, 100.0f),
+					D3DXVECTOR3(400.0f, 200.0f, 50.0f),
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+				break;
+
+			case CEditMap::TYPE_TEACH_DOUBLE_JUMP:
+
+				pObjBill = CObjTeach::Create(
+					CObjTeach::TEX_TEACH_DOUBLE_JUMP,
+					D3DXVECTOR3(m_aMapData[text][nCount].pos.x, m_aMapData[text][nCount].pos.y, 100.0f),
+					D3DXVECTOR3(400.0f, 200.0f, 50.0f),
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 				break;
 			}
-		}
-	}
-	else if (editData.pObjBill != NULL)
-	{
-		for (int nCount = m_nNumMax; nCount < MAP_OBJ_MAX; nCount++)
-		{
-			if (m_aMapData[nCount].pObjBill == NULL)
+
+			if (pObjX != NULL)
 			{
-				m_aMapData[nCount] = editData;
+				if (m_aMapData[text][nCount].pObjX == NULL)
+				{
+					m_aMapData[text][nCount].pObjX = pObjX;
 
-				bIsUse = true;
+					m_anNumMax[text]++;
 
-				m_nNumMax++;
+				}
 
-				break;
+			}
+			else if (pObjBill != NULL)
+			{
+
+				if (m_aMapData[text][nCount].pObjBill == NULL)
+				{
+					m_aMapData[text][nCount].pObjBill = pObjBill;
+
+					m_anNumMax[text]++;
+
+				}
 			}
 		}
 	}
-
-	return bIsUse;
 }
 
 //-------------------------------------
 //- マップエディタのオブジェクト設定処理
 //-------------------------------------
-void CFileMap::SetMapObj(CEditMap::EditData editData)
+void CFileMap::ResetNumMax(TEXT text)
 {
-	CObjectX *pObjX = NULL;
-	CObjectBillboard *pObjBill = NULL;
+	m_anNumMax[text] = 0;
 
-	switch (editData.type)
+	for (int nCount = 0; nCount < MAP_OBJ_MAX; nCount++)
 	{
-	case CEditMap::TYPE_BLOCK:
-
-		// ブロックの生成
-		pObjX = CObjBlock::Create(
-			CObjBlock::MODEL_BLOCK_000,
-			editData.pos,
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-		break;
-
-	case CEditMap::TYPE_GOAL:
-
-		// ゴールの生成
-		pObjX = CGoal::Create(
-			CGoal::MODEL_GOAL_000,
-			editData.pos,
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-		break;
-
-	case CEditMap::TYPE_PLAYER:
-
-		break;
-
-	case CEditMap::TYPE_ENEMY:
-
-		// 敵の生成
-		pObjX = CEnemy::Create(
-			CEnemy::MODEL_ALIEN_000,
-			editData.pos,
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-		break;
-
-	case CEditMap::TYPE_GIMMICK_SPEED:
-
-		// 速度宝石ギミックの生成
-		pObjX = CGimmickJewel::Create(
-			CGimmickJewel::MODEL_JEWEL_000,
-			CGimmickJewel::TYPE_EFFECT_SPEED_UP,
-			editData.pos,
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-		break;
-
-	case CEditMap::TYPE_TEACH_MOVE:
-
-		pObjBill = CObjTeach::Create(
-			CObjTeach::TEX_TEACH_MOVE,
-			D3DXVECTOR3(editData.pos.x, editData.pos.y, 100.0f),
-			D3DXVECTOR3(400.0f, 200.0f, 50.0f),
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-		break;
-
-	case CEditMap::TYPE_TEACH_JUMP:
-
-		pObjBill = CObjTeach::Create(
-			CObjTeach::TEX_TEACH_JUMP,
-			D3DXVECTOR3(editData.pos.x, editData.pos.y, 100.0f),
-			D3DXVECTOR3(400.0f, 200.0f, 50.0f),
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-		break;
-
-	case CEditMap::TYPE_TEACH_KAZEDAMA:
-
-		pObjBill = CObjTeach::Create(
-			CObjTeach::TEX_TEACH_KAZEDAMA,
-			D3DXVECTOR3(editData.pos.x, editData.pos.y, 100.0f),
-			D3DXVECTOR3(400.0f, 200.0f, 50.0f),
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-		break;
-
-	case CEditMap::TYPE_TEACH_SHOT:
-
-		pObjBill = CObjTeach::Create(
-			CObjTeach::TEX_TEACH_SHOT,
-			D3DXVECTOR3(editData.pos.x, editData.pos.y, 100.0f),
-			D3DXVECTOR3(400.0f, 200.0f, 50.0f),
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-		break;
-
-	case CEditMap::TYPE_TEACH_DOUBLE_JUMP:
-
-		pObjBill = CObjTeach::Create(
-			CObjTeach::TEX_TEACH_DOUBLE_JUMP,
-			D3DXVECTOR3(editData.pos.x, editData.pos.y, 100.0f),
-			D3DXVECTOR3(400.0f, 200.0f, 50.0f),
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-		break;
+		m_aMapData[text]->pObjX = NULL;
+		m_aMapData[text]->pObjBill = NULL;
 	}
 
-	if (pObjX != NULL)
-	{
-		for (int nCount = m_nNumMax; nCount < MAP_OBJ_MAX; nCount++)
-		{
-			if (m_aMapData[nCount].pObjX == NULL)
-			{
-				m_aMapData[nCount] = editData;
-				m_aMapData[nCount].pObjX = pObjX;
-
-				m_nNumMax++;
-
-				break;
-			}
-		}
-	}
-	else if (pObjBill != NULL)
-	{
-		for (int nCount = m_nNumMax; nCount < MAP_OBJ_MAX; nCount++)
-		{
-			if (m_aMapData[nCount].pObjBill == NULL)
-			{
-				m_aMapData[nCount] = editData;
-				m_aMapData[nCount].pObjBill = pObjBill;
-
-				m_nNumMax++;
-
-				break;
-			}
-		}
-	}
 }

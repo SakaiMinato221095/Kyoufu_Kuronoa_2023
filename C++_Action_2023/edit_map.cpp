@@ -333,7 +333,7 @@ void CEditMap::InputSave(void)
 	if (pInputKeyboard->GetTrigger(DIK_F9) == true)
 	{
 		// マップファイルのセーブ
-		pFileMap->Save();
+		pFileMap->Save(CFileMap::TEXT_NORMAL);
 	}
 }
 
@@ -550,15 +550,6 @@ void CEditMap::SetObj(void)
 	if (pFileMap == NULL)
 	{
 		return;
-	}
-
-	// エディットのオブジェクト設定処理
-	if (pFileMap->SetObj(m_editData) == true)
-	{
-		m_editData.pObjX = NULL;
-		m_editData.pObjBill = NULL;
-
-		SetEditObj(m_editData.type);
 	}
 }
 

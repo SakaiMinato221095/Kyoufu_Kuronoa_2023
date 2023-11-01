@@ -42,6 +42,7 @@ public:
 	{
 		TEXT_NORMAL = 0,	// 通常マップ
 		TEXT_TITLE,			// タイトルマップ
+		TEXT_MAX
 	}TEXT;
 
 	CFileMap();
@@ -54,17 +55,17 @@ public:
 
 	static CFileMap *Create(void);
 
-	void Save(void);
+	void Save(TEXT text);
 	void Load(TEXT text);
 
-	bool SetObj(CEditMap::EditData editData);
+	void SetMapObj(TEXT text);
+	void ResetNumMax(TEXT text);
 
 private:
 
-	void SetMapObj(CEditMap::EditData editData);
-
-	CEditMap::EditData m_aMapData[MAP_OBJ_MAX];		// マップデータ
-	int m_nNumMax;									// 最大数
+	bool m_abDataUse[TEXT_MAX][MAP_OBJ_MAX];					// マップデータの有無
+	CEditMap::EditData m_aMapData[TEXT_MAX][MAP_OBJ_MAX];		// マップデータ
+	int m_anNumMax[TEXT_MAX];									// 最大数
 };
 
 #endif	// 二重インクルード防止の終了

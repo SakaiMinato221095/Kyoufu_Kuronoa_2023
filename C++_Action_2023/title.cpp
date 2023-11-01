@@ -89,8 +89,8 @@ HRESULT CTitle::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// カメラの設定処理
 	pCamera->SetMode(CCamera::MODE_TITLE);
 
-	// マップのロード処理
-	pFileMap->Load(CFileMap::TEXT_TITLE);
+	// マップの設置処理
+	pFileMap->SetMapObj(CFileMap::TEXT_TITLE);
 
 	// スカイボックスの生成
 	CSkybox::Create(
@@ -180,6 +180,13 @@ HRESULT CTitle::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //-------------------------------------
 void CTitle::Uninit(void)
 {
+	CFileMap *pFileMap = CManager::GetInstance()->GetFileMap();
+
+	if (pFileMap == NULL)
+	{
+		return;
+	}
+
 	if (m_pPlayer != NULL)
 	{
 		m_pPlayer->Uninit();
@@ -190,6 +197,9 @@ void CTitle::Uninit(void)
 		m_apObj2dNone[nCount] = NULL;
 	}
 
+	// マップの設置リセット処理
+	pFileMap->ResetNumMax(CFileMap::TEXT_TITLE);
+	
 	// オブジェクトの全開放処理
 	CObject::ReleaseAll();
 }

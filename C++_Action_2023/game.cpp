@@ -106,8 +106,8 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// カメラの設定処理
 	pCamera->SetMode(CCamera::MODE_FOLLOWING);
 
-	// マップのロード処理
-	pFileMap->Load(CFileMap::TEXT_NORMAL);
+	// マップの設置処理
+	pFileMap->SetMapObj(CFileMap::TEXT_NORMAL);
 
 	// スカイボックスの生成
 	CSkybox::Create(
@@ -171,6 +171,13 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //-------------------------------------
 void CGame::Uninit(void)
 {
+	CFileMap *pFileMap = CManager::GetInstance()->GetFileMap();
+
+	if (pFileMap == NULL)
+	{
+		return;
+	}
+
 	if (m_pPlayer != NULL)
 	{
 		m_pPlayer->Uninit();
@@ -206,6 +213,9 @@ void CGame::Uninit(void)
 		delete m_pEditMap;
 		m_pEditMap = NULL;
 	}
+
+	// マップの設置リセット処理
+	pFileMap->ResetNumMax(CFileMap::TEXT_NORMAL);
 
 	// オブジェクトの全開放処理
 	CObject::ReleaseAll();

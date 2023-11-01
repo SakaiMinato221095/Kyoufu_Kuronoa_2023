@@ -545,6 +545,12 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		}
 	}
 
+	for (int nCount = 0; nCount < CFileMap::TEXT_MAX; nCount++)
+	{
+		// ロード処理
+		m_pFileMap->Load((CFileMap::TEXT)nCount);
+	}
+
 	// シーン
 	{
 		// シーンの有無を判定

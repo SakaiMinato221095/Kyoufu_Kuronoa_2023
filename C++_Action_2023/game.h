@@ -34,6 +34,9 @@ class CTimer;
 class CEditMap;
 
 class CPause;
+
+class CStartCount;
+
 //-======================================
 //-	クラス定義
 //-======================================
@@ -60,12 +63,15 @@ public:
 	
 	static CPlayer *GetPlayer(void);
 
-	static CPause *GetPause(void);
+	static CStartCount *GetStartCount(void);
+
 
 private:
 
 	static CPlayer *m_pPlayer;				// プレイヤー
 	static CTimer *m_pTimer;				// タイマー
+
+	static CStartCount *m_pStartCount;		// スタートカウント
 
 	static CEditMap *m_pEditMap;			// マップエディット
 

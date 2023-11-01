@@ -33,6 +33,9 @@
 
 #define SIZE_TILE_CRITERIA_X	(150.0f)		// 一マスの基準（X軸）
 #define SIZE_TILE_CRITERIA_Y	(150.0f)		// 一マスの基準（Y軸）
+#define LINE_TILE_MAX			(128)			// 行の最大数
+#define CILU_TILE_MAX			(128)			// 列の最大数
+#define TILE_MOVE_BOOTH			(8)				// 一気に移動するタイル量
 
 //=======================================
 //= コンスト定義
@@ -180,23 +183,71 @@ void CEditMap::InputObjMove(void)
 	{
 		if (pInputKeyboard->GetTrigger(DIK_W) == true)
 		{
+			// 行のタイル番号を加算
+			m_editData.nTileLineNum++;
+
 			// 上の移動処理
 			SetObjMove(D3DXVECTOR3(0.0f, SIZE_TILE_CRITERIA_Y,0.0f));
 		}
 		else if (pInputKeyboard->GetTrigger(DIK_S) == true)
 		{
+			// 行のタイル番号を減算
+			m_editData.nTileLineNum--;
+
 			// 下の移動処理
 			SetObjMove(D3DXVECTOR3(0.0f, -SIZE_TILE_CRITERIA_Y, 0.0f));
 		}
 		else if (pInputKeyboard->GetTrigger(DIK_A) == true)
 		{
+			// 列のタイル番号を加算
+			m_editData.nTileCiluNum++;
+
 			// 左の移動処理
 			SetObjMove(D3DXVECTOR3(-SIZE_TILE_CRITERIA_X, 0.0f, 0.0f));
 		}
 		else if (pInputKeyboard->GetTrigger(DIK_D) == true)
 		{
+			// 列のタイル番号を減算
+			m_editData.nTileCiluNum--;
+
 			// 右の移動処理
 			SetObjMove(D3DXVECTOR3(SIZE_TILE_CRITERIA_X, 0.0f, 0.0f));
+		}
+	}
+
+	if (pInputKeyboard->GetPress(DIK_LCONTROL) == true)
+	{
+		if (pInputKeyboard->GetTrigger(DIK_W) == true)
+		{
+			// 行のタイル番号を加算
+			m_editData.nTileLineNum += TILE_MOVE_BOOTH;
+
+			// 上の移動処理
+			SetObjMove(D3DXVECTOR3(0.0f, SIZE_TILE_CRITERIA_Y * TILE_MOVE_BOOTH, 0.0f));
+		}
+		else if (pInputKeyboard->GetTrigger(DIK_S) == true)
+		{
+			// 行のタイル番号を減算
+			m_editData.nTileLineNum -= TILE_MOVE_BOOTH;
+
+			// 下の移動処理
+			SetObjMove(D3DXVECTOR3(0.0f, -SIZE_TILE_CRITERIA_Y * TILE_MOVE_BOOTH, 0.0f));
+		}
+		else if (pInputKeyboard->GetTrigger(DIK_A) == true)
+		{
+			// 列のタイル番号を加算
+			m_editData.nTileCiluNum += TILE_MOVE_BOOTH;
+
+			// 左の移動処理
+			SetObjMove(D3DXVECTOR3(-SIZE_TILE_CRITERIA_X * TILE_MOVE_BOOTH, 0.0f, 0.0f));
+		}
+		else if (pInputKeyboard->GetTrigger(DIK_D) == true)
+		{
+			// 列のタイル番号を減算
+			m_editData.nTileCiluNum -= TILE_MOVE_BOOTH;
+
+			// 右の移動処理
+			SetObjMove(D3DXVECTOR3(SIZE_TILE_CRITERIA_X * TILE_MOVE_BOOTH, 0.0f, 0.0f));
 		}
 	}
 }
@@ -509,4 +560,12 @@ void CEditMap::SetObj(void)
 
 		SetEditObj(m_editData.type);
 	}
+}
+
+//-------------------------------------
+//- マップエディタのオブジェクト解除処理
+//-------------------------------------
+void CEditMap::ReSetObj(void)
+{
+
 }

@@ -152,12 +152,16 @@ void CFileMap::Save(void)
 		for (int nCount = 0; nCount < m_nNumMax; nCount++)
 		{
 			// 変数宣言（敵の情報取得）
-			int nModelType = m_aMapData[nCount].type;			// モデル種類
-			D3DXVECTOR3 pos = m_aMapData[nCount].pos;			// 位置
+			int nModelType = m_aMapData[nCount].type;				// モデル種類
+			D3DXVECTOR3 pos = m_aMapData[nCount].pos;				// 位置
+			int nTileLineNum = m_aMapData[nCount].nTileLineNum;		// 行タイル番号
+			int nTileCuluNum = m_aMapData[nCount].nTileCiluNum;		// 列タイル番号
 
 			// 配置モデルの情報の書き出し
 			fprintf(pFile, "MODEL_TYPE = %d\n", nModelType);
 			fprintf(pFile, " --- POS = %3.1f %3.1f %3.1f \n", pos.x, pos.y, pos.z);
+			fprintf(pFile, " --- TILE_LINE_NUM = %d \n", nTileLineNum);
+			fprintf(pFile, " --- TILE_CULU_NUM = %d \n", nTileCuluNum);
 			fprintf(pFile, "END_MODEL_SET \n");
 			fprintf(pFile, "\n");
 		}
@@ -237,6 +241,39 @@ void CFileMap::Load(TEXT text)
 				}
 			}
 
+			if (strstr(aFileData, "TILE_LINE_NUM") != NULL)
+			{
+				// 特定の文字を判定
+				if (strstr(aFileData, "=") != NULL)
+				{
+					// 変数宣言
+					char aTenp[2][ARRAY_SIZE] = {};	// ゴミ入れ	
+					int nValue = 0;					// 数値
+
+					// 値（モデル番号）を取り出す
+					sscanf(aFileData, "%s %s %d", aTenp[0], aTenp[1], &nValue);
+
+					// 種類を格納
+					editMap.nTileLineNum = (CEditMap::TYPE)nValue;
+				}
+			}
+
+			if (strstr(aFileData, "TILE_CULU_NUM") != NULL)
+			{
+				// 特定の文字を判定
+				if (strstr(aFileData, "=") != NULL)
+				{
+					// 変数宣言
+					char aTenp[2][ARRAY_SIZE] = {};	// ゴミ入れ	
+					int nValue = 0;					// 数値
+
+					// 値（モデル番号）を取り出す
+					sscanf(aFileData, "%s %s %d", aTenp[0], aTenp[1], &nValue);
+
+					// 種類を格納
+					editMap.nTileCiluNum = (CEditMap::TYPE)nValue;
+				}
+			}
 
 			// モデル設定の終了
 			if (strstr(aFileData, "END_MODEL_SET") != NULL)

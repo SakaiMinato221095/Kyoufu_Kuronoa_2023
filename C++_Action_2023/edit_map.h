@@ -61,6 +61,8 @@ public:
 		CObjectBillboard *pObjBill;		// エディット中のビルボードオブジェクト
 		TYPE type;						// 現在のタイプ
 		D3DXVECTOR3 pos;				// 位置
+		int nTileLineNum;				// 行タイル番号
+		int nTileCiluNum;				// 列タイル番号
 	}EditData;
 
 	CEditMap();
@@ -86,6 +88,7 @@ private:
 	void SetObjMove(D3DXVECTOR3 move);
 
 	void SetObj(void);
+	void ReSetObj(void);
 
 	EditData m_editData;		// エディット時のデータ
 };

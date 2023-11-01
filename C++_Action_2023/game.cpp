@@ -41,6 +41,8 @@
 #include "edit_map.h"
 #include "file_map.h"
 
+#include "start_count.h"
+
 //=======================================
 //=	マクロ定義
 //=======================================
@@ -51,6 +53,7 @@
 
 CPlayer *CGame::m_pPlayer = NULL;
 CTimer *CGame::m_pTimer = NULL;
+CStartCount *CGame::m_pStartCount = NULL;
 CEditMap *CGame::m_pEditMap = NULL;
 CPause *CGame::m_pPause = NULL;
 
@@ -147,6 +150,15 @@ HRESULT CGame::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 			CMotion::MOTION_TYPE_PLAYER_AONOA);			// モーション
 	}
 
+	if (m_pStartCount == NULL)
+	{
+		// スタートカウント
+		m_pStartCount = CStartCount::Create(
+			D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f),
+			D3DXVECTOR3(100.0f, 100.0f, 0.0f),
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	}
+
 	// ゲームの再生
 	pSound->Play(CSound::LABEL_BGM_GAME);
 
@@ -173,6 +185,16 @@ void CGame::Uninit(void)
 		// 時間管理の開放処理
 		delete m_pTimer;
 		m_pTimer = NULL;
+	}
+
+	if (m_pStartCount != NULL)
+	{
+		// スタートカウント
+		m_pStartCount->Uninit();
+
+		// スタートカウントの開放処理
+		delete m_pStartCount;
+		m_pStartCount = NULL;
 	}
 
 	if (m_pEditMap != NULL)
@@ -215,9 +237,6 @@ void CGame::Update(void)
 		return;
 	}
 
-	// 情報取得（オブジェクト）
-	bool bStopAllUpdate = CObject::GetIsUpdateAll();	// 全更新停止
-
 	// 仮の遷移ボタン（えんたー）
 	if (pInputKeyboard->GetTrigger(DIK_P) != NULL)
 	{
@@ -226,7 +245,7 @@ void CGame::Update(void)
 			m_pPause = CPause::Create();
 
 			// 全更新停止
-			bStopAllUpdate = false;
+			CObject::SetIsUpdateAll(false);
 
 			// ポーズ状態
 			m_game = GAME_PAUSE;
@@ -239,8 +258,8 @@ void CGame::Update(void)
 				m_pPause = NULL;
 			}
 
-			// 全更新停止を解除
-			bStopAllUpdate = false;
+			// 全更新停止
+			CObject::SetIsUpdateAll(false);
 
 			// ゲーム状態
 			m_game = GAME_NONE;
@@ -251,10 +270,17 @@ void CGame::Update(void)
 	{
 		if (m_pEditMap == NULL)
 		{
-			if (m_pTimer != NULL)
+			if (m_pTimer != NULL &&
+				CObject::GetIsUpdateAll() == true)
 			{
 				// 時間の更新処理
 				m_pTimer->Update();
+			}
+
+			if (m_pStartCount != NULL)
+			{
+				// スタートカウントの更新処理
+				m_pStartCount->Update();
 			}
 
 #if _DEBUG
@@ -327,17 +353,14 @@ void CGame::Update(void)
 				m_pPause->Uninit();
 				m_pPause = NULL;
 
-				// 全更新停止を解除
-				bStopAllUpdate = true;
+				// 全更新停止
+				CObject::SetIsUpdateAll(true);
 
 				// ゲーム状態
 				m_game = GAME_NONE;
 			}
 		}
 	}
-
-	// 情報更新
-	CObject::SetIsUpdateAll(bStopAllUpdate);	// 全更新停止
 }
 
 //-------------------------------------
@@ -354,4 +377,9 @@ void CGame::Draw(void)
 CPlayer * CGame::GetPlayer(void)
 {
 	return m_pPlayer;
+}
+
+CStartCount * CGame::GetStartCount(void)
+{
+	return m_pStartCount;
 }
